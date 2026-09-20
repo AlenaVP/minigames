@@ -1,7 +1,7 @@
 {
   "name": "minigames",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -11,6 +11,7 @@
   "author": "AlenaVP",
   "license": "ISC",
   "devDependencies": {
+    "@types/node": "^22.20.4",
     "typescript": "~6.0.2",
     "vite": "^8.3.0"
   }
