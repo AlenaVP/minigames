@@ -10,16 +10,20 @@
     "lint": "eslint . --max-warnings=0",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "prepare": "husky"
   },
   "author": "AlenaVP",
   "license": "ISC",
   "devDependencies": {
+    "@commitlint/cli": "^21.2.3",
+    "@commitlint/config-conventional": "^21.2.3",
     "@eslint/js": "^9.39.5",
     "@types/node": "^22.20.4",
     "eslint": "^9.39.5",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-unicorn": "65.0.1",
+    "husky": "^9.1.7",
     "prettier": "^3.9.8",
     "sass": "^1.104.1",
     "typescript": "~6.0.2",
