@@ -4,6 +4,7 @@
 3. Deployment: https://minigames-avp.netlify.app/
 4. Done 21.09.2026 / deadline 21.09.2026
 5. Score: 294 / 300
+
 - Adaptive Layout: Home Page (100/130)
   - [x] the site header for the unauthenticated user state is implemented correctly (15)
   - [±] the mobile burger menu (≤ 768px) is implemented correctly (10/25)
