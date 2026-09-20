@@ -1,1 +1,3 @@
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `<span>minigames</span>`;
+import { bootstrapApp } from '@app/core/app';
+
+bootstrapApp();
