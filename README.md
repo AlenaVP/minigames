@@ -24,13 +24,13 @@ npm run dev
 
 ## Scripts
 
-| Script | Description |
-|---|---|
-| `npm run dev` | starts the development server |
-| `npm run build` | builds the production bundle |
-| `npm run preview` | previews the production build locally |
-| `npm run lint` | runs ESLint checks |
-| `npm run format` | formats the code with Prettier |
+| Script                 | Description                               |
+| ---------------------- | ----------------------------------------- |
+| `npm run dev`          | starts the development server             |
+| `npm run build`        | builds the production bundle              |
+| `npm run preview`      | previews the production build locally     |
+| `npm run lint`         | runs ESLint checks                        |
+| `npm run format`       | formats the code with Prettier            |
 | `npm run format:check` | checks formatting without modifying files |
 
 ## Project Structure
