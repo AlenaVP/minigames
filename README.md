@@ -32,3 +32,19 @@ npm run dev
 | `npm run lint` | runs ESLint checks |
 | `npm run format` | formats the code with Prettier |
 | `npm run format:check` | checks formatting without modifying files |
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── core/            # app bootstrap, base component class, constants
+│   ├── pages/           # routed features (home, library)
+│   ├── widgets/         # shared composite UI blocks (header, footer, burger-menu, game-card)
+│   ├── dialogs/         # modal windows (auth, game details)
+│   ├── shared/          # reusable atoms, utils, shared types
+│   └── services/        # future API/auth services
+├── assets/              # icons, images, fonts
+├── styles/              # global Sass (design tokens, breakpoints, base styles)
+└── main.ts
+```
