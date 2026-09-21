@@ -4,4 +4,4 @@ export const BREAKPOINTS = {
   desktop: 1920,
 } as const;
 
-export type Breakpoint = keyof typeof BREAKPOINTS; // type Breakpoint = 'mobile' | 'tablet' | 'desktop'
+export type Breakpoint = keyof typeof BREAKPOINTS;
