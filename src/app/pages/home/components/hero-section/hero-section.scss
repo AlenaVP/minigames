@@ -1,0 +1,124 @@
+@use 'abstracts/tokens' as *;
+@use 'abstracts/breakpoints' as *;
+@use 'abstracts/mixins' as *;
+
+.hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 331px;
+  padding-inline: $size-2;
+  overflow: hidden;
+
+  background-image: url('@assets/images/hero-bg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  @include tablet {
+    height: 383px;
+    padding-inline: $size-5;
+  }
+
+  @include desktop {
+    @include content-width;
+    height: 627px;
+    padding-inline: $size-15;
+    background-size: 120%;
+    background-position: center 75%;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: $color-bg-footer; // #1e1b3a
+    opacity: 0.55;
+  }
+
+  &__card {
+    position: relative;
+    z-index: 1;
+    width: 343px;
+    max-width: 100%;
+    padding: $size-3;
+    background-color: $color-surface-low;
+    border: 2px solid $color-on-primary;
+    border-radius: $corner-extra-large;
+    box-shadow: $shadow-level-1;
+    color: $color-on-primary;
+
+    @include tablet {
+      width: 480px;
+      box-shadow: $shadow-level-2;
+    }
+
+    @include desktop {
+      width: 640px;
+      min-height: 403px;
+      padding: $size-6; // 48px
+      box-shadow: $shadow-level-3;
+    }
+  }
+
+  &__title {
+    margin: 0;
+    font-family: $font-family-primary;
+    font-weight: $font-weight-extrabold;
+    font-size: $font-size-display-small; // 24px
+
+    @include tablet {
+      font-size: $font-size-display-medium; // 36px
+    }
+
+    @include desktop {
+      font-size: $font-size-display-large; // 56px
+    }
+  }
+
+  &__description {
+    margin: $size-2 0; // 16px
+    font-family: $font-family-primary;
+    font-size: $font-size-label-medium; // 12px
+
+    @include tablet {
+      font-size: $font-size-body-small; // 14px
+    }
+
+    @include desktop {
+      margin: $size-3 0;
+      font-size: $font-size-body-large; // 18px
+    }
+  }
+
+  &__button {
+    padding: $size-1 $size-2; // btn-small: 8px 16px (mobile)
+    border: 2px solid $color-on-primary;
+    border-radius: $corner-small;
+    background-color: $color-primary;
+    color: $color-on-primary;
+    font-family: $font-family-primary;
+    font-weight: $font-weight-bold;
+    font-size: $font-size-label-medium; // 12px
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+
+    @include tablet {
+      padding: $btn-medium-y $btn-medium-x; // 10px 20px
+      font-size: $font-size-label-large; // 14px
+    }
+
+    @include desktop {
+      padding: $btn-large-y $btn-large-x; // 16px 24px
+      font-size: $font-size-body-large; // 18px
+    }
+
+    &:hover {
+      background-color: $color-primary-low;
+    }
+
+    &:active {
+      background-color: $color-primary-high;
+    }
+  }
+}
