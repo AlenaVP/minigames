@@ -1,5 +1,177 @@
 @use 'abstracts/tokens' as *;
 @use 'abstracts/breakpoints' as *;
+@use 'abstracts/mixins' as *;
 
 .header {
+  background-color: $color-bg;
+  border-bottom: 2px solid $color-on-primary;
+
+  &__inner {
+    @include content-width;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    padding-inline: $size-2;
+
+    @include tablet {
+      height: 72px;
+      padding-inline: $size-5;
+    }
+
+    @include desktop {
+      height: 85px;
+      padding-inline: $size-10;
+    }
+  }
+
+  &__right {
+    display: flex;
+    align-items: center;
+    gap: $size-2; // 16px
+
+    @include desktop {
+      gap: $size-4; // 32px
+    }
+  }
+
+  &__logo {
+    display: flex;
+    align-items: center;
+    gap: $size-1;
+    text-decoration: none;
+  }
+
+  &__logo-icon {
+    display: block;
+    width: 32px;
+    height: 32px;
+  }
+
+  &__logo-text {
+    font-family: $font-family-primary;
+    font-weight: $font-weight-bold;
+    font-size: $font-size-headline-small; // 20px (mobile/tablet)
+    color: $color-on-primary;
+
+    @include desktop {
+      font-size: $font-size-headline-medium; // 24px (desktop)
+    }
+  }
+
+  // --- navigation ---
+  &__nav {
+    display: none;
+
+    @include desktop {
+      display: block;
+    }
+  }
+
+  &__nav-list {
+    display: flex;
+    align-items: center;
+    gap: $size-5;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  &__nav-link {
+    font-family: $font-family-primary;
+    font-size: $font-size-label-xl; // 16px
+    font-weight: $font-weight-medium;
+    color: $color-on-bg;
+    text-decoration: none;
+    cursor: pointer;
+
+    &:hover {
+      color: $color-on-primary;
+    }
+
+    &--active {
+      font-weight: $font-weight-bold;
+      color: $color-on-primary;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: $size-2;
+  }
+
+  &__auth-btn {
+    display: none; // default (mobile) - no buttons
+    font-family: $font-family-primary;
+    font-size: $font-size-label-large; // 14px
+    font-weight: $font-weight-bold;
+    padding: $btn-medium-y $btn-medium-x;
+    border-radius: $corner-small;
+    border: 2px solid $color-on-primary;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+
+    // Sign Up appears on tablet (768px)
+    &--filled {
+      background-color: $color-primary;
+      color: $color-on-primary;
+
+      @include tablet {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      &:hover {
+        background-color: $color-primary-low;
+      }
+
+      &:active {
+        background-color: $color-primary-high;
+      }
+    }
+
+    // Log In appears on desktop
+    &--outlined {
+      background-color: transparent;
+      color: $color-on-primary;
+
+      @include desktop {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      &:hover {
+        background-color: $color-surface;
+      }
+    }
+  }
+
+  // --- Burger is visible on mobile and tablet, but is hidden on desktop ---
+  &__burger {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+
+    @include desktop {
+      display: none;
+    }
+  }
+
+  &__burger-line {
+    display: block;
+    width: 16px;
+    height: 2px;
+    background-color: $color-on-primary;
+  }
 }

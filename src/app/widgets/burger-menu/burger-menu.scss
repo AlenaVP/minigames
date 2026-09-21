@@ -1,0 +1,121 @@
+@use 'abstracts/tokens' as *;
+@use 'abstracts/breakpoints' as *;
+
+.burger-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background-color: $color-bg-footer;
+  overflow: hidden; // prevents horizontal scrolling during the animation
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+
+  &--open {
+    transform: translateX(0);
+  }
+
+  @include desktop {
+    display: none;
+  }
+
+  &__inner {
+    display: flex;
+    flex-direction: column;
+    gap: $size-4;
+    height: 100%;
+    padding: $size-3;
+    overflow-y: auto;
+  }
+
+  &__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__logo {
+    display: flex;
+    align-items: center;
+    gap: $size-1;
+    text-decoration: none;
+  }
+
+  &__logo-icon {
+    display: block;
+    width: 32px;
+    height: 32px;
+  }
+
+  &__logo-text {
+    font-family: $font-family-primary;
+    font-weight: $font-weight-bold;
+    font-size: $font-size-headline-small;
+    color: $color-white;
+  }
+
+  &__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: none;
+    border-radius: $corner-small;
+    background-color: $color-bg-footer-low;
+    color: $color-white;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  &__nav-list {
+    display: flex;
+    flex-direction: column;
+    gap: $size-3;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  &__nav-link {
+    font-family: $font-family-primary;
+    font-size: $font-size-body-large; // 18px
+    font-weight: $font-weight-medium;
+    color: $color-on-bg-footer;
+    text-decoration: none;
+
+    &--active {
+      font-weight: $font-weight-bold;
+      color: $color-primary;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    gap: $size-2;
+    margin-top: auto;
+  }
+
+  &__auth-btn {
+    font-family: $font-family-primary;
+    font-size: $font-size-body-small; // 14px
+    font-weight: $font-weight-bold;
+    padding: $btn-medium-y $btn-medium-x;
+    border-radius: $corner-small;
+    border: 2px solid $color-white;
+    cursor: pointer;
+
+    &--outlined {
+      background-color: transparent;
+      color: $color-white;
+    }
+
+    &--filled {
+      background-color: $color-primary;
+      border-color: $color-on-primary;
+      color: $color-on-primary;
+    }
+  }
+}
