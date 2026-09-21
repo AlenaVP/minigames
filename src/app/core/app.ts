@@ -1,5 +1,6 @@
 import { Header } from '@widgets/header';
 import { Footer } from '@widgets/footer';
+import { BurgerMenu } from '@widgets/burger-menu';
 import { HomePage } from '@app/pages/home/home.page';
 
 export function bootstrapApp(): void {
@@ -7,7 +8,14 @@ export function bootstrapApp(): void {
   root.id = 'app';
   document.body.append(root);
 
-  const header = new Header();
+  const burgerMenu = new BurgerMenu({
+    onAuthClick: (mode) => console.log('open auth dialog:', mode),
+  });
+
+  const header = new Header({
+    onBurgerClick: () => burgerMenu.open(),
+    onAuthClick: (mode) => console.log('open auth dialog:', mode),
+  });
   header.mount(root);
 
   const pageOutlet = document.createElement('main');
@@ -19,4 +27,6 @@ export function bootstrapApp(): void {
 
   const footer = new Footer();
   footer.mount(root);
+
+  burgerMenu.mount(document.body);
 }
