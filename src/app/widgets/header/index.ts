@@ -64,11 +64,13 @@ export class Header extends ComponentBase {
       .querySelector<HTMLButtonElement>('.header__burger')
       ?.addEventListener('click', () => this.options.onBurgerClick());
 
-    header.querySelectorAll<HTMLButtonElement>('.header__auth-btn').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const mode = btn.dataset.auth === 'signup' ? 'signup' : 'login';
+    const authButtons = header.querySelectorAll<HTMLButtonElement>('.header__auth-btn');
+
+    for (const button of authButtons) {
+      button.addEventListener('click', () => {
+        const mode = button.dataset.auth === 'signup' ? 'signup' : 'login';
         this.options.onAuthClick(mode);
       });
-    });
+    }
   }
 }

@@ -93,17 +93,21 @@ export class BurgerMenu extends ComponentBase {
   private bindEvents(dialog: HTMLElement): void {
     dialog.querySelector('.burger-menu__close')?.addEventListener('click', () => this.close());
 
-    dialog.querySelectorAll<HTMLButtonElement>('.burger-menu__auth-btn').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const mode = btn.dataset.auth === 'signup' ? 'signup' : 'login';
+    const authButtons = dialog.querySelectorAll<HTMLButtonElement>('.burger-menu__auth-btn');
+
+    for (const button of authButtons) {
+      button.addEventListener('click', () => {
+        const mode = button.dataset.auth === 'signup' ? 'signup' : 'login';
         this.close();
         this.options.onAuthClick(mode);
       });
-    });
+    }
 
-    dialog.querySelectorAll('.burger-menu__nav-link').forEach((link) => {
+    const navLinks = dialog.querySelectorAll<HTMLAnchorElement>('.burger-menu__nav-link');
+
+    for (const link of navLinks) {
       link.addEventListener('click', () => this.close());
-    });
+    }
   }
 
   private onKeydown = (event: KeyboardEvent): void => {
