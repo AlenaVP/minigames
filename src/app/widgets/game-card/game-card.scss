@@ -1,0 +1,103 @@
+@use 'abstracts/tokens' as *;
+@use 'abstracts/breakpoints' as *;
+
+.game-card {
+  flex-shrink: 0;
+  list-style: none;
+  border: 2px solid $color-on-primary;
+  border-radius: $corner-large;
+  box-shadow: $shadow-level-1;
+
+  @include tablet {
+    box-shadow: $shadow-level-2;
+  }
+
+  @include desktop {
+    box-shadow: $shadow-level-3;
+  }
+
+  &__inner {
+    container-type: inline-size;
+    container-name: game-card;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: inherit;
+  }
+
+  &__image,
+  &__placeholder {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  &__image {
+    object-fit: cover;
+  }
+
+  &__placeholder {
+    background-color: $color-avatar-2;
+  }
+
+  &__overlay {
+    display: none;
+
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    flex-direction: column;
+    gap: $size-1; // 8px
+    padding: $size-2; // 16px
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.72), transparent);
+
+    @container game-card (min-width: 288px) {
+      display: flex;
+    }
+  }
+
+  &__title {
+    margin: 0;
+    font-family: $font-family-primary;
+    font-weight: $font-weight-bold;
+    font-size: $font-size-body-large; // 18px
+    color: $color-white;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: $font-family-primary;
+    font-weight: $font-weight-medium;
+    font-size: $font-size-label-medium; // 12px
+
+    @include tablet {
+      font-size: $font-size-label-large; // 14px
+    }
+
+    @include desktop {
+      font-size: $font-size-label-xl; // 16px
+    }
+
+    color: $color-white;
+  }
+
+  &__rating,
+  &__likes {
+    display: inline-flex;
+    align-items: center;
+    gap: $size-05; // 4px
+    white-space: nowrap;
+  }
+
+  &__icon {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+  }
+}
