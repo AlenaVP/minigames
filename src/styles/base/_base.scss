@@ -55,6 +55,11 @@ a {
   color: inherit;
 }
 
+// --- Common ---
+.nowrap {
+  white-space: nowrap;
+}
+
 // --- App shell ---
 #app {
   display: flex;
