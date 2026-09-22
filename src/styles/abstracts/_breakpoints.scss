@@ -2,6 +2,7 @@ $bp-mobile: 375px;
 $bp-to-tablet: 425px;
 $bp-tablet: 768px;
 $bp-to-desktop: 1024px;
+$bp-desktop-mid: 1440px;
 $bp-max: 1920px;
 
 @mixin tablet {
@@ -12,6 +13,12 @@ $bp-max: 1920px;
 
 @mixin desktop {
   @media (min-width: $bp-to-desktop) {
+    @content;
+  }
+}
+
+@mixin desktop-mid {
+  @media (min-width: $bp-desktop-mid) {
     @content;
   }
 }
