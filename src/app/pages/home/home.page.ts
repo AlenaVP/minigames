@@ -1,5 +1,6 @@
 import { ComponentBase } from '@app/core/component.base';
 import { DeveloperCtaSection } from './components/developer-cta-section';
+import { NewGamesSection } from './components/new-games-section';
 import { HeroSection } from './components/hero-section';
 
 export class HomePage extends ComponentBase {
@@ -9,6 +10,9 @@ export class HomePage extends ComponentBase {
 
     const hero = new HeroSection();
     hero.mount(page);
+
+    const newGames = new NewGamesSection();
+    newGames.mount(page);
 
     const developerCta = new DeveloperCtaSection();
     developerCta.mount(page);
