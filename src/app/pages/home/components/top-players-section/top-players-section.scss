@@ -1,0 +1,249 @@
+@use 'abstracts/tokens' as *;
+@use 'abstracts/breakpoints' as *;
+@use 'abstracts/mixins' as *;
+
+.top-players {
+  background-color: $color-bg;
+
+  &__inner {
+    @include content-width;
+    @include section-padding;
+    padding-block: $size-2;
+
+    @include tablet {
+      padding-block: $size-3;
+    }
+
+    @include desktop {
+      padding-block: $size-5;
+    }
+  }
+
+  &__heading {
+    display: flex;
+    align-items: center;
+    gap: $size-2;
+    margin-bottom: $size-2;
+
+    @include tablet {
+      margin-bottom: $size-3;
+    }
+
+    @include desktop {
+      margin-bottom: $size-5;
+    }
+  }
+
+  &__accent {
+    display: block;
+    width: 8px;
+    height: 24px;
+    border-radius: $corner-full;
+    background-color: $color-primary;
+
+    @include desktop {
+      height: 32px;
+    }
+  }
+
+  &__title {
+    margin: 0;
+    font-family: $font-family-primary;
+    font-weight: $font-weight-extrabold;
+    font-size: $font-size-headline-medium; // 24px
+    color: $color-on-primary;
+
+    @include desktop {
+      font-size: $font-size-headline-large; // 32px
+    }
+  }
+
+  // toggle pair #1 — переключается на границе tablet (425px)
+  &__title-text,
+  &__score-text {
+    &--compact {
+      display: inline;
+
+      @include tablet {
+        display: none;
+      }
+    }
+
+    &--extended {
+      display: none;
+
+      @include tablet {
+        display: inline;
+      }
+    }
+  }
+
+  // toggle pair #2 — переключается на границе desktop (1024px)
+  &__label {
+    &--short {
+      display: inline;
+
+      @include desktop {
+        display: none;
+      }
+    }
+
+    &--full {
+      display: none;
+
+      @include desktop {
+        display: inline;
+      }
+    }
+  }
+
+  &__table-wrapper {
+    overflow-x: auto; // страховка на нестандартных пропорциях экрана
+    border: 2px solid $color-on-primary;
+    border-radius: $corner-large;
+  }
+
+  &__table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-family: $font-family-primary;
+  }
+
+  thead th {
+    padding: $size-2 $size-1; // 16px 8px
+    background-color: $color-tertiary;
+    color: $color-white;
+    font-size: $font-size-label-medium; // 12px
+    font-weight: $font-weight-bold;
+    text-transform: uppercase;
+    text-align: center;
+    white-space: nowrap;
+
+    &:first-child {
+      text-align: left;
+    }
+  }
+
+  &__col--games {
+    display: none;
+
+    @include tablet {
+      display: table-cell;
+    }
+  }
+
+  &__col--favorite {
+    display: none;
+
+    @include desktop {
+      display: table-cell;
+    }
+  }
+
+  &__row {
+    border-top: 1px solid $color-outline;
+
+    &--desktop-only {
+      display: none;
+
+      @include desktop {
+        display: table-row;
+      }
+    }
+  }
+
+  td {
+    padding: $size-2 $size-1; // 16px 8px
+    text-align: center;
+    font-size: $font-size-label-medium; // 12px
+    color: $color-on-primary;
+
+    @include tablet {
+      font-size: $font-size-label-large; // 14px
+    }
+  }
+
+  &__rank {
+    font-weight: $font-weight-bold;
+
+    &--first {
+      color: $color-primary-high; // TODO: сверить точный оттенок для #1 по макету
+    }
+  }
+
+  &__player {
+    display: flex;
+    align-items: center;
+    gap: $size-05; // 6px, mobile
+
+    @include tablet {
+      gap: $size-1; // 8px
+    }
+
+    @include desktop {
+      gap: $size-2; // 12px — ближе к $size-2 (16), но точнее совпадает с $size-1.5 (нет в токенах), беру ближайший $size-2
+    }
+
+    font-weight: $font-weight-medium;
+  }
+
+  &__avatar {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: $corner-full;
+    font-size: $font-size-label-small; // 10px
+    font-weight: $font-weight-bold;
+    color: $color-on-primary;
+
+    @include tablet {
+      width: 28px;
+      height: 28px;
+    }
+
+    @include desktop {
+      width: 40px;
+      height: 40px;
+      font-size: $font-size-label-medium; // 12px
+    }
+
+    // TODO: точные hex-цвета аватаров не подтверждены по макету —
+    // взято по порядку строк из токенов $color-avatar-1…5
+    &--1 {
+      background-color: $color-avatar-1;
+    }
+
+    &--2 {
+      background-color: $color-avatar-2;
+    }
+
+    &--3 {
+      background-color: $color-avatar-3;
+    }
+
+    &--4 {
+      background-color: $color-avatar-4;
+    }
+
+    &--5 {
+      background-color: $color-avatar-5;
+    }
+  }
+
+  &__streak {
+    white-space: nowrap;
+  }
+
+  &__badge {
+    display: inline-block;
+    padding: $size-05 $size-2; // 4px 16px
+    border: 1px solid $color-outline-variant;
+    border-radius: $corner-full;
+    font-size: $font-size-label-medium; // 12px
+    white-space: nowrap;
+  }
+}

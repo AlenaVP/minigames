@@ -1,5 +1,229 @@
 @use 'abstracts/tokens' as *;
 @use 'abstracts/breakpoints' as *;
+@use 'abstracts/mixins' as *;
 
 .footer {
+  background-color: $color-bg-footer;
+
+  &__inner {
+    @include content-width;
+    @include section-padding;
+    padding-block: $size-3; // 24px
+
+    @include desktop {
+      padding-block: $size-5; // 40px
+    }
+  }
+
+  &__top {
+    display: flex;
+    flex-direction: column;
+    gap: $size-4; // 32px
+
+    @include desktop {
+      flex-direction: row;
+      justify-content: space-between;
+      gap: $size-5; // 40px
+    }
+  }
+
+  &__brand {
+    display: flex;
+    flex-direction: column;
+    gap: $size-3; // 24px
+
+    @include desktop {
+      max-width: 400px;
+    }
+  }
+
+  &__logo {
+    display: flex;
+    align-items: center;
+    gap: $size-1;
+    text-decoration: none;
+  }
+
+  &__logo-icon {
+    display: block;
+  }
+
+  &__logo-text {
+    font-family: $font-family-primary;
+    font-weight: $font-weight-bold;
+    font-size: $font-size-headline-small; // 20px
+    color: $color-white;
+  }
+
+  &__description {
+    margin: 0;
+    font-family: $font-family-primary;
+    font-size: $font-size-body-small; // 14px
+    color: $color-on-bg-footer;
+  }
+
+  &__columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $size-4; // 32px
+
+    @include tablet {
+      grid-template-columns: repeat(3, auto);
+      gap: $size-5; // 40px
+    }
+
+    @include desktop {
+      gap: $size-8; // 64px — ближайший токен к дизайнерским 80px
+    }
+  }
+
+  &__col {
+    display: flex;
+    flex-direction: column;
+    gap: $size-2; // 16px
+
+    &--community {
+      grid-column: 1 / -1; // на mobile Community переезжает на всю ширину под сетку
+
+      @include tablet {
+        grid-column: auto; // на tablet/desktop встаёт в общий ряд колонок
+      }
+    }
+  }
+
+  &__col-title {
+    margin: 0;
+    font-family: $font-family-primary;
+    font-weight: $font-weight-bold;
+    font-size: $font-size-body-medium; // 16px
+    color: $color-white;
+  }
+
+  &__col-list {
+    display: flex;
+    flex-direction: column;
+    gap: $size-4; // ~32px, близко к 33px из макета
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__link {
+    font-family: $font-family-primary;
+    font-size: $font-size-body-small; // 14px
+    color: $color-on-bg-footer;
+    text-decoration: none;
+
+    &:hover {
+      color: $color-white;
+    }
+  }
+
+  &__social {
+    display: flex;
+    align-items: center;
+    gap: $size-2; // 16px
+  }
+
+  &__social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: $corner-full;
+    background-color: $color-bg-footer-low;
+    color: $color-white;
+    transition: background-color 0.2s ease;
+
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    @include desktop {
+      width: 40px;
+      height: 40px;
+
+      svg {
+        width: 20px;
+        height: 20px;
+      }
+    }
+
+    &:hover {
+      background-color: $color-bg-footer-lowest;
+    }
+  }
+
+  &__bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: $size-2; // 16px
+    margin-top: $size-4; // 32px
+    padding-top: $size-2; // 16px
+    border-top: 1px solid $color-bg-footer-low;
+
+    @include tablet {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+
+  &__copyright,
+  &__made-with {
+    margin: 0;
+    font-family: $font-family-primary;
+    font-size: $font-size-body-small; // 14px
+    color: $color-on-bg-footer;
+  }
+
+  // "Designed with love" отсутствует в макете на mobile — экономия места
+  &__made-with {
+    display: none;
+
+    @include tablet {
+      display: block;
+    }
+  }
+
+  &__credits {
+    display: flex;
+    align-items: center;
+    gap: $size-4; // 32px
+  }
+
+  &__credit-link {
+    display: inline-flex;
+    align-items: center;
+    gap: $size-1; // 8px
+    font-family: $font-family-primary;
+    font-size: $font-size-body-small; // 14px
+    color: $color-on-bg-footer;
+    text-decoration: none;
+
+    &:hover {
+      color: $color-white;
+    }
+  }
+
+  &__credit-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: $corner-full;
+    background-color: $color-bg-footer-low;
+    font-size: $font-size-label-small; // 10px
+    font-weight: $font-weight-bold;
+    color: $color-white;
+  }
+
+  &__credit-icon {
+    width: 24px;
+    height: 24px;
+  }
 }
