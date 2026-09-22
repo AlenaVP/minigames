@@ -1,4 +1,19 @@
+@use 'abstracts/tokens' as *;
+@use 'abstracts/breakpoints' as *;
+
 @mixin content-width {
   max-width: 1920px;
   margin-inline: auto;
+}
+
+@mixin section-padding {
+  padding-inline: $size-2;
+
+  @include tablet {
+    padding-inline: $size-5;
+  }
+
+  @include desktop {
+    padding-inline: $size-15;
+  }
 }
