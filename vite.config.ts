@@ -2,7 +2,7 @@ import { defineConfig } from 'vite';
 import { fileURLToPath, URL } from 'node:url';
 
 export default defineConfig({
-  base: '/minigames/',
+  base: process.env.NETLIFY ? '/' : '/minigames/',
   resolve: {
     alias: {
       '@app': fileURLToPath(new URL('src/app', import.meta.url)),
