@@ -1,0 +1,170 @@
+@use 'abstracts/tokens' as *;
+@use 'abstracts/breakpoints' as *;
+@use 'abstracts/mixins' as *;
+
+.developer-cta {
+  background-color: $color-bg;
+
+  &__inner {
+    @include content-width;
+    @include section-padding;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $size-2; // 16px
+    padding-block: $size-2;
+
+    @include tablet {
+      gap: $size-3; // 24px
+      padding-block: $size-3;
+    }
+
+    @include desktop-mid {
+      flex-direction: row;
+      gap: $size-5; // 40px
+      padding-block: $size-5;
+    }
+  }
+
+  &__illustration {
+    display: block;
+    flex-shrink: 0;
+    width: 100%;
+    max-width: 343px; // = 375 - 16×2
+    height: 227px;
+    object-fit: cover;
+    border-radius: $corner-large;
+
+    @include tablet {
+      max-width: 688px; // = 768 - 40×2
+      height: 300px;
+    }
+
+    @include desktop-mid {
+      flex: 0 0 680px;
+      max-width: none;
+      height: 480px;
+    }
+  }
+
+  &__card {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 16px;
+    width: 100%;
+    max-width: 343px;
+    padding: $size-3; // 24px
+
+    background-color: $color-white;
+    border: 2px solid $color-on-primary;
+    border-radius: $corner-extra-large;
+
+    @include tablet {
+      max-width: 688px;
+      padding: $size-4; // 32px
+    }
+
+    @include desktop-mid {
+      flex: 1;
+      gap: 24px;
+      max-width: none;
+      padding: $size-5; // 40px
+    }
+  }
+
+  &__title {
+    margin: 0;
+    font-family: $font-family-primary;
+    font-weight: $font-weight-extrabold;
+    font-size: $font-size-headline-medium; // 24px
+
+    color: $color-on-primary;
+
+    @include desktop {
+      font-size: $font-size-headline-large; // 32px
+    }
+  }
+
+  &__description {
+    font-family: $font-family-primary;
+    font-size: $font-size-label-medium; // 12px (mobile)
+    line-height: 150%;
+    color: $color-on-bg;
+
+    @include tablet {
+      max-width: 620px;
+      font-size: $font-size-body-small; // 14px
+    }
+
+    @include desktop {
+      font-size: $font-size-body-large; // 18px
+      line-height: 150%;
+    }
+  }
+
+  &__button {
+    display: inline-flex;
+    align-items: center;
+    gap: $size-1; // 8px
+    padding: $size-1 $size-2; // btn-small: 8px 16px (mobile)
+    border: 2px solid $color-on-primary;
+    border-radius: $corner-small;
+    background-color: $color-primary;
+    color: $color-on-primary;
+    font-family: $font-family-primary;
+    font-weight: $font-weight-bold;
+    font-size: $font-size-label-medium; // 12px
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+
+    @include tablet {
+      padding: $btn-medium-y $btn-medium-x; // 10px 20px
+      font-size: $font-size-label-large; // 14px
+    }
+
+    @include desktop {
+      padding: $btn-large-y $btn-large-x; // 16px 24px
+      font-size: $font-size-label-xl; // 16px
+      letter-spacing: 0.05em;
+    }
+
+    &:hover {
+      background-color: $color-primary-low;
+    }
+
+    &:active {
+      background-color: $color-primary-high;
+    }
+  }
+
+  &__button-icon {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+
+    @include desktop {
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  &__contact {
+    font-family: $font-family-primary;
+    font-size: $font-size-label-medium; // 12px
+    color: $color-on-bg-low;
+
+    @include desktop {
+      letter-spacing: 0.09em;
+    }
+  }
+
+  &__contact-link {
+    color: inherit;
+    text-decoration: underline;
+
+    &:hover {
+      color: $color-on-primary;
+    }
+  }
+}

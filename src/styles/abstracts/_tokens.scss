@@ -1,0 +1,97 @@
+// --- Base ---
+$color-white: #ffffff;
+$color-black: #000000;
+
+// --- General ---
+$color-bg: #f9f8f3;
+$color-on-bg: #5f5d75;
+$color-on-bg-low: #737380;
+$color-bg-footer: #1e1b3a;
+$color-bg-footer-low: #2a264f;
+$color-bg-footer-lowest: #3c376e;
+$color-on-bg-footer: #b9b5c9;
+$color-surface: #fff9e5;
+$color-surface-low: #fffcf5;
+$color-primary: #ffd02b;
+$color-primary-low: #fde047;
+$color-primary-high: #e5bb00;
+$color-on-primary: #242145;
+$color-secondary: #f0eeff;
+$color-tertiary: #3a2ebf;
+$color-like: #ff4b4b;
+$color-error: #b3261e;
+$color-price-free: #0b8a8f;
+
+// --- Borders ---
+$color-outline: #e5e7eb;
+$color-outline-variant: #d2d2d2;
+
+// --- Additional (avatar placeholders) ---
+$color-avatar-1: #e9eef6;
+$color-avatar-2: #a3e2c9;
+$color-avatar-3: #bce3ff;
+$color-avatar-4: #ffc6ff;
+$color-avatar-5: #e8dff5;
+
+// --- Typography: size ---
+$font-size-display-large: 56px;
+$font-size-display-medium: 36px;
+$font-size-display-small: 24px;
+$font-size-headline-large: 32px;
+$font-size-headline-medium: 24px;
+$font-size-headline-small: 20px;
+$font-size-body-large: 18px;
+$font-size-body-medium: 16px;
+$font-size-body-small: 14px;
+$font-size-label-xl: 16px;
+$font-size-label-large: 14px;
+$font-size-label-medium: 12px;
+$font-size-label-small: 10px;
+
+// --- Typography: weight ---
+$font-weight-regular: 400;
+$font-weight-medium: 500;
+$font-weight-bold: 700;
+$font-weight-extrabold: 800;
+
+// --- Typography: family ---
+$font-family-primary: 'Inter', sans-serif;
+$font-family-secondary: 'Roboto', sans-serif;
+
+// --- Spacing / Size scale ---
+$size-05: 4px;
+$size-1: 8px;
+$size-2: 16px;
+$size-3: 24px;
+$size-4: 32px;
+$size-5: 40px;
+$size-6: 48px;
+$size-7: 56px;
+$size-8: 64px;
+$size-9: 72px;
+$size-10: 80px;
+$size-11: 88px;
+$size-12: 96px;
+$size-13: 104px;
+$size-14: 112px;
+$size-15: 120px;
+
+// --- Corner radii ---
+$corner-extra-small: 4px;
+$corner-small: 8px;
+$corner-medium: 12px;
+$corner-large: 16px;
+$corner-extra-large: 24px;
+$corner-full: 9999px;
+
+// --- Button sizes ---
+$btn-large-x: 24px;
+$btn-large-y: 16px;
+$btn-medium-x: 20px;
+$btn-medium-y: 10px;
+// btn-small и btn-icon переиспользуют $size-2/$size-1 напрямую — отдельных токенов для них в Figma нет
+
+// --- Shadows ---
+$shadow-level-1: 4px 4px 0 0 $color-on-primary;
+$shadow-level-2: 6px 6px 0 0 $color-on-primary;
+$shadow-level-3: 8px 8px 0 0 $color-on-primary;
