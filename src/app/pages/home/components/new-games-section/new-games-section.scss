@@ -15,7 +15,7 @@
     }
 
     @include desktop-mid {
-      padding-block: $size-5; // 40px
+      padding-block: $size-4; // 32px
     }
   }
 
@@ -28,16 +28,12 @@
     @include tablet {
       margin-bottom: $size-3; // 24px
     }
-
-    @include desktop-mid {
-      margin-bottom: $size-5; // 40px
-    }
   }
 
   &__heading {
     display: flex;
     align-items: center;
-    gap: $size-2; // 16px
+    gap: $size-1;
   }
 
   &__accent {

@@ -30,6 +30,7 @@
     }
 
     @include desktop {
+      gap: $size-1;
       margin-bottom: $size-5;
     }
   }
@@ -58,7 +59,6 @@
     }
   }
 
-  // toggle pair #1 — переключается на границе tablet (425px)
   &__title-text,
   &__score-text {
     &--compact {
@@ -78,7 +78,6 @@
     }
   }
 
-  // toggle pair #2 — переключается на границе desktop (1024px)
   &__label {
     &--short {
       display: inline;
@@ -98,30 +97,58 @@
   }
 
   &__table-wrapper {
-    overflow-x: auto; // страховка на нестандартных пропорциях экрана
+    overflow-x: auto;
     border: 2px solid $color-on-primary;
     border-radius: $corner-large;
+    box-shadow: $shadow-level-1;
+
+    @include tablet {
+      box-shadow: $shadow-level-2;
+    }
+
+    @include desktop {
+      box-shadow: $shadow-level-3;
+    }
   }
 
   &__table {
+    table-layout: fixed;
     width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
+    border-collapse: collapse;
     font-family: $font-family-primary;
   }
 
+  th:first-child,
+  td:first-child {
+    box-sizing: content-box;
+    padding-left: $size-2;
+    width: 40px;
+
+    @include tablet {
+      width: 80px;
+    }
+
+    @include desktop {
+      padding-left: $size-3;
+    }
+  }
+
   thead th {
-    padding: $size-2 $size-1; // 16px 8px
+    padding: $size-2 4px;
     background-color: $color-tertiary;
     color: $color-white;
-    font-size: $font-size-label-medium; // 12px
+    font-size: $font-size-label-large; // 14px
     font-weight: $font-weight-bold;
     text-transform: uppercase;
     text-align: center;
     white-space: nowrap;
 
-    &:first-child {
-      text-align: left;
+    @include tablet {
+      padding: $size-2 6px;
+    }
+
+    @include desktop {
+      padding: $size-3 $size-1;
     }
   }
 
@@ -168,24 +195,27 @@
     font-weight: $font-weight-bold;
 
     &--first {
-      color: $color-primary-high; // TODO: сверить точный оттенок для #1 по макету
+      color: $color-primary !important;
     }
   }
 
   &__player {
     display: flex;
     align-items: center;
-    gap: $size-05; // 6px, mobile
+    gap: $size-05; // 4px, mobile
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    font-weight: $font-weight-medium;
 
     @include tablet {
       gap: $size-1; // 8px
     }
 
     @include desktop {
-      gap: $size-2; // 12px — ближе к $size-2 (16), но точнее совпадает с $size-1.5 (нет в токенах), беру ближайший $size-2
+      gap: $size-2;
     }
-
-    font-weight: $font-weight-medium;
   }
 
   &__avatar {
@@ -211,10 +241,8 @@
       font-size: $font-size-label-medium; // 12px
     }
 
-    // TODO: точные hex-цвета аватаров не подтверждены по макету —
-    // взято по порядку строк из токенов $color-avatar-1…5
     &--1 {
-      background-color: $color-avatar-1;
+      background-color: $color-primary;
     }
 
     &--2 {
