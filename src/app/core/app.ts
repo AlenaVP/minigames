@@ -3,6 +3,8 @@ import { Footer } from '@widgets/footer';
 import { BurgerMenu } from '@widgets/burger-menu';
 import { AuthDialog } from '@dialogs/auth-dialog';
 import { HomePage } from '@app/pages/home/home.page';
+import { LibraryPage } from '@app/pages/library/library.page';
+import { Router } from './router';
 
 export function bootstrapApp(): void {
   const root = document.createElement('div');
@@ -25,9 +27,19 @@ export function bootstrapApp(): void {
   pageOutlet.classList.add('page-outlet');
   root.append(pageOutlet);
 
-  new HomePage().mount(pageOutlet);
   new Footer().mount(root);
-
   burgerMenu.mount(document.body);
   authDialog.mount(document.body);
+
+  const router = new Router(pageOutlet, {
+    home: () => new HomePage(),
+    library: () => new LibraryPage(),
+  });
+
+  router.onChange((route) => {
+    header.setActiveRoute(route);
+    burgerMenu.setActiveRoute(route);
+  });
+
+  router.start();
 }

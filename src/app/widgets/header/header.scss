@@ -89,7 +89,7 @@
       color: $color-on-primary;
     }
 
-    &--active {
+    &[aria-current='page'] {
       font-weight: $font-weight-bold;
       color: $color-on-primary;
     }

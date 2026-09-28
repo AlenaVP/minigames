@@ -1,4 +1,7 @@
 import { ComponentBase } from '@app/core/component.base';
+import { PRIMARY_NAV_LINKS } from '@app/core/constants/nav-links';
+import type { RouteId } from '@app/core/constants/routes';
+import { markActiveNavLinks, navLinkAttributes, routeLinkAttributes } from '@app/core/router';
 import type { AuthMode } from '@app/shared/types/auth';
 import brandLogoUrl from '@assets/icons/brand-logo.svg';
 import './burger-menu.scss';
@@ -7,8 +10,6 @@ interface BurgerMenuOptions {
   onAuthClick: (mode: AuthMode) => void;
 }
 
-const NAV_LINKS = ['Home', 'Library', 'Tournaments', 'Community'];
-
 export class BurgerMenu extends ComponentBase {
   private options: BurgerMenuOptions;
   private isOpen = false;
@@ -16,6 +17,10 @@ export class BurgerMenu extends ComponentBase {
   constructor(options: BurgerMenuOptions) {
     super();
     this.options = options;
+  }
+
+  setActiveRoute(route: RouteId): void {
+    if (this.element) markActiveNavLinks(this.element, route);
   }
 
   protected render(): HTMLElement {
@@ -29,9 +34,9 @@ export class BurgerMenu extends ComponentBase {
     dialog.innerHTML = `
       <div class="burger-menu__inner">
         <div class="burger-menu__top">
-          <a href="/" class="burger-menu__logo" aria-label="MiniGames home">
-          <img src="${brandLogoUrl}" alt="" width="32" height="32" class="burger-menu__logo-icon" />
-          <span class="burger-menu__logo-text">MiniGames</span>
+          <a ${routeLinkAttributes('home')} class="burger-menu__logo" aria-label="MiniGames home">
+            <img src="${brandLogoUrl}" alt="" width="32" height="32" class="burger-menu__logo-icon" />
+            <span class="burger-menu__logo-text">MiniGames</span>
           </a>
           <button type="button" class="burger-menu__close" aria-label="Close menu">
             <span aria-hidden="true">&times;</span>
@@ -40,10 +45,10 @@ export class BurgerMenu extends ComponentBase {
 
         <nav class="burger-menu__nav" aria-label="Primary">
           <ul class="burger-menu__nav-list">
-            ${NAV_LINKS.map(
-              (link, index) => `
+            ${PRIMARY_NAV_LINKS.map(
+              (link) => `
               <li>
-                <a href="/" class="burger-menu__nav-link${index === 0 ? ' burger-menu__nav-link--active' : ''}">${link}</a>
+                <a ${navLinkAttributes(link)} class="burger-menu__nav-link">${link.label}</a>
               </li>`,
             ).join('')}
           </ul>
@@ -101,11 +106,11 @@ export class BurgerMenu extends ComponentBase {
       });
     }
 
-    const navLinks = dialog.querySelectorAll<HTMLAnchorElement>('.burger-menu__nav-link');
-
-    for (const link of navLinks) {
-      link.addEventListener('click', () => this.close());
-    }
+    // Any link inside the menu (nav links AND the logo) closes it.
+    // Fires before the Router's document listener, because the menu is lower in the bubbling path.
+    dialog.addEventListener('click', (event) => {
+      if (event.target instanceof Element && event.target.closest('a')) this.close();
+    });
   }
 
   private onKeydown = (event: KeyboardEvent): void => {
