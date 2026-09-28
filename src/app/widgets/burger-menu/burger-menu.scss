@@ -109,11 +109,12 @@
 
     &--outlined {
       background-color: transparent;
+      border-color: $color-primary;
       color: $color-white;
     }
 
     &--filled {
-      background-color: $color-primary;
+      background-color: $color-primary-high;
       border-color: $color-on-primary;
       color: $color-on-primary;
     }

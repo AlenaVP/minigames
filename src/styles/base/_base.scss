@@ -5,6 +5,15 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+  scrollbar-gutter: stable;
+}
+
+html:has(dialog[open]) {
+  overflow: hidden;
+}
+
 body {
   display: flex;
   flex-direction: column;

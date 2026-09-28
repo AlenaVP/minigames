@@ -1,0 +1,212 @@
+@use 'abstracts/tokens' as *;
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: $size-3; // 24px
+  animation: auth-form-in 0.25s ease;
+
+  &[hidden] {
+    display: none;
+  }
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    gap: $size-1; // 8px
+  }
+
+  &__title {
+    margin: 0;
+    font-family: $font-family-primary;
+    font-size: $font-size-headline-medium; // 24px
+    font-weight: $font-weight-extrabold;
+  }
+
+  &__subtitle {
+    margin: 0;
+    font-family: $font-family-primary;
+    font-size: $font-size-body-small; // 14px
+    color: $color-on-bg-low;
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: $size-3; // 24px
+  }
+
+  &__fields {
+    display: flex;
+    flex-direction: column;
+    gap: $size-2; // 16px
+  }
+
+  // common view: Forgot Password / Register / Login
+  &__forgot,
+  &__switch {
+    font-family: $font-family-primary;
+    font-size: $font-size-body-small; // 14px
+    font-weight: $font-weight-bold;
+    color: $color-on-primary;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+
+    &:hover {
+      color: $color-tertiary;
+    }
+  }
+
+  &__forgot {
+    align-self: flex-end;
+  }
+
+  &__switch {
+    margin-left: $size-05; // 4px
+  }
+
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    gap: $size-2; // 16px
+  }
+
+  &__submit {
+    height: 52px;
+    border: 2px solid $color-on-primary;
+    border-radius: $corner-small;
+    background-color: $color-primary;
+    box-shadow: $shadow-level-1;
+    font-family: $font-family-primary;
+    font-size: $font-size-body-medium; // 16px
+    font-weight: $font-weight-bold;
+    color: $color-on-primary;
+    transition:
+      background-color 0.2s ease,
+      box-shadow 0.1s ease,
+      transform 0.1s ease;
+
+    &:hover {
+      background-color: $color-primary-high; // Guidebook: primary-high = button-hover
+    }
+
+    &:active {
+      box-shadow: none;
+      transform: translate(4px, 4px);
+    }
+  }
+
+  &__divider {
+    display: flex;
+    align-items: center;
+    gap: $size-2; // 16px
+    margin: 0;
+    font-family: $font-family-primary;
+    font-size: $font-size-label-medium; // 12px
+    font-weight: $font-weight-bold;
+    text-transform: uppercase;
+    color: $color-on-bg-low;
+
+    &::before,
+    &::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background-color: $color-outline;
+    }
+  }
+
+  &__google {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: $size-2; // 16px
+    height: 50px;
+    border: 2px solid $color-on-primary;
+    border-radius: $corner-small;
+    background-color: $color-white;
+    font-family: $font-family-primary;
+    font-size: $font-size-body-medium; // 16px
+    font-weight: $font-weight-bold;
+    color: $color-on-primary;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: $color-surface; // Guidebook: surface = button-hover
+    }
+  }
+
+  &__footer {
+    margin: 0;
+    text-align: center;
+    font-family: $font-family-primary;
+    font-size: $font-size-body-small; // 14px
+    color: $color-on-bg-low;
+  }
+}
+
+.auth-field {
+  display: flex;
+  flex-direction: column;
+  gap: $size-1; // 8px
+
+  &__label {
+    font-family: $font-family-primary;
+    font-size: $font-size-body-small; // 14px
+    font-weight: $font-weight-bold;
+  }
+
+  &__control {
+    display: flex;
+    align-items: center;
+    gap: $size-2; // 16px
+    height: 48px;
+    padding-inline: $size-2; // 16px
+    border: 2px solid $color-on-primary;
+    border-radius: $corner-small;
+    background-color: $color-white;
+    transition: background-color 0.2s ease;
+
+    // Guidebook: surface-low = input focus
+    &:focus-within {
+      background-color: $color-surface-low;
+    }
+
+    // can be removed (was added for accessibility)
+    &:has(:focus-visible) {
+      outline: 2px solid $color-tertiary;
+      outline-offset: 2px;
+    }
+  }
+
+  &__icon {
+    flex-shrink: 0;
+  }
+
+  &__input {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    padding: 0;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: $font-size-body-small; // 14px
+
+    &::placeholder {
+      color: $color-on-bg-low;
+    }
+  }
+
+  &__toggle {
+    display: flex;
+    flex-shrink: 0;
+  }
+}
+
+@keyframes auth-form-in {
+  from {
+    opacity: 0;
+    transform: translateX($size-2);
+  }
+}

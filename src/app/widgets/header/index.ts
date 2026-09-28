@@ -1,10 +1,11 @@
 import { ComponentBase } from '@app/core/component.base';
+import type { AuthMode } from '@app/shared/types/auth';
 import brandLogoUrl from '@assets/icons/brand-logo.svg';
 import './header.scss';
 
 interface HeaderOptions {
   onBurgerClick: () => void;
-  onAuthClick: (mode: 'login' | 'signup') => void;
+  onAuthClick: (mode: AuthMode) => void;
 }
 
 const NAV_LINKS = ['Home', 'Library', 'Tournaments', 'Community'];

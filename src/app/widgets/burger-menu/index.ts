@@ -1,9 +1,10 @@
 import { ComponentBase } from '@app/core/component.base';
+import type { AuthMode } from '@app/shared/types/auth';
 import brandLogoUrl from '@assets/icons/brand-logo.svg';
 import './burger-menu.scss';
 
 interface BurgerMenuOptions {
-  onAuthClick: (mode: 'login' | 'signup') => void;
+  onAuthClick: (mode: AuthMode) => void;
 }
 
 const NAV_LINKS = ['Home', 'Library', 'Tournaments', 'Community'];
@@ -80,9 +81,6 @@ export class BurgerMenu extends ComponentBase {
     this.isOpen = true;
     this.element.hidden = false;
 
-    // Force a reflow so the browser registers the initial state
-    // (translateX(100%)) BEFORE adding the --open class — otherwise, the transition
-    // won't trigger, and the element will appear immediately in its final position.
     void this.element.offsetWidth;
 
     this.element.classList.add('burger-menu--open');
