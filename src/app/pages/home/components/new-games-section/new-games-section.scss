@@ -15,7 +15,7 @@
     }
 
     @include desktop-mid {
-      padding-block: $size-4; // 32px
+      padding-block: $size-5; // 40px
     }
   }
 
@@ -77,9 +77,9 @@
     width: 40px;
     height: 40px;
     padding: 0;
-    border: none;
+    border: 2px solid $color-on-primary;
     border-radius: $corner-full;
-    background-color: $color-surface;
+    background-color: $color-white;
     color: $color-on-primary;
     cursor: pointer;
     transition: background-color 0.2s ease;
@@ -94,13 +94,13 @@
       height: 48px;
 
       svg {
-        width: 24px;
-        height: 24px;
+        width: 16px;
+        height: 16px;
       }
     }
 
     &:hover {
-      background-color: $color-primary-low;
+      background-color: $color-primary;
     }
   }
 
