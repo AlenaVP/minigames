@@ -1,4 +1,4 @@
-import type { GameDetails } from '@shared/types/game-details';
+import type { GameComment, GameDetails } from '@shared/types/game-details';
 
 /**
  * "Current moment" of the mockup: relative dates of the mock records/comments
@@ -31,3 +31,31 @@ export const GAME_DETAILS_MOCK: GameDetails = {
     { position: 3, playerName: 'HerbalistPath', score: 308_900, achievedAt: '2026-08-23T18:45:00Z' },
   ],
 };
+
+// tasks/mock-data/comments-tukoni-forest-keepers.json. Story 3: GET /games/:slug/comments
+export const GAME_COMMENTS_MOCK: readonly GameComment[] = [
+  {
+    commentId: 'c5d9f2a1-7c3b-4e8f-9a0d-000000000001',
+    authorName: 'ForestDweller',
+    text: "The hand-drawn art is absolutely magical 🍄 Every location feels like a page from a children's storybook. The mushroom village made me cry happy tears!",
+    likesCount: 12,
+    isLikedByCurrentUser: false,
+    createdAt: '2026-08-30T07:00:00Z',
+  },
+  {
+    commentId: 'c5d9f2a1-7c3b-4e8f-9a0d-000000000002',
+    authorName: 'HerbalTeaLover',
+    text: 'Perfect cozy evening game — brew a cup of chamomile, wrap in a blanket and help the little Tukoni prepare for winter. The puzzles are gentle but satisfying.',
+    likesCount: 5,
+    isLikedByCurrentUser: false,
+    createdAt: '2026-08-29T15:30:00Z',
+  },
+  {
+    commentId: 'c5d9f2a1-7c3b-4e8f-9a0d-000000000003',
+    authorName: 'CottageCoreMia',
+    text: 'I want to live inside this game forever 🌿 The NPCs are so charming, the tea recipes are real, and the atmosphere is pure warmth and calm.',
+    likesCount: 8,
+    isLikedByCurrentUser: false,
+    createdAt: '2026-08-27T20:10:00Z',
+  },
+];

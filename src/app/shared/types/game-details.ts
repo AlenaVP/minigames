@@ -26,3 +26,14 @@ export interface GameDetails {
   specs: GameSpecs;
   topRecords: readonly TopRecord[];
 }
+
+// Same shape as tasks/mock-data/comments-tukoni-forest-keepers.json → data[]
+export interface GameComment {
+  commentId: string;
+  authorName: string;
+  text: string;
+  likesCount: number;
+  isLikedByCurrentUser: boolean;
+  /** ISO 8601 date-time */
+  createdAt: string;
+}

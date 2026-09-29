@@ -1,14 +1,16 @@
 import { ComponentBase } from '@app/core/component.base';
-import type { GameDetails } from '@shared/types/game-details';
+import type { GameComment, GameDetails } from '@shared/types/game-details';
 import { closeIcon } from '@shared/ui/icons';
 import { GameDetailsHero } from './hero';
 import { GameInfo } from './game-info';
 import { TopRecords } from './top-records';
+import { CommentsSection } from './comments';
 
 export const GAME_DETAILS_TITLE_ID = 'game-details-title';
 
 interface GameDetailsContentOptions {
   game: GameDetails;
+  comments: readonly GameComment[];
   /** The moment relative dates are counted from ("2 days ago"); defaults to the real clock */
   now?: Date;
 }
@@ -26,7 +28,7 @@ export class GameDetailsContent extends ComponentBase {
   }
 
   protected render(): HTMLElement {
-    const { game, now } = this.options;
+    const { game, comments, now } = this.options;
 
     const content = document.createElement('div');
     content.classList.add('game-details__content');
@@ -42,13 +44,14 @@ export class GameDetailsContent extends ComponentBase {
 
     this.mountChild(new GameDetailsHero({ slug: game.slug }), content);
 
-    // Sections under the hero: info, Top Records; Comments in the next step
+    // Sections under the hero
     const body = document.createElement('div');
     body.classList.add('game-details__body');
     content.append(body);
 
     this.mountChild(new GameInfo({ game, titleId: GAME_DETAILS_TITLE_ID }), body);
     this.mountChild(new TopRecords({ records: game.topRecords, now }), body);
+    this.mountChild(new CommentsSection({ comments, now }), body);
 
     return content;
   }
