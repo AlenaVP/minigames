@@ -1,0 +1,28 @@
+@use 'abstracts/tokens' as *;
+@use 'abstracts/breakpoints' as *;
+
+.filter-sort-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: $size-2; // 16px between chips and sort (mobile/tablet)
+  padding-block: $size-2; // 16px above the chips and below the controls
+
+  // desktop: one row, sort pushed to the right
+  @include desktop {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: $size-3; // 24px — kept when the chips have to shrink
+  }
+
+  // chips take the full width in the column layout, may shrink in the row layout
+  > .category-chips {
+    align-self: stretch;
+
+    @include desktop {
+      flex: 0 1 auto;
+      align-self: auto;
+    }
+  }
+}

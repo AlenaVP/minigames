@@ -1,0 +1,71 @@
+@use 'abstracts/tokens' as *;
+@use 'abstracts/breakpoints' as *;
+@use 'abstracts/mixins' as *;
+
+$focus-room: 4px; // space for the focus ring, which overflow would otherwise clip
+
+.category-chips {
+  // <fieldset> has `min-inline-size: min-content` by default: it refuses to shrink
+  // below the full chip row and pushes a horizontal scrollbar onto the whole page
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+
+  &__track {
+    display: flex;
+    gap: $size-1; // 8px
+    // overflow-x: auto silently turns overflow-y into auto as well → clips outline vertically too
+    overflow-x: auto;
+    padding: $focus-room;
+    margin: -$focus-room;
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+    user-select: none;
+
+    @include desktop {
+      gap: $size-2; // 16px
+    }
+
+    &.is-dragging {
+      cursor: grabbing;
+    }
+  }
+
+  &__chip {
+    position: relative; // containing block for the visually hidden radio
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    height: 32px;
+    padding-inline: 14px;
+    border: 2px solid $color-on-primary;
+    border-radius: $corner-full;
+    background-color: $color-white;
+    font-family: $font-family-primary;
+    font-size: $font-size-label-medium; // 12px
+    font-weight: $font-weight-bold;
+    line-height: 1;
+    color: $color-on-primary;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+
+    @include tablet {
+      font-size: $font-size-label-large; // 14px
+    }
+
+    @include hover {
+      background-color: $color-surface;
+    }
+
+    &:has(:checked) {
+      background-color: $color-primary;
+    }
+
+    &:has(:focus-visible) {
+      outline: 2px solid $color-tertiary;
+      outline-offset: 2px;
+    }
+  }
+}
