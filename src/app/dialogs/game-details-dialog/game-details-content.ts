@@ -3,11 +3,14 @@ import type { GameDetails } from '@shared/types/game-details';
 import { closeIcon } from '@shared/ui/icons';
 import { GameDetailsHero } from './hero';
 import { GameInfo } from './game-info';
+import { TopRecords } from './top-records';
 
 export const GAME_DETAILS_TITLE_ID = 'game-details-title';
 
 interface GameDetailsContentOptions {
   game: GameDetails;
+  /** The moment relative dates are counted from ("2 days ago"); defaults to the real clock */
+  now?: Date;
 }
 
 /**
@@ -23,7 +26,7 @@ export class GameDetailsContent extends ComponentBase {
   }
 
   protected render(): HTMLElement {
-    const { game } = this.options;
+    const { game, now } = this.options;
 
     const content = document.createElement('div');
     content.classList.add('game-details__content');
@@ -39,12 +42,13 @@ export class GameDetailsContent extends ComponentBase {
 
     this.mountChild(new GameDetailsHero({ slug: game.slug }), content);
 
-    // Sections under the hero: info now, Top Records and Comments in the next steps
+    // Sections under the hero: info, Top Records; Comments in the next step
     const body = document.createElement('div');
     body.classList.add('game-details__body');
     content.append(body);
 
     this.mountChild(new GameInfo({ game, titleId: GAME_DETAILS_TITLE_ID }), body);
+    this.mountChild(new TopRecords({ records: game.topRecords, now }), body);
 
     return content;
   }

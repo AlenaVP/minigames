@@ -1,5 +1,5 @@
 import { DialogBase } from '@app/core/dialog.base';
-import { GAME_DETAILS_MOCK } from '@app/services/mock-data/game-details.mock';
+import { GAME_DETAILS_MOCK, MOCK_NOW } from '@app/services/mock-data/game-details.mock';
 import { GAME_DETAILS_TITLE_ID, GameDetailsContent } from './game-details-content';
 import './game-details-dialog.scss';
 
@@ -32,7 +32,8 @@ export class GameDetailsDialog extends DialogBase {
     // The previous content is destroyed, not just overwritten: its child components,
     // listeners and state go away together with the DOM
     this.content?.destroy();
-    this.content = new GameDetailsContent({ game: GAME_DETAILS_MOCK });
+    // Story 2: "now" is frozen at the mockup's moment, so the dates read exactly as in Figma
+    this.content = new GameDetailsContent({ game: GAME_DETAILS_MOCK, now: MOCK_NOW });
     this.content.mount(dialog);
   }
 }

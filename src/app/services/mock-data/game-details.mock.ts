@@ -1,5 +1,12 @@
 import type { GameDetails } from '@shared/types/game-details';
 
+/**
+ * "Current moment" of the mockup: relative dates of the mock records/comments
+ * ("2 days ago", "3 hours ago") come out exactly as in Figma.
+ * Story 3: real data → formatRelativeTime(date) with the real `new Date()`.
+ */
+export const MOCK_NOW = new Date('2026-08-30T10:00:00Z');
+
 // tasks/mock-data/game-tukoni-forest-keepers.json.
 // Story 2: the dialog always shows this game (Common Game Details Content Requirements).
 // Story 3: replaced by GET /games/:slug
