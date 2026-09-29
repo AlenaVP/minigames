@@ -1,5 +1,6 @@
 import { ComponentBase } from '@app/core/component.base';
 import type { GameDetails, GameSpecs } from '@shared/types/game-details';
+import { heartOutlineIcon } from '@shared/ui/icons';
 import { escapeHtml } from '@shared/utils/escape-html';
 import { formatCompactNumber, formatRating } from '@shared/utils/format';
 import starIconUrl from '@assets/icons/star.svg';
@@ -69,9 +70,35 @@ export class GameInfo extends ComponentBase {
       <div class="game-info__actions">
         <!-- Story 2: no action on purpose; Story 3 adds "Buy Now: $x" for paid games -->
         <button type="button" class="game-info__action game-info__action--play">Play Now</button>
+        <button type="button" class="game-info__action game-info__action--favorite">
+          ${heartOutlineIcon()}
+          <span class="game-info__favorite-label"></span>
+        </button>
       </div>
     `;
 
+    const favoriteButton = info.querySelector<HTMLButtonElement>('.game-info__action--favorite');
+
+    if (favoriteButton) {
+      this.syncFavorite(favoriteButton);
+      favoriteButton.addEventListener('click', () => {
+        this.isFavorite = !this.isFavorite;
+        this.syncFavorite(favoriteButton);
+      });
+    }
+
     return info;
+  }
+
+  /**
+   * The visible text itself says what the button will do ("Add…" / "Remove…"),
+   * so no aria-pressed: a changing label + pressed state would be a double, contradicting signal.
+   * On mobile the text is only visually hidden → it is still the accessible name of the icon button.
+   */
+  private syncFavorite(button: HTMLButtonElement): void {
+    button.classList.toggle('game-info__action--favorite-active', this.isFavorite);
+
+    const label = button.querySelector('.game-info__favorite-label');
+    if (label) label.textContent = this.isFavorite ? FAVORITE_LABEL.on : FAVORITE_LABEL.off;
   }
 }

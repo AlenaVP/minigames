@@ -164,5 +164,44 @@ $spec-shadow: $shadow-level-1;
         background-color: $color-primary-high;
       }
     }
+
+    // Style guide "Favorite Toggle Buttons"
+    &--favorite {
+      width: 48px; // mobile: icon only
+      padding: 0;
+      border-color: $color-outline-variant;
+      background-color: $color-white;
+
+      @include wide {
+        width: auto;
+        padding-inline: $size-3;
+      }
+
+      @include hover {
+        background-color: $color-surface;
+      }
+
+      svg {
+        flex-shrink: 0;
+        transition: color 0.2s ease;
+      }
+    }
+
+    &--favorite-active svg {
+      color: $color-like;
+    }
+  }
+
+  &__favorite-label {
+    @include visually-hidden; // mobile: the text stays as the accessible name only
+
+    @include wide {
+      position: static;
+      width: auto;
+      height: auto;
+      margin: 0;
+      overflow: visible;
+      clip-path: none;
+    }
   }
 }
