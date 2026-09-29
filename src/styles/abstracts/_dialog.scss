@@ -51,4 +51,13 @@ $dialog-backdrop-color: color.change($color-bg-footer, $alpha: 0.6);
       background-color: transparent;
     }
   }
+
+  // Users who asked the OS for less motion get an instant open/close
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+
+    &::backdrop {
+      transition: none;
+    }
+  }
 }

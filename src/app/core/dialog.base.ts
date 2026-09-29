@@ -55,17 +55,30 @@ export abstract class DialogBase extends ComponentBase {
   }
 
   private bindCloseTriggers(dialog: HTMLDialogElement): void {
-    // A click on the backdrop has the <dialog> itself as target (its content fills the box).
     // Checking pointerdown too: selecting text inside and releasing outside must not close it.
     dialog.addEventListener('pointerdown', (event) => {
-      this.isPointerDownOnBackdrop = event.target === dialog;
+      this.isPointerDownOnBackdrop = this.isBackdropEvent(event, dialog);
     });
 
     dialog.addEventListener('click', (event) => {
-      const isBackdropClick = this.isPointerDownOnBackdrop && event.target === dialog;
+      const isBackdropClick = this.isPointerDownOnBackdrop && this.isBackdropEvent(event, dialog);
       const isCloseButton = event.target instanceof Element && event.target.closest('[data-dialog-close]');
 
       if (isBackdropClick || isCloseButton) this.close();
     });
+  }
+
+  /**
+   * The ::backdrop has no DOM node of its own: a click on it arrives with the <dialog> as target.
+   * A click on the dialog's own padding or scrollbar has the same target, so the pointer position
+   * decides: only a point outside the dialog's box is the backdrop.
+   */
+  private isBackdropEvent(event: MouseEvent, dialog: HTMLDialogElement): boolean {
+    if (event.target !== dialog) return false;
+
+    const rect = dialog.getBoundingClientRect();
+    return (
+      event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom
+    );
   }
 }
