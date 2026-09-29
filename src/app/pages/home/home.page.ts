@@ -9,10 +9,10 @@ export class HomePage extends ComponentBase {
     const page = document.createElement('div');
     page.classList.add('home-page');
 
-    new HeroSection().mount(page);
-    new NewGamesSection().mount(page);
-    new TopPlayersSection().mount(page);
-    new DeveloperCtaSection().mount(page);
+    this.mountChild(new HeroSection(), page);
+    this.mountChild(new NewGamesSection(), page);
+    this.mountChild(new TopPlayersSection(), page);
+    this.mountChild(new DeveloperCtaSection(), page);
 
     return page;
   }

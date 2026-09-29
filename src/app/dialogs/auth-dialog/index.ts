@@ -1,4 +1,4 @@
-import { ComponentBase } from '@app/core/component.base';
+import { DialogBase } from '@app/core/dialog.base';
 import type { AuthMode } from '@shared/types/auth';
 import { AuthForm } from './auth-form';
 import { LOGIN_FORM_CONFIG } from './login-form';
@@ -10,15 +10,19 @@ const TABS: { mode: AuthMode; label: string }[] = [
   { mode: 'signup', label: 'Register' },
 ];
 
-export class AuthDialog extends ComponentBase {
-  private dialog: HTMLDialogElement | null = null;
-  private pointerDownOnBackdrop = false;
+export class AuthDialog extends DialogBase {
+  constructor() {
+    super({ className: 'auth-dialog', ariaLabel: 'Sign in or create an account' });
+  }
 
-  protected render(): HTMLElement {
-    const dialog = document.createElement('dialog');
-    dialog.classList.add('auth-dialog');
-    dialog.setAttribute('aria-label', 'Sign in or create an account');
+  open(mode: AuthMode = 'login'): void {
+    if (this.isOpen) return;
 
+    this.setMode(mode);
+    this.show();
+  }
+
+  protected renderContent(dialog: HTMLDialogElement): void {
     dialog.innerHTML = `
       <div class="auth-dialog__inner">
         <div class="auth-dialog__tabs" role="tablist" aria-label="Authentication mode">
@@ -41,24 +45,15 @@ export class AuthDialog extends ComponentBase {
     const panels = dialog.querySelector<HTMLElement>('.auth-dialog__panels');
 
     if (panels) {
-      new AuthForm({ config: LOGIN_FORM_CONFIG, onSwitch: () => this.setMode('signup') }).mount(panels);
-      new AuthForm({ config: REGISTER_FORM_CONFIG, onSwitch: () => this.setMode('login') }).mount(panels);
+      this.mountChild(new AuthForm({ config: LOGIN_FORM_CONFIG, onSwitch: () => this.setMode('signup') }), panels);
+      this.mountChild(new AuthForm({ config: REGISTER_FORM_CONFIG, onSwitch: () => this.setMode('login') }), panels);
     }
 
-    this.dialog = dialog;
-    this.bindEvents(dialog);
-    return dialog;
-  }
-
-  open(mode: AuthMode = 'login'): void {
-    if (!this.dialog || this.dialog.open) return;
-
-    this.setMode(mode);
-    this.dialog.showModal();
-  }
-
-  close(): void {
-    this.dialog?.close();
+    for (const tab of dialog.querySelectorAll<HTMLButtonElement>('.auth-dialog__tab')) {
+      tab.addEventListener('click', () => {
+        this.setMode(tab.dataset.mode === 'signup' ? 'signup' : 'login');
+      });
+    }
   }
 
   private setMode(mode: AuthMode): void {
@@ -73,25 +68,5 @@ export class AuthDialog extends ComponentBase {
     for (const panel of this.dialog.querySelectorAll<HTMLElement>('.auth-form')) {
       panel.hidden = panel.id !== `auth-panel-${mode}`;
     }
-  }
-
-  private bindEvents(dialog: HTMLDialogElement): void {
-    for (const tab of dialog.querySelectorAll<HTMLButtonElement>('.auth-dialog__tab')) {
-      tab.addEventListener('click', () => {
-        const mode = tab.dataset.mode === 'signup' ? 'signup' : 'login';
-        this.setMode(mode);
-      });
-    }
-
-    // prevent the dialog box from closing unexpectedly
-    dialog.addEventListener('pointerdown', (event) => {
-      this.pointerDownOnBackdrop = event.target === dialog;
-    });
-
-    dialog.addEventListener('click', (event) => {
-      if (this.pointerDownOnBackdrop && event.target === dialog) {
-        this.close();
-      }
-    });
   }
 }

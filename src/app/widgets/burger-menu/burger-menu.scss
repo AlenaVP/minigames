@@ -85,7 +85,7 @@
     color: $color-on-bg-footer;
     text-decoration: none;
 
-    &--active {
+    &[aria-current='page'] {
       font-weight: $font-weight-bold;
       color: $color-primary;
     }
