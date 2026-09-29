@@ -21,3 +21,6 @@ export const SORT_OPTIONS: readonly SortOption[] = [
 ];
 
 export const DEFAULT_SORT: SortValue = 'rating-desc';
+
+// Figma: 6 cards per page
+export const LIBRARY_PAGE_SIZE = 6;

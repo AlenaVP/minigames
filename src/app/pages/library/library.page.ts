@@ -1,9 +1,10 @@
 import { ComponentBase } from '@app/core/component.base';
-import { LIBRARY_GAMES_MOCK } from '@app/services/mock-data/games.mock';
+import { LIBRARY_GAMES_MOCK, LIBRARY_TOTAL_GAMES_MOCK } from '@app/services/mock-data/games.mock';
 import type { SortValue } from '@shared/types/game';
 import { FilterSortBar } from './components/filter-sort-bar';
 import { GameCardsSection } from './components/game-cards-section';
-import { CATEGORIES, DEFAULT_CATEGORY, DEFAULT_SORT, SORT_OPTIONS } from './library.constants';
+import { Pagination } from './components/pagination';
+import { CATEGORIES, DEFAULT_CATEGORY, DEFAULT_SORT, LIBRARY_PAGE_SIZE, SORT_OPTIONS } from './library.constants';
 import './library.page.scss';
 
 interface LibraryPageOptions {
@@ -13,12 +14,13 @@ interface LibraryPageOptions {
 interface LibraryState {
   category: string;
   sort: SortValue;
+  page: number;
 }
 
 export class LibraryPage extends ComponentBase {
   private options: LibraryPageOptions;
   // Single source of truth for the page. Story 3: state → API query; Story 4: state ↔ URL
-  private state: LibraryState = { category: DEFAULT_CATEGORY, sort: DEFAULT_SORT };
+  private state: LibraryState = { category: DEFAULT_CATEGORY, sort: DEFAULT_SORT, page: 1 };
 
   constructor(options: LibraryPageOptions) {
     super();
@@ -61,6 +63,15 @@ export class LibraryPage extends ComponentBase {
         }),
         section,
       );
+
+      this.mountChild(
+        new Pagination({
+          totalPages: Math.ceil(LIBRARY_TOTAL_GAMES_MOCK / LIBRARY_PAGE_SIZE),
+          currentPage: this.state.page,
+          onPageChange: (pageNumber) => this.setState({ page: pageNumber }),
+        }),
+        section,
+      );
     }
 
     return page;
@@ -68,6 +79,6 @@ export class LibraryPage extends ComponentBase {
 
   private setState(patch: Partial<LibraryState>): void {
     this.state = { ...this.state, ...patch };
-    // Story 2: nothing else happens on purpose (the task forbids real filtering/sorting yet)
+    // Story 2: nothing else happens on purpose — no real filtering, sorting or page switching yet
   }
 }

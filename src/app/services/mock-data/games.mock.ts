@@ -2,6 +2,9 @@ import type { GameSummary } from '@shared/types/game';
 
 // First 6 entries of tasks/mock-data/all-games-seed.json — the same order as the desktop mockup.
 // Story 3: replaced by GET /games?page=&category=&sort=
+// all-games-seed.json → meta.totalItems (the whole library, not just this page)
+export const LIBRARY_TOTAL_GAMES_MOCK = 24;
+
 export const LIBRARY_GAMES_MOCK: readonly GameSummary[] = [
   {
     slug: 'vacation-cafe-simulator',
