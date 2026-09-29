@@ -50,15 +50,16 @@ $close-size: 40px;
     }
   }
 
-  // Placeholder until step 2 (2-2-4)
-  &__body {
-    padding: $size-3;
+  // Query container for the sections: they switch layout by the dialog's width, not the viewport's
+  &__content {
+    container: game-details / inline-size;
   }
 
-  &__title {
-    font-family: $font-family-primary;
-    font-size: $font-size-display-medium; // 36px
-    font-weight: $font-weight-bold;
-    line-height: normal;
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: $size-3; // 24px between the sections
+    // Figma: 24px from the dialog's OUTER edge; the 2px border already takes 2 of them
+    padding: $size-3 22px 22px;
   }
 }

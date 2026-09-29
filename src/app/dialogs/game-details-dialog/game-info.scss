@@ -1,0 +1,168 @@
+@use 'abstracts/tokens' as *;
+@use 'abstracts/mixins' as *;
+
+// Layout follows the width of the DIALOG, not the viewport:
+// the 600px dialog (tablet, desktop) is "wide", the full-width 375px one is "narrow"
+@mixin wide {
+  @container game-details (min-width: 560px) {
+    @content;
+  }
+}
+
+$spec-shadow: $shadow-level-1;
+
+.game-info {
+  display: flex;
+  flex-direction: column;
+  gap: $size-3; // 24px between all blocks (Figma)
+
+  // ---------- title + rating ----------
+  &__heading {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: $size-1; // mobile: rating under the title
+
+    @include wide {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px; // Figma: the one-line title + rating fill 548 of 552px — little room to spare
+    }
+  }
+
+  &__title {
+    font-family: $font-family-primary;
+    font-size: $font-size-display-medium; // 36px
+    font-weight: $font-weight-bold;
+    line-height: normal;
+    color: $color-on-primary;
+  }
+
+  &__stats {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: $size-2; // 16px
+    font-family: $font-family-primary;
+    font-size: $font-size-label-large; // 14px
+    font-weight: $font-weight-bold;
+    line-height: 24px;
+    color: $color-on-primary;
+  }
+
+  &__stat {
+    display: inline-flex;
+    align-items: center;
+    gap: $size-05;
+  }
+
+  &__icon {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+  }
+
+  // ---------- description ----------
+  &__description {
+    font-family: $font-family-primary;
+    font-size: $font-size-body-medium; // 16px
+    line-height: 20px;
+    color: $color-on-bg;
+  }
+
+  // ---------- specs: <dl> of label/value pairs ----------
+  &__specs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: $size-2; // 16px
+    margin: 0;
+
+    @include wide {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  &__spec {
+    display: flex;
+    flex-direction: column;
+    gap: $size-1; // 8px
+    padding: 7px $size-2;
+    border: 1px solid $color-outline-variant;
+    border-radius: $corner-small;
+    background-color: $color-white;
+    box-shadow: $spec-shadow;
+  }
+
+  &__spec-label {
+    font-family: $font-family-primary;
+    font-size: $font-size-label-medium; // 12px
+    line-height: normal;
+    color: $color-on-bg;
+  }
+
+  &__spec-value {
+    margin: 0; // UA style: dd { margin-inline-start: 40px }
+    font-family: $font-family-primary;
+    font-size: $font-size-label-large; // 14px
+    font-weight: $font-weight-bold;
+    line-height: normal;
+    color: $color-on-primary;
+  }
+
+  // ---------- actions ----------
+  &__actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto; // mobile: Play + square icon button
+    gap: $size-2;
+
+    @include wide {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  &__action {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: $size-1;
+    height: 48px;
+    padding-inline: $size-3;
+    border: 2px solid $color-on-primary;
+    border-radius: $corner-small;
+    box-shadow: $shadow-level-1;
+    font-family: $font-family-primary;
+    font-size: $font-size-body-medium; // 16px
+    font-weight: $font-weight-bold;
+    color: $color-on-primary;
+    white-space: nowrap;
+    transition:
+      background-color 0.2s ease,
+      box-shadow 0.1s ease,
+      translate 0.1s ease;
+
+    // "active" = pressed: the button sinks into its shadow (not in the style guide → our own choice)
+    &:active {
+      translate: 2px 2px;
+      box-shadow: 2px 2px 0 0 $color-on-primary;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $color-tertiary;
+      outline-offset: 2px;
+    }
+
+    // Style guide "9. Play / Details"
+    &--play {
+      background-color: $color-primary;
+
+      @include hover {
+        background-color: $color-primary-high;
+      }
+
+      &:active {
+        background-color: $color-primary-high;
+      }
+    }
+  }
+}

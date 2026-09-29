@@ -1,8 +1,8 @@
 import { ComponentBase } from '@app/core/component.base';
 import type { GameDetails } from '@shared/types/game-details';
 import { closeIcon } from '@shared/ui/icons';
-import { escapeHtml } from '@shared/utils/escape-html';
 import { GameDetailsHero } from './hero';
+import { GameInfo } from './game-info';
 
 export const GAME_DETAILS_TITLE_ID = 'game-details-title';
 
@@ -39,11 +39,12 @@ export class GameDetailsContent extends ComponentBase {
 
     this.mountChild(new GameDetailsHero({ slug: game.slug }), content);
 
-    // Step 2 (2-2-4) replaces this with the full info section
+    // Sections under the hero: info now, Top Records and Comments in the next steps
     const body = document.createElement('div');
     body.classList.add('game-details__body');
-    body.innerHTML = `<h2 id="${GAME_DETAILS_TITLE_ID}" class="game-details__title">${escapeHtml(game.name)}</h2>`;
     content.append(body);
+
+    this.mountChild(new GameInfo({ game, titleId: GAME_DETAILS_TITLE_ID }), body);
 
     return content;
   }
