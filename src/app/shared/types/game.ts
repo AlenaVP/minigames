@@ -13,3 +13,17 @@ export interface SortOption {
   /** Read by screen readers instead of the label: arrows are announced unreliably */
   srLabel: string;
 }
+
+/** Card-level game data — same shape as tasks/mock-data/all-games-seed.json → data[] */
+export interface GameSummary {
+  slug: string;
+  name: string;
+  category: string;
+  /** Already formatted by the backend: "Free" or "$1.99" */
+  price: string;
+  shortDescription: string;
+  rating: number;
+  likesCount: number;
+  cardImage: string;
+  featured: boolean;
+}

@@ -1,8 +1,14 @@
 import { ComponentBase } from '@app/core/component.base';
+import { LIBRARY_GAMES_MOCK } from '@app/services/mock-data/games.mock';
 import type { SortValue } from '@shared/types/game';
 import { FilterSortBar } from './components/filter-sort-bar';
+import { GameCardsSection } from './components/game-cards-section';
 import { CATEGORIES, DEFAULT_CATEGORY, DEFAULT_SORT, SORT_OPTIONS } from './library.constants';
 import './library.page.scss';
+
+interface LibraryPageOptions {
+  onGameDetails: (slug: string) => void;
+}
 
 interface LibraryState {
   category: string;
@@ -10,8 +16,14 @@ interface LibraryState {
 }
 
 export class LibraryPage extends ComponentBase {
+  private options: LibraryPageOptions;
   // Single source of truth for the page. Story 3: state → API query; Story 4: state ↔ URL
   private state: LibraryState = { category: DEFAULT_CATEGORY, sort: DEFAULT_SORT };
+
+  constructor(options: LibraryPageOptions) {
+    super();
+    this.options = options;
+  }
 
   protected render(): HTMLElement {
     const page = document.createElement('div');
@@ -37,6 +49,15 @@ export class LibraryPage extends ComponentBase {
           selectedSort: this.state.sort,
           onCategoryChange: (category) => this.setState({ category }),
           onSortChange: (sort) => this.setState({ sort }),
+        }),
+        section,
+      );
+
+      this.mountChild(
+        new GameCardsSection({
+          games: LIBRARY_GAMES_MOCK,
+          categories: CATEGORIES,
+          onDetailsClick: (slug) => this.options.onGameDetails(slug),
         }),
         section,
       );
