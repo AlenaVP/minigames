@@ -1,48 +1,13 @@
-@use 'sass:color';
 @use 'abstracts/tokens' as *;
 @use 'abstracts/breakpoints' as *;
-
-$dialog-transition: 0.25s ease;
-$dialog-hidden-transform: translateY($size-2) scale(0.96);
-$backdrop-color: color.change($color-bg-footer, $alpha: 0.6);
+@use 'abstracts/dialog' as *;
 
 .auth-dialog {
   width: 420px;
   max-width: calc(100% - #{$size-4}); // mobile 16px
   max-height: calc(100dvh - #{$size-4}); // register (768px) does not fit to the short screen
-  padding: 0;
-  border: 2px solid $color-on-primary;
-  border-radius: $corner-extra-large;
-  background-color: $color-bg;
-  color: $color-on-primary;
-  box-shadow: $shadow-level-3;
-  overflow-y: auto;
-  overscroll-behavior: contain;
 
-  opacity: 0;
-  transform: $dialog-hidden-transform;
-  transition:
-    opacity $dialog-transition,
-    transform $dialog-transition,
-    overlay $dialog-transition allow-discrete,
-    display $dialog-transition allow-discrete;
-
-  &[open] {
-    opacity: 1;
-    transform: none;
-  }
-
-  &::backdrop {
-    background-color: transparent;
-    transition:
-      background-color $dialog-transition,
-      overlay $dialog-transition allow-discrete,
-      display $dialog-transition allow-discrete;
-  }
-
-  &[open]::backdrop {
-    background-color: $backdrop-color;
-  }
+  @include dialog-shell;
 
   &__inner {
     display: flex;
@@ -85,17 +50,5 @@ $backdrop-color: color.change($color-bg-footer, $alpha: 0.6);
       color: $color-white;
       cursor: default;
     }
-  }
-}
-
-// start animation state
-@starting-style {
-  .auth-dialog[open] {
-    opacity: 0;
-    transform: $dialog-hidden-transform;
-  }
-
-  .auth-dialog[open]::backdrop {
-    background-color: transparent;
   }
 }
