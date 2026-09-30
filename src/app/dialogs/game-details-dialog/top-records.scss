@@ -3,14 +3,14 @@
 .top-records {
   display: flex;
   flex-direction: column;
-  gap: $size-2; // 16px from the heading to the list
+  gap: $size-2;
 
   &__title {
     display: flex;
     align-items: center;
-    gap: $size-1; // 8px between 🏆 and the text
+    gap: $size-1;
     font-family: $font-family-primary;
-    font-size: $font-size-body-medium; // 16px
+    font-size: $font-size-body-medium;
     font-weight: $font-weight-bold;
     line-height: 20px;
     color: $color-on-primary;
@@ -19,24 +19,24 @@
   &__list {
     display: flex;
     flex-direction: column;
-    gap: $size-1; // 8px between the rows
+    gap: $size-1;
   }
 
   &__item {
     display: grid;
-    // medal | player (takes the free space) | score | date
+
     grid-template-columns: auto minmax(0, 1fr) auto auto;
     align-items: center;
-    column-gap: $size-1; // 8px (narrow dialog)
+    column-gap: $size-1;
     height: 48px;
-    padding-inline: $size-2; // 16px
+    padding-inline: $size-2;
     border-radius: $corner-small;
     background-color: $color-white;
     font-family: $font-family-primary;
     color: $color-on-primary;
 
     @container game-details (min-width: 560px) {
-      column-gap: $size-2; // 16px (600px dialog)
+      column-gap: $size-2;
     }
   }
 
@@ -47,14 +47,14 @@
 
   &__player,
   &__score {
-    font-size: $font-size-label-large; // 14px
+    font-size: $font-size-label-large;
     font-weight: $font-weight-bold;
   }
 
   &__player {
     overflow: hidden;
     white-space: nowrap;
-    text-overflow: ellipsis; // long nicknames from the API (Story 3) must not break the row
+    text-overflow: ellipsis;
   }
 
   &__score {
@@ -62,7 +62,7 @@
   }
 
   &__date {
-    font-size: $font-size-label-medium; // 12px
+    font-size: $font-size-label-medium;
     color: $color-on-bg;
     white-space: nowrap;
   }

@@ -1,4 +1,3 @@
-// Keep in sync with src/styles/abstracts/_breakpoints.scss
 export const BREAKPOINTS = {
   mobile: 375,
   toTablet: 425,
@@ -8,7 +7,6 @@ export const BREAKPOINTS = {
   max: 1920,
 } as const;
 
-// The same min-width queries as the SCSS mixins `tablet`, `desktop`, `desktop-mid`
 export const MEDIA_QUERIES = {
   tablet: `(min-width: ${BREAKPOINTS.toTablet}px)`,
   desktop: `(min-width: ${BREAKPOINTS.toDesktop}px)`,

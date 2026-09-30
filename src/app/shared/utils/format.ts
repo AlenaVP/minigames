@@ -1,4 +1,3 @@
-// 'trunc' instead of the default half-expand rounding: 28 750 → "28.7K" as in Figma (not "28.8K")
 const compactNumberFormat = new Intl.NumberFormat('en', {
   notation: 'compact',
   maximumFractionDigits: 1,
@@ -15,7 +14,6 @@ export function formatRating(value: number): string {
 
 const integerFormat = new Intl.NumberFormat('en');
 
-// 356700 → "356,700 pts"
 export function formatScore(value: number): string {
   return `${integerFormat.format(value)} pts`;
 }

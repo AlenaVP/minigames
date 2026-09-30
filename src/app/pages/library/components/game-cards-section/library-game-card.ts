@@ -33,8 +33,6 @@ export class LibraryGameCard extends ComponentBase {
     const card = document.createElement('li');
     card.classList.add('library-card');
 
-    // Markup order = reading order for screen readers.
-    // Vertical card: header/footer are `display: contents`, so all 6 items land in one grid and can be rearranged.
     card.innerHTML = `
       <article class="library-card__inner" aria-labelledby="${titleId}">
         ${

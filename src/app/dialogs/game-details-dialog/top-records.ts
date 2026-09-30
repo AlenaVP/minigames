@@ -29,8 +29,6 @@ export class TopRecords extends ComponentBase {
     section.classList.add('top-records');
     section.setAttribute('aria-labelledby', TITLE_ID);
 
-    // <ol>: the order is the meaning here. The medal is decoration (aria-hidden) —
-    // the list position ("1 of 3") is announced by the screen reader anyway
     section.innerHTML = `
       <h3 id="${TITLE_ID}" class="top-records__title">
         <span aria-hidden="true">🏆</span>

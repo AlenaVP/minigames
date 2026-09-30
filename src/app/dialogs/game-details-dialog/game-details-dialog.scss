@@ -3,7 +3,7 @@
 @use 'abstracts/mixins' as *;
 @use 'abstracts/dialog' as *;
 
-$close-offset: 14px; // 16px from the outer edge of the dialog − 2px border (Figma)
+$close-offset: 14px;
 $close-size-mobile: 32px;
 $close-size: 40px;
 

@@ -8,14 +8,14 @@
   &__inner {
     @include content-width;
     @include section-padding;
-    padding-block: $size-2; // 16px
+    padding-block: $size-2;
 
     @include tablet {
-      padding-block: $size-3; // 24px
+      padding-block: $size-3;
     }
 
     @include desktop-mid {
-      padding-block: $size-5; // 40px
+      padding-block: $size-5;
     }
   }
 
@@ -23,10 +23,10 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: $size-2; // 16px
+    margin-bottom: $size-2;
 
     @include tablet {
-      margin-bottom: $size-3; // 24px
+      margin-bottom: $size-3;
     }
   }
 
@@ -52,18 +52,18 @@
     margin: 0;
     font-family: $font-family-primary;
     font-weight: $font-weight-extrabold;
-    font-size: $font-size-headline-medium; // 24px mobile/tablet
+    font-size: $font-size-headline-medium;
     color: $color-on-primary;
 
     @include desktop-mid {
-      font-size: $font-size-headline-large; // 32px
+      font-size: $font-size-headline-large;
     }
   }
 
   &__nav {
     display: none;
     align-items: center;
-    gap: $size-2; // 16px
+    gap: $size-2;
 
     @include tablet {
       display: flex;
@@ -106,12 +106,12 @@
 
   &__viewport {
     overflow: hidden;
-    margin-inline: -#{$size-1}; // -8px
-    padding: $size-1; // 8px
+    margin-inline: -#{$size-1};
+    padding: $size-1;
 
     @include desktop-mid {
-      margin-inline: -#{$size-2}; // -16px
-      padding: $size-2; // 16px
+      margin-inline: -#{$size-2};
+      padding: $size-2;
     }
   }
 
@@ -127,7 +127,7 @@
     }
 
     @include desktop-mid {
-      gap: $size-1; // 8px
+      gap: $size-1;
     }
   }
 }
@@ -145,7 +145,7 @@
   }
 
   &--peek-inner {
-    width: 56px; // mobile
+    width: 56px;
     height: 200px;
 
     @include tablet {
@@ -164,7 +164,7 @@
   }
 
   &--featured {
-    width: 218px; // mobile
+    width: 218px;
     height: 200px;
 
     @include tablet {

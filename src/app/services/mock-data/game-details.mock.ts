@@ -7,9 +7,6 @@ import type { GameComment, GameDetails } from '@shared/types/game-details';
  */
 export const MOCK_NOW = new Date('2026-08-30T10:00:00Z');
 
-// tasks/mock-data/game-tukoni-forest-keepers.json.
-// Story 2: the dialog always shows this game (Common Game Details Content Requirements).
-// Story 3: replaced by GET /games/:slug
 export const GAME_DETAILS_MOCK: GameDetails = {
   slug: 'tukoni-forest-keepers',
   name: 'Tukoni: Forest Keepers',
@@ -32,7 +29,6 @@ export const GAME_DETAILS_MOCK: GameDetails = {
   ],
 };
 
-// tasks/mock-data/comments-tukoni-forest-keepers.json. Story 3: GET /games/:slug/comments
 export const GAME_COMMENTS_MOCK: readonly GameComment[] = [
   {
     commentId: 'c5d9f2a1-7c3b-4e8f-9a0d-000000000001',

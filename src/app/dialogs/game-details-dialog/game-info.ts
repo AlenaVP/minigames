@@ -23,7 +23,6 @@ const FAVORITE_LABEL = { off: 'Add to Favorites', on: 'Remove from Favorites' } 
 
 export class GameInfo extends ComponentBase {
   private options: GameInfoOptions;
-  // Story 2: local only, reset on every open (the whole dialog content is recreated)
   private isFavorite: boolean;
 
   constructor(options: GameInfoOptions) {

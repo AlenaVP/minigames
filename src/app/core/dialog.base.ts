@@ -55,7 +55,6 @@ export abstract class DialogBase extends ComponentBase {
   }
 
   private bindCloseTriggers(dialog: HTMLDialogElement): void {
-    // Checking pointerdown too: selecting text inside and releasing outside must not close it.
     dialog.addEventListener('pointerdown', (event) => {
       this.isPointerDownOnBackdrop = this.isBackdropEvent(event, dialog);
     });

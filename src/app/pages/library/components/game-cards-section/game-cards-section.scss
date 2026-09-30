@@ -3,13 +3,12 @@
 
 .game-cards {
   display: grid;
-  gap: $size-2; // 16px
+  gap: $size-2;
 
   @include tablet {
-    gap: $size-3; // 24px
+    gap: $size-3;
   }
 
-  // 2 columns only from 1440: at 1024 a column would be ~380px — too narrow for a horizontal card
   @include desktop-mid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }

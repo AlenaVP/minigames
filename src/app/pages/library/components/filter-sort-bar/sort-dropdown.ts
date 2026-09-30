@@ -15,7 +15,6 @@ const CHECK_ICON = `
     <path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z" fill="currentColor" />
   </svg>`;
 
-// Visible text with arrows is hidden from screen readers; they get srLabel instead
 function renderLabel(option: SortOption): string {
   return `<span aria-hidden="true">${option.label}</span><span class="visually-hidden">${option.srLabel}</span>`;
 }
@@ -43,7 +42,6 @@ export class SortDropdown extends ComponentBase {
 
     const root = document.createElement('div');
     root.classList.add('sort-dropdown');
-    // CSS anchor positioning: the list is attached to the trigger even though it lives in the top layer
     root.style.setProperty('--sort-anchor', `--${id}`);
 
     root.innerHTML = `
@@ -87,7 +85,6 @@ export class SortDropdown extends ComponentBase {
     const { list } = this;
     if (!list) return;
 
-    // ToggleEvent fires after the popover opened/closed
     list.addEventListener('toggle', (event) => {
       if (event.newState === 'open') {
         this.optionElements.find((option) => option.dataset.value === this.selected)?.focus();
@@ -131,14 +128,14 @@ export class SortDropdown extends ComponentBase {
       }
       case 'Tab': {
         this.list?.hidePopover();
-        return; // do not prevent: focus continues to the next element
+        return;
       }
       default: {
         return;
       }
     }
 
-    event.preventDefault(); // no page scroll on arrows/Space
+    event.preventDefault();
   }
 
   private select(option: HTMLLIElement): void {

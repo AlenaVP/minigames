@@ -18,7 +18,7 @@ export class GameDetailsDialog extends DialogBase {
     if (!this.dialog || this.isOpen) return;
 
     this.renderContent(this.dialog);
-    this.dialog.scrollTop = 0; // the <dialog> element survives between opens — so does its scroll position
+    this.dialog.scrollTop = 0;
     this.show();
   }
 
@@ -29,10 +29,7 @@ export class GameDetailsDialog extends DialogBase {
   }
 
   protected renderContent(dialog: HTMLDialogElement): void {
-    // The previous content is destroyed, not just overwritten: its child components,
-    // listeners and state go away together with the DOM
     this.content?.destroy();
-    // Story 2: "now" is frozen at the mockup's moment, so the dates read exactly as in Figma
     this.content = new GameDetailsContent({ game: GAME_DETAILS_MOCK, comments: GAME_COMMENTS_MOCK, now: MOCK_NOW });
     this.content.mount(dialog);
   }

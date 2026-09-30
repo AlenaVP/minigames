@@ -48,7 +48,7 @@ export class AuthForm extends ComponentBase {
     panel.id = `auth-panel-${config.mode}`;
     panel.setAttribute('role', 'tabpanel');
     panel.setAttribute('aria-labelledby', `auth-tab-${config.mode}`);
-    panel.hidden = true; // какую панель показать — решает AuthDialog.setMode()
+    panel.hidden = true;
 
     panel.innerHTML = `
       <header class="auth-form__header">
@@ -115,7 +115,6 @@ export class AuthForm extends ComponentBase {
   private bindEvents(panel: HTMLElement): void {
     panel.querySelector('.auth-form__switch')?.addEventListener('click', () => this.options.onSwitch());
 
-    // prevents page auto reloading
     panel.querySelector('form')?.addEventListener('submit', (event) => event.preventDefault());
   }
 }

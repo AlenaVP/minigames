@@ -2,18 +2,18 @@
 @use 'abstracts/breakpoints' as *;
 @use 'abstracts/mixins' as *;
 
-$pagination-gap-mobile: $size-1; // 8px (mobile, tablet)
-$pagination-gap-desktop: $size-2; // 16px
+$pagination-gap-mobile: $size-1;
+$pagination-gap-desktop: $size-2;
 
 .pagination {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: $pagination-gap-mobile;
-  padding-block: $size-3; // 24px to the last card and to the footer
+  padding-block: $size-3;
 
   @include tablet {
-    padding-block: $size-5; // 40px
+    padding-block: $size-5;
   }
 
   @include desktop {
@@ -22,7 +22,7 @@ $pagination-gap-desktop: $size-2; // 16px
 
   &__list {
     display: flex;
-    gap: inherit; // same spacing as between the arrows and the pages
+    gap: inherit;
   }
 
   &__page,
@@ -35,7 +35,7 @@ $pagination-gap-desktop: $size-2; // 16px
     border-radius: $corner-full;
     background-color: transparent;
     font-family: $font-family-primary;
-    font-size: $font-size-label-large; // 14px
+    font-size: $font-size-label-large;
     font-weight: $font-weight-bold;
     line-height: 1;
     color: $color-on-primary;
@@ -56,15 +56,12 @@ $pagination-gap-desktop: $size-2; // 16px
     }
   }
 
-  // Style guide "Page: Active/Current"
   &__page[aria-current='page'] {
     background-color: $color-on-primary;
     color: $color-white;
     cursor: default;
   }
 
-  // Style guide "Arrow: Disabled" — faded border and icon.
-  // No tokens for them: Figma colors ≈ on-primary at ~10% and ~40% over the background
   &__arrow:disabled {
     border-color: color-mix(in srgb, $color-on-primary 10%, transparent);
     color: color-mix(in srgb, $color-on-primary 40%, transparent);

@@ -90,7 +90,7 @@ export class BurgerMenu extends ComponentBase {
 
     this.element.classList.add('burger-menu--open');
     document.addEventListener('keydown', this.onKeydown);
-    document.body.style.overflow = 'hidden'; // disable background scrolling under the menu
+    document.body.style.overflow = 'hidden';
   }
 
   private bindEvents(dialog: HTMLElement): void {
@@ -106,8 +106,6 @@ export class BurgerMenu extends ComponentBase {
       });
     }
 
-    // Any link inside the menu (nav links AND the logo) closes it.
-    // Fires before the Router's document listener, because the menu is lower in the bubbling path.
     dialog.addEventListener('click', (event) => {
       if (event.target instanceof Element && event.target.closest('a')) this.close();
     });

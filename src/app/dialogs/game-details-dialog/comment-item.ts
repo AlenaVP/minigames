@@ -28,8 +28,6 @@ export class CommentItem extends ComponentBase {
 
     const item = document.createElement('li');
 
-    // aria-pressed: the label stays the same and the pressed state carries the meaning —
-    // the opposite of the Favorites button, whose text itself changes
     item.innerHTML = `
       <article class="comment" aria-label="Comment by ${author}">
         <header class="comment__header">
@@ -53,7 +51,6 @@ export class CommentItem extends ComponentBase {
 
     const likeButton = item.querySelector<HTMLButtonElement>('.comment__like');
 
-    // Story 2: only the visual state toggles; the count stays ("no other actions on like click")
     likeButton?.addEventListener('click', () => {
       this.isLiked = !this.isLiked;
       likeButton.setAttribute('aria-pressed', String(this.isLiked));

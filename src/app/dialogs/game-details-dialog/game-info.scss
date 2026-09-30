@@ -14,26 +14,26 @@ $spec-shadow: $shadow-level-1;
 .game-info {
   display: flex;
   flex-direction: column;
-  gap: $size-3; // 24px between all blocks (Figma)
+  gap: $size-3;
 
   // ---------- title + rating ----------
   &__heading {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: $size-1; // mobile: rating under the title
+    gap: $size-1;
 
     @include wide {
       flex-direction: row;
       align-items: center;
       justify-content: space-between;
-      gap: 12px; // Figma: the one-line title + rating fill 548 of 552px — little room to spare
+      gap: 12px;
     }
   }
 
   &__title {
     font-family: $font-family-primary;
-    font-size: $font-size-display-medium; // 36px
+    font-size: $font-size-display-medium;
     font-weight: $font-weight-bold;
     line-height: normal;
     color: $color-on-primary;
@@ -43,9 +43,9 @@ $spec-shadow: $shadow-level-1;
     display: flex;
     flex-shrink: 0;
     align-items: center;
-    gap: $size-2; // 16px
+    gap: $size-2;
     font-family: $font-family-primary;
-    font-size: $font-size-label-large; // 14px
+    font-size: $font-size-label-large;
     font-weight: $font-weight-bold;
     line-height: 24px;
     color: $color-on-primary;
@@ -66,7 +66,7 @@ $spec-shadow: $shadow-level-1;
   // ---------- description ----------
   &__description {
     font-family: $font-family-primary;
-    font-size: $font-size-body-medium; // 16px
+    font-size: $font-size-body-medium;
     line-height: 20px;
     color: $color-on-bg;
   }
@@ -75,7 +75,7 @@ $spec-shadow: $shadow-level-1;
   &__specs {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: $size-2; // 16px
+    gap: $size-2;
     margin: 0;
 
     @include wide {
@@ -86,7 +86,7 @@ $spec-shadow: $shadow-level-1;
   &__spec {
     display: flex;
     flex-direction: column;
-    gap: $size-1; // 8px
+    gap: $size-1;
     padding: 7px $size-2;
     border: 1px solid $color-outline-variant;
     border-radius: $corner-small;
@@ -96,15 +96,15 @@ $spec-shadow: $shadow-level-1;
 
   &__spec-label {
     font-family: $font-family-primary;
-    font-size: $font-size-label-medium; // 12px
+    font-size: $font-size-label-medium;
     line-height: normal;
     color: $color-on-bg;
   }
 
   &__spec-value {
-    margin: 0; // UA style: dd { margin-inline-start: 40px }
+    margin: 0;
     font-family: $font-family-primary;
-    font-size: $font-size-label-large; // 14px
+    font-size: $font-size-label-large;
     font-weight: $font-weight-bold;
     line-height: normal;
     color: $color-on-primary;
@@ -113,7 +113,7 @@ $spec-shadow: $shadow-level-1;
   // ---------- actions ----------
   &__actions {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto; // mobile: Play + square icon button
+    grid-template-columns: minmax(0, 1fr) auto;
     gap: $size-2;
 
     @include wide {
@@ -132,7 +132,7 @@ $spec-shadow: $shadow-level-1;
     border-radius: $corner-small;
     box-shadow: $shadow-level-1;
     font-family: $font-family-primary;
-    font-size: $font-size-body-medium; // 16px
+    font-size: $font-size-body-medium;
     font-weight: $font-weight-bold;
     color: $color-on-primary;
     white-space: nowrap;
@@ -141,7 +141,6 @@ $spec-shadow: $shadow-level-1;
       box-shadow 0.1s ease,
       translate 0.1s ease;
 
-    // "active" = pressed: the button sinks into its shadow (not in the style guide → our own choice)
     &:active {
       translate: 2px 2px;
       box-shadow: 2px 2px 0 0 $color-on-primary;
@@ -152,7 +151,6 @@ $spec-shadow: $shadow-level-1;
       outline-offset: 2px;
     }
 
-    // Style guide "9. Play / Details"
     &--play {
       background-color: $color-primary;
 
@@ -165,9 +163,8 @@ $spec-shadow: $shadow-level-1;
       }
     }
 
-    // Style guide "Favorite Toggle Buttons"
     &--favorite {
-      width: 48px; // mobile: icon only
+      width: 48px;
       padding: 0;
       border-color: $color-outline-variant;
       background-color: $color-white;
@@ -193,7 +190,7 @@ $spec-shadow: $shadow-level-1;
   }
 
   &__favorite-label {
-    @include visually-hidden; // mobile: the text stays as the accessible name only
+    @include visually-hidden;
 
     @include wide {
       position: static;

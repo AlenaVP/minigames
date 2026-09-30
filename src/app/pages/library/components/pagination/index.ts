@@ -9,7 +9,6 @@ interface PaginationOptions {
   onPageChange: (page: number) => void;
 }
 
-// Figma: 3 page buttons on mobile, 4 on tablet and desktop
 const MAX_VISIBLE_MOBILE = 3;
 const MAX_VISIBLE_TABLET_UP = 4;
 
@@ -38,7 +37,7 @@ export class Pagination extends ComponentBase {
     const nav = document.createElement('nav');
     nav.classList.add('pagination');
     nav.setAttribute('aria-label', 'Pagination');
-    nav.hidden = this.options.totalPages <= 1; // one page — nothing to paginate (Story 3)
+    nav.hidden = this.options.totalPages <= 1;
 
     nav.innerHTML = `
       <button type="button" class="pagination__arrow" data-page="previous" aria-label="Previous page">
@@ -54,7 +53,6 @@ export class Pagination extends ComponentBase {
     this.previousButton = nav.querySelector('[data-page="previous"]');
     this.nextButton = nav.querySelector('[data-page="next"]');
 
-    // 3 ↔ 4 buttons when the viewport crosses the tablet breakpoint (listener removed on destroy)
     const tabletQuery = globalThis.matchMedia(MEDIA_QUERIES.tablet);
     this.maxVisible = tabletQuery.matches ? MAX_VISIBLE_TABLET_UP : MAX_VISIBLE_MOBILE;
     tabletQuery.addEventListener(
@@ -109,8 +107,6 @@ export class Pagination extends ComponentBase {
     previousButton.disabled = this.currentPage === 1;
     nextButton.disabled = this.currentPage === this.options.totalPages;
 
-    // Keyboard users must not lose their place: the old page buttons were replaced,
-    // and a focused arrow that became disabled drops focus to <body>
     const lostFocus = hadFocusOnPage || (focused instanceof HTMLButtonElement && focused.disabled);
     if (lostFocus) list.querySelector<HTMLButtonElement>('[aria-current="page"]')?.focus();
   }

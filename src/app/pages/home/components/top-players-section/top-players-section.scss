@@ -51,11 +51,11 @@
     margin: 0;
     font-family: $font-family-primary;
     font-weight: $font-weight-extrabold;
-    font-size: $font-size-headline-medium; // 24px
+    font-size: $font-size-headline-medium;
     color: $color-on-primary;
 
     @include desktop {
-      font-size: $font-size-headline-large; // 32px
+      font-size: $font-size-headline-large;
     }
   }
 
@@ -137,7 +137,7 @@
     padding: $size-2 4px;
     background-color: $color-tertiary;
     color: $color-white;
-    font-size: $font-size-label-large; // 14px
+    font-size: $font-size-label-large;
     font-weight: $font-weight-bold;
     text-transform: uppercase;
     text-align: center;
@@ -181,13 +181,13 @@
   }
 
   td {
-    padding: $size-2 $size-1; // 16px 8px
+    padding: $size-2 $size-1;
     text-align: center;
-    font-size: $font-size-label-medium; // 12px
+    font-size: $font-size-label-medium;
     color: $color-on-primary;
 
     @include tablet {
-      font-size: $font-size-label-large; // 14px
+      font-size: $font-size-label-large;
     }
   }
 
@@ -202,7 +202,7 @@
   &__player {
     display: flex;
     align-items: center;
-    gap: $size-05; // 4px, mobile
+    gap: $size-05;
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -210,7 +210,7 @@
     font-weight: $font-weight-medium;
 
     @include tablet {
-      gap: $size-1; // 8px
+      gap: $size-1;
     }
 
     @include desktop {
@@ -226,7 +226,7 @@
     width: 24px;
     height: 24px;
     border-radius: $corner-full;
-    font-size: $font-size-label-small; // 10px
+    font-size: $font-size-label-small;
     font-weight: $font-weight-bold;
     color: $color-on-primary;
 
@@ -238,7 +238,7 @@
     @include desktop {
       width: 40px;
       height: 40px;
-      font-size: $font-size-label-medium; // 12px
+      font-size: $font-size-label-medium;
     }
 
     &--1 {
@@ -268,10 +268,10 @@
 
   &__badge {
     display: inline-block;
-    padding: $size-05 $size-2; // 4px 16px
+    padding: $size-05 $size-2;
     border: 1px solid $color-outline-variant;
     border-radius: $corner-full;
-    font-size: $font-size-label-medium; // 12px
+    font-size: $font-size-label-medium;
     white-space: nowrap;
   }
 }

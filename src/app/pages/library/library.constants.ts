@@ -1,6 +1,5 @@
 import type { Category, SortOption, SortValue } from '@shared/types/game';
 
-// Same as tasks/mock-data/categories.json; Story 3 replaces it with GET /categories
 export const CATEGORIES: readonly Category[] = [
   { slug: 'all', label: 'All Games' },
   { slug: 'puzzle', label: 'Puzzle' },
@@ -22,5 +21,4 @@ export const SORT_OPTIONS: readonly SortOption[] = [
 
 export const DEFAULT_SORT: SortValue = 'rating-desc';
 
-// Figma: 6 cards per page
 export const LIBRARY_PAGE_SIZE = 6;

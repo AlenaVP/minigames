@@ -38,7 +38,6 @@ export class CommentsSection extends ComponentBase {
     list.classList.add('comments__list');
     section.append(list);
 
-    // Each comment is its own component → its own like state
     for (const comment of comments) {
       this.mountChild(new CommentItem({ comment, now }), list);
     }

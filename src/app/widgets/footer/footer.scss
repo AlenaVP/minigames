@@ -8,29 +8,29 @@
   &__inner {
     @include content-width;
     @include section-padding;
-    padding-block: $size-3; // 24px
+    padding-block: $size-3;
 
     @include desktop {
-      padding-block: $size-5; // 40px
+      padding-block: $size-5;
     }
   }
 
   &__top {
     display: flex;
     flex-direction: column;
-    gap: $size-4; // 32px
+    gap: $size-4;
 
     @include desktop {
       flex-direction: row;
       justify-content: space-between;
-      gap: $size-5; // 40px
+      gap: $size-5;
     }
   }
 
   &__brand {
     display: flex;
     flex-direction: column;
-    gap: $size-3; // 24px
+    gap: $size-3;
 
     @include desktop {
       max-width: 400px;
@@ -51,7 +51,7 @@
   &__logo-text {
     font-family: $font-family-primary;
     font-weight: $font-weight-bold;
-    font-size: $font-size-headline-small; // 20px
+    font-size: $font-size-headline-small;
     color: $color-white;
 
     @include desktop {
@@ -62,7 +62,7 @@
   &__description {
     margin: 0;
     font-family: $font-family-primary;
-    font-size: $font-size-body-small; // 14px
+    font-size: $font-size-body-small;
     line-height: 1.5;
     color: $color-on-bg-footer;
   }
@@ -70,11 +70,11 @@
   &__columns {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: $size-4; // 32px
+    gap: $size-4;
 
     @include tablet {
       grid-template-columns: repeat(3, auto);
-      gap: $size-5; // 40px
+      gap: $size-5;
       justify-content: start;
     }
 
@@ -86,7 +86,7 @@
   &__col {
     display: flex;
     flex-direction: column;
-    gap: $size-2; // 16px
+    gap: $size-2;
 
     &--community {
       grid-column: 1 / -1;
@@ -101,7 +101,7 @@
     margin: 0;
     font-family: $font-family-primary;
     font-weight: $font-weight-bold;
-    font-size: $font-size-body-medium; // 16px
+    font-size: $font-size-body-medium;
     color: $color-white;
   }
 
@@ -116,7 +116,7 @@
 
   &__link {
     font-family: $font-family-primary;
-    font-size: $font-size-body-small; // 14px
+    font-size: $font-size-body-small;
     color: $color-on-bg-footer;
     text-decoration: none;
 
@@ -128,7 +128,7 @@
   &__social {
     display: flex;
     align-items: center;
-    gap: $size-2; // 16px
+    gap: $size-2;
   }
 
   &__social-link {
@@ -167,9 +167,9 @@
     flex-direction: row;
     flex-wrap: wrap;
     align-items: flex-start;
-    gap: $size-2; // 16px
-    margin-top: $size-4; // 32px
-    padding-top: $size-2; // 16px
+    gap: $size-2;
+    margin-top: $size-4;
+    padding-top: $size-2;
     border-top: 1px solid $color-bg-footer-low;
 
     @include tablet {
@@ -178,8 +178,8 @@
     }
 
     @include desktop {
-      margin-top: $size-8; // 64px
-      padding-top: $size-3; // 24px
+      margin-top: $size-8;
+      padding-top: $size-3;
     }
   }
 
@@ -187,11 +187,10 @@
   &__made-with {
     margin: 0;
     font-family: $font-family-primary;
-    font-size: $font-size-body-small; // 14px
+    font-size: $font-size-body-small;
     color: $color-on-bg-footer;
   }
 
-  // "Designed with love" отсутствует в макете на mobile — экономия места
   &__made-with {
     display: none;
 
@@ -203,9 +202,9 @@
   &__link {
     display: inline-flex;
     align-items: center;
-    gap: $size-1; // 8px
+    gap: $size-1;
     font-family: $font-family-primary;
-    font-size: $font-size-body-small; // 14px
+    font-size: $font-size-body-small;
     color: $color-on-bg-footer;
     text-decoration: none;
 
