@@ -114,6 +114,8 @@ $slide-easing: ease-in-out;
 
   &__viewport {
     overflow: hidden; // also clips the cards while they collapse at the edges
+    touch-action: pan-y; // vertical swipes scroll the page, horizontal ones are ours (swipe.ts)
+    user-select: none; // a mouse swipe must not select the card titles
     margin-inline: -#{$size-1}; // -8px: room for the card shadows
     padding: $size-1; // 8px
 
