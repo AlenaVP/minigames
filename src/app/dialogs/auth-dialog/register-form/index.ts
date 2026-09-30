@@ -28,7 +28,7 @@ export const REGISTER_FORM_CONFIG: AuthFormConfig = {
       name: 'password',
       label: 'Password',
       type: 'password',
-      autocomplete: 'new-password', // подсказывает менеджеру паролей предложить новый пароль
+      autocomplete: 'new-password',
       placeholder: 'Min. 8 characters',
       iconUrl: lockIconUrl,
       minLength: 8,

@@ -1,0 +1,26 @@
+@use 'abstracts/tokens' as *;
+@use 'abstracts/breakpoints' as *;
+
+.filter-sort-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: $size-2;
+  padding-block: $size-2;
+
+  @include desktop {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: $size-3;
+  }
+
+  > .category-chips {
+    align-self: stretch;
+
+    @include desktop {
+      flex: 0 1 auto;
+      align-self: auto;
+    }
+  }
+}

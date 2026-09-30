@@ -1,0 +1,70 @@
+@use 'abstracts/tokens' as *;
+@use 'abstracts/breakpoints' as *;
+@use 'abstracts/mixins' as *;
+
+$pagination-gap-mobile: $size-1;
+$pagination-gap-desktop: $size-2;
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: $pagination-gap-mobile;
+  padding-block: $size-3;
+
+  @include tablet {
+    padding-block: $size-5;
+  }
+
+  @include desktop {
+    gap: $pagination-gap-desktop;
+  }
+
+  &__list {
+    display: flex;
+    gap: inherit;
+  }
+
+  &__page,
+  &__arrow {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border: 2px solid $color-on-primary;
+    border-radius: $corner-full;
+    background-color: transparent;
+    font-family: $font-family-primary;
+    font-size: $font-size-label-large;
+    font-weight: $font-weight-bold;
+    line-height: 1;
+    color: $color-on-primary;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease,
+      border-color 0.2s ease;
+
+    &:not(:disabled, [aria-current='page']) {
+      @include hover {
+        background-color: $color-surface;
+      }
+    }
+
+    &:focus-visible {
+      outline: 2px solid $color-tertiary;
+      outline-offset: 2px;
+    }
+  }
+
+  &__page[aria-current='page'] {
+    background-color: $color-on-primary;
+    color: $color-white;
+    cursor: default;
+  }
+
+  &__arrow:disabled {
+    border-color: $color-disabled-outline;
+    color: $color-disabled-content;
+    cursor: not-allowed;
+  }
+}

@@ -1,0 +1,204 @@
+@use 'abstracts/tokens' as *;
+@use 'abstracts/mixins' as *;
+
+// Layout follows the width of the DIALOG, not the viewport:
+// the 600px dialog (tablet, desktop) is "wide", the full-width 375px one is "narrow"
+@mixin wide {
+  @container game-details (min-width: 560px) {
+    @content;
+  }
+}
+
+$spec-shadow: $shadow-level-1;
+
+.game-info {
+  display: flex;
+  flex-direction: column;
+  gap: $size-3;
+
+  // ---------- title + rating ----------
+  &__heading {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: $size-1;
+
+    @include wide {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+  }
+
+  &__title {
+    font-family: $font-family-primary;
+    font-size: $font-size-display-medium;
+    font-weight: $font-weight-bold;
+    line-height: normal;
+    color: $color-on-primary;
+  }
+
+  &__stats {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: $size-2;
+    font-family: $font-family-primary;
+    font-size: $font-size-label-large;
+    font-weight: $font-weight-bold;
+    line-height: 24px;
+    color: $color-on-primary;
+  }
+
+  &__stat {
+    display: inline-flex;
+    align-items: center;
+    gap: $size-05;
+  }
+
+  &__icon {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+  }
+
+  // ---------- description ----------
+  &__description {
+    font-family: $font-family-primary;
+    font-size: $font-size-body-medium;
+    line-height: 20px;
+    color: $color-on-bg;
+  }
+
+  // ---------- specs: <dl> of label/value pairs ----------
+  &__specs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: $size-2;
+    margin: 0;
+
+    @include wide {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  &__spec {
+    display: flex;
+    flex-direction: column;
+    gap: $size-1;
+    padding: 7px $size-2;
+    border: 1px solid $color-outline-variant;
+    border-radius: $corner-small;
+    background-color: $color-white;
+    box-shadow: $spec-shadow;
+  }
+
+  &__spec-label {
+    font-family: $font-family-primary;
+    font-size: $font-size-label-medium;
+    line-height: normal;
+    color: $color-on-bg;
+  }
+
+  &__spec-value {
+    margin: 0;
+    font-family: $font-family-primary;
+    font-size: $font-size-label-large;
+    font-weight: $font-weight-bold;
+    line-height: normal;
+    color: $color-on-primary;
+  }
+
+  // ---------- actions ----------
+  &__actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: $size-2;
+
+    @include wide {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  &__action {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: $size-1;
+    height: 48px;
+    padding-inline: $size-3;
+    border: 2px solid $color-on-primary;
+    border-radius: $corner-small;
+    box-shadow: $shadow-level-1;
+    font-family: $font-family-primary;
+    font-size: $font-size-body-medium;
+    font-weight: $font-weight-bold;
+    color: $color-on-primary;
+    white-space: nowrap;
+    transition:
+      background-color 0.2s ease,
+      box-shadow 0.1s ease,
+      translate 0.1s ease;
+
+    &:active {
+      translate: 2px 2px;
+      box-shadow: $shadow-p2;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $color-tertiary;
+      outline-offset: 2px;
+    }
+
+    &--play {
+      background-color: $color-primary;
+
+      @include hover {
+        background-color: $color-primary-high;
+      }
+
+      &:active {
+        background-color: $color-primary-high;
+      }
+    }
+
+    &--favorite {
+      width: 48px;
+      padding: 0;
+      border-color: $color-outline-variant;
+      background-color: $color-white;
+
+      @include wide {
+        width: auto;
+        padding-inline: $size-3;
+      }
+
+      @include hover {
+        background-color: $color-surface;
+      }
+
+      svg {
+        flex-shrink: 0;
+        transition: color 0.2s ease;
+      }
+    }
+
+    &--favorite-active svg {
+      color: $color-like;
+    }
+  }
+
+  &__favorite-label {
+    @include visually-hidden;
+
+    @include wide {
+      position: static;
+      width: auto;
+      height: auto;
+      margin: 0;
+      overflow: visible;
+      clip-path: none;
+    }
+  }
+}

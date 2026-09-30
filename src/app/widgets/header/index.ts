@@ -1,4 +1,7 @@
 import { ComponentBase } from '@app/core/component.base';
+import { PRIMARY_NAV_LINKS } from '@app/core/constants/nav-links';
+import type { RouteId } from '@app/core/constants/routes';
+import { markActiveNavLinks, navLinkAttributes, routeLinkAttributes } from '@app/core/router';
 import type { AuthMode } from '@app/shared/types/auth';
 import brandLogoUrl from '@assets/icons/brand-logo.svg';
 import './header.scss';
@@ -8,8 +11,6 @@ interface HeaderOptions {
   onAuthClick: (mode: AuthMode) => void;
 }
 
-const NAV_LINKS = ['Home', 'Library', 'Tournaments', 'Community'];
-
 export class Header extends ComponentBase {
   private options: HeaderOptions;
 
@@ -18,13 +19,17 @@ export class Header extends ComponentBase {
     this.options = options;
   }
 
+  setActiveRoute(route: RouteId): void {
+    if (this.element) markActiveNavLinks(this.element, route);
+  }
+
   protected render(): HTMLElement {
     const header = document.createElement('header');
     header.classList.add('header');
 
     header.innerHTML = `
   <div class="header__inner">
-    <a href="/" class="header__logo" aria-label="MiniGames home">
+    <a ${routeLinkAttributes('home')} class="header__logo" aria-label="MiniGames home">
       <img src="${brandLogoUrl}" alt="" width="32" height="32" class="header__logo-icon" />
       <span class="header__logo-text">MiniGames</span>
     </a>
@@ -32,10 +37,10 @@ export class Header extends ComponentBase {
     <div class="header__right">
       <nav class="header__nav" aria-label="Primary">
         <ul class="header__nav-list">
-          ${NAV_LINKS.map(
-            (link, index) => `
+          ${PRIMARY_NAV_LINKS.map(
+            (link) => `
             <li>
-              <a href="/" class="header__nav-link${index === 0 ? ' header__nav-link--active' : ''}">${link}</a>
+              <a ${navLinkAttributes(link)} class="header__nav-link">${link.label}</a>
             </li>`,
           ).join('')}
         </ul>

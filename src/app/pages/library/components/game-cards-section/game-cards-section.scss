@@ -1,0 +1,15 @@
+@use 'abstracts/tokens' as *;
+@use 'abstracts/breakpoints' as *;
+
+.game-cards {
+  display: grid;
+  gap: $size-2;
+
+  @include tablet {
+    gap: $size-3;
+  }
+
+  @include desktop-mid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

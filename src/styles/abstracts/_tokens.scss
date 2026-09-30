@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 // --- Base ---
 $color-white: #ffffff;
 $color-black: #000000;
@@ -25,6 +27,12 @@ $color-price-free: #0b8a8f;
 // --- Borders ---
 $color-outline: #e5e7eb;
 $color-outline-variant: #d2d2d2;
+
+// --- Derived (no separate swatches in Figma; computed from the tokens above) ---
+$color-scrim: rgba($color-black, 0.72); // dark gradient under the text on slider cards
+$color-disabled-outline: rgba($color-on-primary, 0.1); // pagination: disabled arrow border
+$color-disabled-content: rgba($color-on-primary, 0.4); // pagination: disabled arrow icon
+$color-disabled-on-outline: color.mix($color-on-primary, $color-outline, 30%); // send button: disabled icon
 
 // --- Additional (avatar placeholders) ---
 $color-avatar-1: #e9eef6;
@@ -76,6 +84,9 @@ $size-13: 104px;
 $size-14: 112px;
 $size-15: 120px;
 
+// --- Custom sizes: $size-pN = N px (values that are not in the scale above) ---
+$size-p28: 28px; // comment and leaderboard avatars
+
 // --- Corner radii ---
 $corner-extra-small: 4px;
 $corner-small: 8px;
@@ -89,9 +100,10 @@ $btn-large-x: 24px;
 $btn-large-y: 16px;
 $btn-medium-x: 20px;
 $btn-medium-y: 10px;
-// btn-small и btn-icon переиспользуют $size-2/$size-1 напрямую — отдельных токенов для них в Figma нет
 
 // --- Shadows ---
 $shadow-level-1: 4px 4px 0 0 $color-on-primary;
 $shadow-level-2: 6px 6px 0 0 $color-on-primary;
 $shadow-level-3: 8px 8px 0 0 $color-on-primary;
+$shadow-p2: 2px 2px 0 0 $color-on-primary; // dialog close button, pressed action button
+$shadow-inset-p1: inset 0 0 0 1px $color-on-primary; // textarea focus: looks like a 2px border, text does not shift

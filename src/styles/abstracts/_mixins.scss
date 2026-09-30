@@ -17,3 +17,27 @@
     padding-inline: $size-15;
   }
 }
+
+// Hover only where a real pointer can hover: a tap on a touch screen
+// must not leave the element stuck in the hover state
+@mixin hover {
+  @media (hover: hover) {
+    &:hover {
+      @content;
+    }
+  }
+}
+
+// Hidden visually, but still read by screen readers.
+// A mixin (not only the .visually-hidden class) so it can be switched on inside a media/container query
+@mixin visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}

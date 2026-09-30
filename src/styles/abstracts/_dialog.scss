@@ -1,0 +1,63 @@
+@use 'sass:color';
+@use 'abstracts/tokens' as *;
+
+$dialog-transition: 0.25s ease;
+$dialog-hidden-transform: translateY($size-2) scale(0.96);
+$dialog-backdrop-color: color.change($color-bg-footer, $alpha: 0.6);
+
+// Frame, open/close animation and backdrop of a native <dialog>.
+// Dialogs differ only in size and content — those stay in their own files.
+@mixin dialog-shell {
+  padding: 0;
+  border: 2px solid $color-on-primary;
+  border-radius: $corner-extra-large;
+  background-color: $color-bg;
+  color: $color-on-primary;
+  box-shadow: $shadow-level-3;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+
+  opacity: 0;
+  transform: $dialog-hidden-transform;
+  transition:
+    opacity $dialog-transition,
+    transform $dialog-transition,
+    overlay $dialog-transition allow-discrete,
+    display $dialog-transition allow-discrete;
+
+  &[open] {
+    opacity: 1;
+    transform: none;
+
+    // start state of the opening animation
+    @starting-style {
+      opacity: 0;
+      transform: $dialog-hidden-transform;
+    }
+  }
+
+  &::backdrop {
+    background-color: transparent;
+    transition:
+      background-color $dialog-transition,
+      overlay $dialog-transition allow-discrete,
+      display $dialog-transition allow-discrete;
+  }
+
+  &[open]::backdrop {
+    background-color: $dialog-backdrop-color;
+
+    @starting-style {
+      background-color: transparent;
+    }
+  }
+
+  // Users who asked the OS for less motion get an instant open/close
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+
+    &::backdrop {
+      transition: none;
+    }
+  }
+}

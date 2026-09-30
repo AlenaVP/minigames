@@ -2,6 +2,9 @@
 @use 'abstracts/breakpoints' as *;
 @use 'abstracts/mixins' as *;
 
+$slide-duration: 0.5s;
+$slide-easing: ease-in-out;
+
 .new-games {
   background-color: $color-bg;
 
@@ -61,7 +64,7 @@
   }
 
   &__nav {
-    display: none;
+    display: none; // mobile: swipe only (Figma has no arrows there)
     align-items: center;
     gap: $size-2; // 16px
 
@@ -99,14 +102,21 @@
       }
     }
 
-    &:hover {
+    @include hover {
       background-color: $color-primary;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $color-tertiary;
+      outline-offset: 2px;
     }
   }
 
   &__viewport {
-    overflow: hidden;
-    margin-inline: -#{$size-1}; // -8px
+    overflow: hidden; // also clips the cards while they collapse at the edges
+    touch-action: pan-y; // vertical swipes scroll the page, horizontal ones are ours (swipe.ts)
+    user-select: none; // a mouse swipe must not select the card titles
+    margin-inline: -#{$size-1}; // -8px: room for the card shadows
     padding: $size-1; // 8px
 
     @include desktop-mid {
@@ -115,70 +125,82 @@
     }
   }
 
+  // Sizes are PROPORTIONS from Figma (flex-grow), not pixels: the browser splits the track width
+  // between the visible cards. Before and after a step the sum of the proportions is the same,
+  // so while they animate the track stays exactly full — no gaps, no overflow.
   &__track {
+    --slide-gap: 5.5px;
+    --size-center: 218; // mobile: 56 | 218 | 56
+    --size-near: 56;
+    --size-far: 0;
+
     display: flex;
-    justify-content: center;
-    gap: 5.5px;
-    margin: 0;
+    margin: 0 calc(var(--slide-gap) / -2); // the outer half-gaps of the edge cards
     padding: 0;
 
     @include tablet {
-      gap: 7.5px;
+      --slide-gap: 7.5px;
+      --size-center: 448; // 105 | 448 | 105
+      --size-near: 105;
     }
 
     @include desktop-mid {
-      gap: $size-1; // 8px
-    }
-  }
-}
-
-.new-games__card {
-  &--peek-outer {
-    display: none;
-
-    @include desktop-mid {
-      display: block;
-      flex: 0 1 120px;
-      width: auto;
-      height: 384px;
+      --slide-gap: #{$size-1}; // 8px
+      --size-center: 816; // 120 | 288 | 816 | 288 | 120
+      --size-near: 288;
+      --size-far: 120;
     }
   }
 
-  &--peek-inner {
-    width: 56px; // mobile
+  &__track > &__card {
+    flex: 0 1 0; // grow is set by the position below; basis 0 → width = pure proportion
+    min-width: 0;
     height: 200px;
+    // margins, not `gap`: a flex gap would stay between collapsed (0px) cards
+    margin-inline: calc(var(--slide-gap) / 2);
+    transition:
+      flex-grow $slide-duration $slide-easing,
+      margin $slide-duration $slide-easing,
+      border-width $slide-duration $slide-easing,
+      opacity $slide-duration $slide-easing;
 
     @include tablet {
-      flex: 0 1 105px;
-      width: auto;
-      min-width: 40px;
       height: 280px;
     }
 
     @include desktop-mid {
-      flex: 288 1 0;
-      width: auto;
-      min-width: 180px;
       height: 384px;
     }
-  }
 
-  &--featured {
-    width: 218px; // mobile
-    height: 200px;
-
-    @include tablet {
-      flex: 0 1 448px;
-      width: auto;
-      min-width: 160px;
-      height: 280px;
+    &[data-position='center'] {
+      flex-grow: var(--size-center);
     }
 
-    @include desktop-mid {
-      flex: 816 1 0;
-      width: auto;
-      min-width: 320px;
-      height: 384px;
+    &[data-position='near'] {
+      flex-grow: var(--size-near);
+    }
+
+    // Collapsed: no width, no gap, no border (the 2+2px would still take room), invisible
+    &[data-position='far'],
+    &[data-position='hidden'] {
+      flex-grow: 0;
+      margin-inline: 0;
+      border-inline-width: 0;
+      opacity: 0;
+    }
+
+    // From 1440px the ±2 cards are visible (5 cards)
+    &[data-position='far'] {
+      @include desktop-mid {
+        flex-grow: var(--size-far);
+        margin-inline: calc(var(--slide-gap) / 2);
+        border-inline-width: 2px;
+        opacity: 1;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
     }
   }
 }

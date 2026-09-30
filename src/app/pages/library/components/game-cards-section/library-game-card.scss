@@ -1,0 +1,270 @@
+@use 'abstracts/tokens' as *;
+@use 'abstracts/breakpoints' as *;
+@use 'abstracts/mixins' as *;
+
+$border-width: 2px;
+// Horizontal layout as soon as the CARD (not the viewport) is wide enough:
+// on 425–~600px viewports a 268px image would squeeze the text, so the card stays vertical there
+$horizontal-min-width: 560px;
+
+@mixin horizontal {
+  @container library-card (min-width: #{$horizontal-min-width}) {
+    @content;
+  }
+}
+
+.library-card {
+  container: library-card / inline-size;
+  border: $border-width solid $color-on-primary;
+  border-radius: $corner-large;
+  background-color: $color-white;
+  box-shadow: $shadow-level-1;
+
+  &__inner {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    border-radius: calc(#{$corner-large} - #{$border-width});
+
+    @include horizontal {
+      flex-direction: row;
+      height: 148px;
+    }
+
+    @include desktop {
+      height: 196px;
+    }
+  }
+
+  &__image {
+    display: block;
+    flex-shrink: 0;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 460 / 215;
+    object-fit: cover;
+
+    &--placeholder {
+      background-color: $color-avatar-2;
+    }
+
+    @include horizontal {
+      width: 39.2%;
+      max-width: 268px;
+      height: 100%;
+      aspect-ratio: auto;
+    }
+
+    @include desktop {
+      width: 38.6%;
+      max-width: 318px;
+    }
+  }
+
+  // ---------- Vertical card (mobile): one grid, items placed by areas ----------
+  &__body {
+    flex: 1;
+    min-width: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      'title title'
+      'category category'
+      'description description'
+      'stats price'
+      'details details';
+    align-items: center;
+    padding: $size-2 14px 14px;
+
+    // ---------- Horizontal card: header / description / footer ----------
+    @include horizontal {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      padding: 14px 14px 14px $size-2;
+    }
+  }
+
+  &__header,
+  &__footer {
+    display: contents;
+
+    @include horizontal {
+      display: flex;
+      align-items: center;
+      gap: $size-2;
+    }
+  }
+
+  &__footer {
+    @include horizontal {
+      justify-content: space-between;
+      margin-top: auto;
+    }
+
+    @include desktop {
+      margin-top: 0;
+    }
+  }
+
+  &__title {
+    grid-area: title;
+    min-width: 0;
+    overflow: hidden;
+    font-family: $font-family-primary;
+    font-size: $font-size-headline-small;
+    font-weight: $font-weight-bold;
+    line-height: normal;
+    color: $color-on-primary;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    @include desktop {
+      font-size: $font-size-headline-medium;
+    }
+  }
+
+  &__category {
+    grid-area: category;
+    flex-shrink: 0;
+    justify-self: start;
+    margin-top: $size-1;
+    padding: 3px 7px;
+    border: 1.5px solid $color-on-primary;
+    border-radius: $corner-full;
+    background-color: $color-secondary;
+    font-family: $font-family-primary;
+    font-size: $font-size-label-medium;
+    font-weight: $font-weight-bold;
+    line-height: 1.25;
+    color: $color-on-primary;
+    white-space: nowrap;
+
+    @include horizontal {
+      margin-top: 0;
+    }
+  }
+
+  &__price {
+    grid-area: price;
+    flex-shrink: 0;
+    justify-self: end;
+    font-family: $font-family-primary;
+    font-size: $font-size-headline-small;
+    font-weight: $font-weight-bold;
+    line-height: normal;
+    color: $color-on-primary;
+
+    @include horizontal {
+      margin-left: auto;
+    }
+
+    @include desktop {
+      font-size: $font-size-headline-medium;
+    }
+
+    &--free {
+      color: $color-price-free;
+    }
+  }
+
+  &__description {
+    --lines: 2;
+
+    grid-area: description;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: var(--lines);
+    overflow: hidden;
+    margin-top: 12px;
+    font-family: $font-family-primary;
+    font-size: $font-size-body-small;
+    line-height: 20px;
+    color: $color-on-bg;
+
+    @include horizontal {
+      margin-top: $size-1;
+    }
+
+    @include desktop {
+      --lines: 3;
+
+      margin-block: auto;
+      font-size: $font-size-body-medium;
+      line-height: 22px;
+    }
+  }
+
+  &__stats {
+    grid-area: stats;
+    display: flex;
+    align-items: center;
+    gap: $size-2;
+    margin-top: 18px;
+    font-family: $font-family-primary;
+    font-size: $font-size-label-medium;
+    font-weight: $font-weight-bold;
+    color: $color-on-primary;
+
+    @include horizontal {
+      margin-top: 0;
+    }
+
+    @include desktop {
+      font-size: $font-size-label-large;
+    }
+  }
+
+  &__stat {
+    display: inline-flex;
+    align-items: center;
+    gap: $size-05;
+  }
+
+  &__icon {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+  }
+
+  &__details {
+    grid-area: details;
+    height: 36px;
+    margin-top: 18px;
+    padding-inline: 18px;
+    border: $border-width solid $color-on-primary;
+    border-radius: $corner-small;
+    background-color: $color-primary;
+    font-family: $font-family-primary;
+    font-size: $font-size-label-large;
+    font-weight: $font-weight-bold;
+    color: $color-on-primary;
+    transition: background-color 0.2s ease;
+
+    @include horizontal {
+      flex-shrink: 0;
+      height: 32px;
+      margin-top: 0;
+      font-size: $font-size-label-medium;
+    }
+
+    @include desktop {
+      height: 36px;
+      font-size: $font-size-label-large;
+    }
+
+    @include hover {
+      background-color: $color-primary-high;
+    }
+
+    &:active {
+      background-color: $color-primary-high;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $color-tertiary;
+      outline-offset: 2px;
+    }
+  }
+}

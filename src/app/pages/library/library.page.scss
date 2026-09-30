@@ -1,0 +1,55 @@
+@use 'abstracts/tokens' as *;
+@use 'abstracts/breakpoints' as *;
+@use 'abstracts/mixins' as *;
+
+.library {
+  @include content-width;
+  @include section-padding;
+
+  &__intro {
+    display: flex;
+    flex-direction: column;
+    gap: $size-1;
+    padding-block: $size-2;
+
+    @include tablet {
+      padding-block: $size-3;
+    }
+
+    @include desktop {
+      padding-block: $size-5;
+    }
+  }
+
+  &__title {
+    font-family: $font-family-primary;
+    font-size: $font-size-display-small;
+    font-weight: $font-weight-bold;
+    line-height: normal;
+    color: $color-on-primary;
+
+    @include tablet {
+      font-size: $font-size-display-medium;
+    }
+
+    @include desktop {
+      font-size: $font-size-display-large;
+    }
+  }
+
+  &__subtitle {
+    font-family: $font-family-primary;
+    font-size: $font-size-body-small;
+    font-weight: $font-weight-regular;
+    line-height: normal;
+    color: $color-on-bg;
+
+    @include tablet {
+      font-size: $font-size-body-medium;
+    }
+
+    @include desktop {
+      font-size: $font-size-body-large;
+    }
+  }
+}

@@ -1,3 +1,5 @@
+@use 'abstracts/mixins' as *;
+
 // --- Reset ---
 *,
 *::before,
@@ -67,6 +69,11 @@ a {
 // --- Common ---
 .nowrap {
   white-space: nowrap;
+}
+
+// Hidden visually, but still read by screen readers and reachable for form controls
+.visually-hidden {
+  @include visually-hidden;
 }
 
 // --- App shell ---
