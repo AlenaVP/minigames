@@ -143,7 +143,7 @@ $spec-shadow: $shadow-level-1;
 
     &:active {
       translate: 2px 2px;
-      box-shadow: 2px 2px 0 0 $color-on-primary;
+      box-shadow: $shadow-p2;
     }
 
     &:focus-visible {

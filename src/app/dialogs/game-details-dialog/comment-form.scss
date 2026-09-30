@@ -56,7 +56,7 @@ $input-max-height: 88px;
     &:focus {
       outline: none;
       background-color: $color-surface-low;
-      box-shadow: inset 0 0 0 1px $color-on-primary;
+      box-shadow: $shadow-inset-p1;
     }
   }
 
@@ -78,7 +78,7 @@ $input-max-height: 88px;
 
     &:disabled {
       background-color: $color-outline;
-      color: color-mix(in srgb, $color-on-primary 30%, $color-outline);
+      color: $color-disabled-on-outline;
       cursor: not-allowed;
     }
 

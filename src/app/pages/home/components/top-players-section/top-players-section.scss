@@ -231,8 +231,8 @@
     color: $color-on-primary;
 
     @include tablet {
-      width: 28px;
-      height: 28px;
+      width: $size-p28;
+      height: $size-p28;
     }
 
     @include desktop {

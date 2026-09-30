@@ -26,8 +26,8 @@ $avatar-palette: $color-primary, $color-avatar-1, $color-avatar-2, $color-avatar
     display: grid;
     flex-shrink: 0;
     place-items: center;
-    width: 28px;
-    height: 28px;
+    width: $size-p28;
+    height: $size-p28;
     border: 1px solid $color-on-primary;
     border-radius: $corner-full;
     font-size: $font-size-label-medium;

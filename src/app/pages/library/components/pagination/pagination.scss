@@ -63,8 +63,8 @@ $pagination-gap-desktop: $size-2;
   }
 
   &__arrow:disabled {
-    border-color: color-mix(in srgb, $color-on-primary 10%, transparent);
-    color: color-mix(in srgb, $color-on-primary 40%, transparent);
+    border-color: $color-disabled-outline;
+    color: $color-disabled-content;
     cursor: not-allowed;
   }
 }
