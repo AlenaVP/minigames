@@ -1,27 +1,29 @@
 import { ComponentBase } from '@app/core/component.base';
-import { GameCard, type GameCardData } from '@widgets/game-card';
-import unoImg from '@assets/images/games/tailside.jpg';
-import islandersImg from '@assets/images/games/islanders-new-shores.jpg';
-import vacationCafeImg from '@assets/images/games/vacation-cafe.jpg';
-import winterBurrowImg from '@assets/images/games/winter-burrow.jpg';
-import candyCrushImg from '@assets/images/games/shelve-the-potions.jpg';
+import { FEATURED_GAMES_MOCK } from '@app/services/mock-data/games.mock';
+import { GameCard } from '@widgets/game-card';
 import './new-games-section.scss';
 
-const GAMES: (GameCardData & { slot: string })[] = [
-  { title: 'Uno Online', rating: 4.7, likes: '19.4K', imageUrl: unoImg, slot: 'peek-outer' },
-  { title: 'Islanders: New Shores', rating: 4.9, likes: '54.2K', imageUrl: islandersImg, slot: 'peek-inner' },
-  {
-    title: 'Vacation Cafe Simulator: Brew, Serve & Relax',
-    rating: 4.8,
-    likes: '28.7K',
-    imageUrl: vacationCafeImg,
-    slot: 'featured',
-  },
-  { title: 'Winter Burrow', rating: 4.9, likes: '32.4K', imageUrl: winterBurrowImg, slot: 'peek-inner' },
-  { title: 'Candy Crush', rating: 4.6, likes: '22.1K', imageUrl: candyCrushImg, slot: 'peek-outer' },
-];
+interface NewGamesSectionOptions {
+  onGameDetails: (slug: string) => void;
+}
+
+const START_INDEX = 0;
+const SLOTS = [
+  { offset: -2, slot: 'peek-outer' },
+  { offset: -1, slot: 'peek-inner' },
+  { offset: 0, slot: 'featured' },
+  { offset: 1, slot: 'peek-inner' },
+  { offset: 2, slot: 'peek-outer' },
+] as const;
 
 export class NewGamesSection extends ComponentBase {
+  private options: NewGamesSectionOptions;
+
+  constructor(options: NewGamesSectionOptions) {
+    super();
+    this.options = options;
+  }
+
   protected render(): HTMLElement {
     const section = document.createElement('section');
     section.classList.add('new-games');
@@ -56,12 +58,16 @@ export class NewGamesSection extends ComponentBase {
     `;
 
     const track = section.querySelector<HTMLUListElement>('.new-games__track');
+    const games = FEATURED_GAMES_MOCK;
 
     if (track) {
-      for (const game of GAMES) {
-        const { slot, ...data } = game;
-        const card = new GameCard(data, `new-games__card--${slot}`);
-        card.mount(track);
+      for (const { offset, slot } of SLOTS) {
+        const game = games[(START_INDEX + offset + games.length) % games.length];
+
+        this.mountChild(
+          new GameCard({ game, onClick: this.options.onGameDetails, className: `new-games__card--${slot}` }),
+          track,
+        );
       }
     }
 

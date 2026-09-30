@@ -1,52 +1,71 @@
 import { ComponentBase } from '@app/core/component.base';
+import type { GameSummary } from '@shared/types/game';
+import { escapeHtml } from '@shared/utils/escape-html';
+import { formatCompactNumber, formatRating } from '@shared/utils/format';
+import { getCardCoverUrl } from '@shared/utils/game-cover';
 import starIconUrl from '@assets/icons/star.svg';
 import favoriteIconUrl from '@assets/icons/favorite.svg';
 import './game-card.scss';
 
-export interface GameCardData {
-  title: string;
-  rating: number;
-  likes: string;
-  imageUrl?: string;
+interface GameCardOptions {
+  game: GameSummary;
+  onClick: (slug: string) => void;
+  /** Size/position class set by the parent (the slider) */
+  className?: string;
 }
 
+/**
+ * Image card of the Home slider. The whole card is ONE button:
+ * a card of any size (even the narrow image-only one) opens the Game Details dialog.
+ */
 export class GameCard extends ComponentBase {
-  private data: GameCardData;
-  private modifierClass?: string;
+  private options: GameCardOptions;
 
-  constructor(data: GameCardData, modifierClass?: string) {
+  constructor(options: GameCardOptions) {
     super();
-    this.data = data;
-    this.modifierClass = modifierClass;
+    this.options = options;
   }
 
   protected render(): HTMLElement {
+    const { game, className } = this.options;
+    const name = escapeHtml(game.name);
+    const rating = formatRating(game.rating);
+    const likes = formatCompactNumber(game.likesCount);
+    const coverUrl = getCardCoverUrl(game.slug);
+
     const card = document.createElement('li');
     card.classList.add('game-card');
-    if (this.modifierClass) card.classList.add(this.modifierClass);
-
-    const media = this.data.imageUrl
-      ? `<img src="${this.data.imageUrl}" alt="" class="game-card__image" />`
-      : `<div class="game-card__placeholder" role="img" aria-label="${this.data.title}"></div>`;
+    if (className) card.classList.add(className);
 
     card.innerHTML = `
-      <div class="game-card__inner">
-        ${media}
-        <div class="game-card__overlay">
-          <p class="game-card__title">${this.data.title}</p>
-          <div class="game-card__meta">
+      <button
+        type="button"
+        class="game-card__inner"
+        aria-haspopup="dialog"
+        aria-label="${name}, rating ${rating}, ${likes} likes"
+      >
+        ${
+          coverUrl
+            ? `<img src="${coverUrl}" alt="" width="460" height="215" class="game-card__image" />`
+            : '<span class="game-card__placeholder"></span>'
+        }
+        <span class="game-card__overlay" aria-hidden="true">
+          <span class="game-card__title">${name}</span>
+          <span class="game-card__meta">
             <span class="game-card__rating">
               <img src="${starIconUrl}" alt="" class="game-card__icon" />
-              ${this.data.rating.toFixed(1)}
+              ${rating}
             </span>
             <span class="game-card__likes">
               <img src="${favoriteIconUrl}" alt="" class="game-card__icon" />
-              ${this.data.likes}
+              ${likes}
             </span>
-          </div>
-        </div>
-      </div>
+          </span>
+        </span>
+      </button>
     `;
+
+    card.querySelector('.game-card__inner')?.addEventListener('click', () => this.options.onClick(game.slug));
 
     return card;
   }

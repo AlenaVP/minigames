@@ -1,10 +1,16 @@
 @use 'abstracts/tokens' as *;
 @use 'abstracts/breakpoints' as *;
 
+$border-width: 2px;
+// 2-3-1: from this RENDERED card width on, the card shows title, rating and likes.
+// The query container is the button INSIDE the 2px border → 288 − 2 × 2 = 284px of it
+$info-min-width: 288px;
+$info-min-inner-width: $info-min-width - 2 * $border-width;
+
 .game-card {
   flex-shrink: 0;
   list-style: none;
-  border: 2px solid $color-on-primary;
+  border: $border-width solid $color-on-primary;
   border-radius: $corner-large;
   box-shadow: $shadow-level-1;
 
@@ -16,14 +22,22 @@
     box-shadow: $shadow-level-3;
   }
 
+  // The button fills the card; it is also the container the width threshold is measured on
   &__inner {
     container-type: inline-size;
     container-name: game-card;
     position: relative;
+    display: block;
     width: 100%;
     height: 100%;
     overflow: hidden;
-    border-radius: inherit;
+    border-radius: calc(#{$corner-large} - #{$border-width});
+    text-align: start;
+
+    &:focus-visible {
+      outline: 2px solid $color-tertiary;
+      outline-offset: 4px;
+    }
   }
 
   &__image,
@@ -41,30 +55,37 @@
     background-color: $color-avatar-2;
   }
 
+  // Not display: none ↔ flex — that switch can't be animated and would blink mid-slide.
+  // Opacity + visibility fade the info in when the growing card passes 288px
   &__overlay {
-    display: none;
-
     position: absolute;
     inset-inline: 0;
     bottom: 0;
+    display: flex;
     flex-direction: column;
-    gap: $size-1; // 8px
-    padding: $size-2; // 16px
+    gap: $size-1;
+    padding: $size-2;
     background: linear-gradient(to top, rgba(0, 0, 0, 0.72), transparent);
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 0.2s ease,
+      visibility 0.2s ease;
 
-    @container game-card (min-width: 288px) {
-      display: flex;
+    @container game-card (min-width: #{$info-min-inner-width}) {
+      opacity: 1;
+      visibility: visible;
     }
   }
 
   &__title {
-    margin: 0;
+    display: block;
+    overflow: hidden;
     font-family: $font-family-primary;
     font-weight: $font-weight-bold;
-    font-size: $font-size-body-large; // 18px
+    font-size: $font-size-body-large;
     color: $color-white;
     white-space: nowrap;
-    overflow: hidden;
     text-overflow: ellipsis;
   }
 
@@ -74,24 +95,23 @@
     justify-content: space-between;
     font-family: $font-family-primary;
     font-weight: $font-weight-medium;
-    font-size: $font-size-label-medium; // 12px
+    font-size: $font-size-label-medium;
+    color: $color-white;
 
     @include tablet {
-      font-size: $font-size-label-large; // 14px
+      font-size: $font-size-label-large;
     }
 
     @include desktop {
-      font-size: $font-size-label-xl; // 16px
+      font-size: $font-size-label-xl;
     }
-
-    color: $color-white;
   }
 
   &__rating,
   &__likes {
     display: inline-flex;
     align-items: center;
-    gap: $size-05; // 4px
+    gap: $size-05;
     white-space: nowrap;
   }
 
