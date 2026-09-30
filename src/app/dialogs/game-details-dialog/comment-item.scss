@@ -9,7 +9,7 @@ $avatar-palette: $color-primary, $color-avatar-1, $color-avatar-2, $color-avatar
 .comment {
   display: flex;
   flex-direction: column;
-  padding: $size-2; // 16px
+  padding: $size-2;
   border-radius: $corner-medium;
   background-color: $color-white;
   box-shadow: $shadow-level-1;
@@ -19,18 +19,18 @@ $avatar-palette: $color-primary, $color-avatar-1, $color-avatar-2, $color-avatar
   &__header {
     display: flex;
     align-items: center;
-    gap: $size-1; // 8px
+    gap: $size-1;
   }
 
   &__avatar {
     display: grid;
     flex-shrink: 0;
     place-items: center;
-    width: 28px;
-    height: 28px;
+    width: $size-p28;
+    height: $size-p28;
     border: 1px solid $color-on-primary;
     border-radius: $corner-full;
-    font-size: $font-size-label-medium; // 12px
+    font-size: $font-size-label-medium;
     font-weight: $font-weight-bold;
 
     @for $i from 1 through list.length($avatar-palette) {
@@ -43,7 +43,7 @@ $avatar-palette: $color-primary, $color-avatar-1, $color-avatar-2, $color-avatar
   &__author {
     min-width: 0;
     overflow: hidden;
-    font-size: $font-size-label-large; // 14px
+    font-size: $font-size-label-large;
     font-weight: $font-weight-bold;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -52,15 +52,15 @@ $avatar-palette: $color-primary, $color-avatar-1, $color-avatar-2, $color-avatar
   &__date {
     flex-shrink: 0;
     margin-left: auto;
-    font-size: $font-size-label-medium; // 12px
+    font-size: $font-size-label-medium;
     color: $color-on-bg;
   }
 
   &__text {
-    margin-top: $size-05; // 4px (Figma)
-    font-size: $font-size-body-small; // 14px
+    margin-top: $size-05;
+    font-size: $font-size-body-small;
     line-height: 20px;
-    overflow-wrap: anywhere; // a long word/link from a user must not widen the dialog
+    overflow-wrap: anywhere;
   }
 
   // Style guide "Comment Like Button": default / hover / liked / liked hover.
@@ -70,10 +70,10 @@ $avatar-palette: $color-primary, $color-avatar-1, $color-avatar-2, $color-avatar
     align-items: center;
     align-self: flex-start;
     gap: $size-05;
-    margin: $size-05 0 (-$size-05) (-$size-1); // visual gap to the text = 4 + 4px padding = 8 (Figma)
-    padding: $size-05 $size-1; // 4px 8px
+    margin: $size-05 0 (-$size-05) (-$size-1);
+    padding: $size-05 $size-1;
     border-radius: $corner-full;
-    font-size: $font-size-label-medium; // 12px
+    font-size: $font-size-label-medium;
     font-weight: $font-weight-bold;
     line-height: 16px;
     color: $color-on-primary;
@@ -86,7 +86,7 @@ $avatar-palette: $color-primary, $color-avatar-1, $color-avatar-2, $color-avatar
     }
 
     &[aria-pressed='true'] {
-      color: $color-like; // heart (currentColor) and the count together
+      color: $color-like;
     }
 
     &:focus-visible {

@@ -33,7 +33,7 @@ export function enableDragScroll(element: HTMLElement, signal?: AbortSignal): vo
 
       if (!isDragged) {
         isDragged = true;
-        element.setPointerCapture(event.pointerId); // keep dragging even if the cursor leaves the row
+        element.setPointerCapture(event.pointerId);
         element.classList.add('is-dragging');
       }
 
@@ -56,7 +56,7 @@ export function enableDragScroll(element: HTMLElement, signal?: AbortSignal): vo
     (event) => {
       if (!isDragged) return;
       isDragged = false;
-      event.preventDefault(); // for a <label>: no radio gets checked
+      event.preventDefault();
       event.stopPropagation();
     },
     { capture: true, signal },

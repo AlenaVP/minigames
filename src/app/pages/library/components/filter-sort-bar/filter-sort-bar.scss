@@ -5,18 +5,16 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: $size-2; // 16px between chips and sort (mobile/tablet)
-  padding-block: $size-2; // 16px above the chips and below the controls
+  gap: $size-2;
+  padding-block: $size-2;
 
-  // desktop: one row, sort pushed to the right
   @include desktop {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    gap: $size-3; // 24px — kept when the chips have to shrink
+    gap: $size-3;
   }
 
-  // chips take the full width in the column layout, may shrink in the row layout
   > .category-chips {
     align-self: stretch;
 

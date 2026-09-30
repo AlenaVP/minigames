@@ -32,7 +32,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    background-color: $color-bg-footer; // #1e1b3a
+    background-color: $color-bg-footer;
     opacity: 0.55;
   }
 
@@ -56,7 +56,7 @@
     @include desktop {
       width: 640px;
       min-height: 403px;
-      padding: $size-6; // 48px
+      padding: $size-6;
       box-shadow: $shadow-level-3;
     }
   }
@@ -65,53 +65,53 @@
     margin: 0;
     font-family: $font-family-primary;
     font-weight: $font-weight-extrabold;
-    font-size: $font-size-display-small; // 24px
+    font-size: $font-size-display-small;
 
     @include tablet {
-      font-size: $font-size-display-medium; // 36px
+      font-size: $font-size-display-medium;
     }
 
     @include desktop {
-      font-size: $font-size-display-large; // 56px
+      font-size: $font-size-display-large;
     }
   }
 
   &__description {
-    margin: $size-2 0; // 16px
+    margin: $size-2 0;
     font-family: $font-family-primary;
-    font-size: $font-size-label-medium; // 12px
+    font-size: $font-size-label-medium;
 
     @include tablet {
-      font-size: $font-size-body-small; // 14px
+      font-size: $font-size-body-small;
     }
 
     @include desktop {
       margin: $size-3 0;
-      font-size: $font-size-body-large; // 18px
+      font-size: $font-size-body-large;
       line-height: 1.5;
     }
   }
 
   &__button {
-    padding: $size-1 $size-2; // btn-small: 8px 16px (mobile)
+    padding: $size-1 $size-2;
     border: 2px solid $color-on-primary;
     border-radius: $corner-small;
     background-color: $color-primary;
     color: $color-on-primary;
     font-family: $font-family-primary;
     font-weight: $font-weight-bold;
-    font-size: $font-size-label-medium; // 12px
+    font-size: $font-size-label-medium;
     cursor: pointer;
     transition: background-color 0.2s ease;
 
     @include tablet {
-      padding: $btn-medium-y $btn-medium-x; // 10px 20px
-      font-size: $font-size-label-large; // 14px
+      padding: $btn-medium-y $btn-medium-x;
+      font-size: $font-size-label-large;
     }
 
     @include desktop {
-      padding: $btn-large-y $btn-large-x; // 16px 24px
-      font-size: $font-size-body-large; // 18px
+      padding: $btn-large-y $btn-large-x;
+      font-size: $font-size-body-large;
     }
 
     &:hover {

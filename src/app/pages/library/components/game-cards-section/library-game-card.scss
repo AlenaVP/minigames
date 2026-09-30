@@ -14,7 +14,6 @@ $horizontal-min-width: 560px;
 }
 
 .library-card {
-  // the <li> is the query container; the visible card is __inner
   container: library-card / inline-size;
   border: $border-width solid $color-on-primary;
   border-radius: $corner-large;
@@ -25,16 +24,16 @@ $horizontal-min-width: 560px;
     display: flex;
     flex-direction: column;
     height: 100%;
-    overflow: hidden; // rounds the image corners; the shadow lives on the <li>, so it is not clipped
+    overflow: hidden;
     border-radius: calc(#{$corner-large} - #{$border-width});
 
     @include horizontal {
       flex-direction: row;
-      height: 148px; // 152 − 2 × border
+      height: 148px;
     }
 
     @include desktop {
-      height: 196px; // 200 − 2 × border
+      height: 196px;
     }
   }
 
@@ -42,7 +41,7 @@ $horizontal-min-width: 560px;
     display: block;
     flex-shrink: 0;
     width: 100%;
-    height: auto; // the height="215" attribute would otherwise beat aspect-ratio
+    height: auto;
     aspect-ratio: 460 / 215;
     object-fit: cover;
 
@@ -58,7 +57,7 @@ $horizontal-min-width: 560px;
     }
 
     @include desktop {
-      width: 38.6%; // 318 / 824 in the 1920 frame
+      width: 38.6%;
       max-width: 318px;
     }
   }
@@ -76,7 +75,7 @@ $horizontal-min-width: 560px;
       'stats price'
       'details details';
     align-items: center;
-    padding: $size-2 14px 14px; // 16 from the image, 14 + 2px border = 16 from the outer edge
+    padding: $size-2 14px 14px;
 
     // ---------- Horizontal card: header / description / footer ----------
     @include horizontal {
@@ -89,19 +88,19 @@ $horizontal-min-width: 560px;
 
   &__header,
   &__footer {
-    display: contents; // their children become items of the grid above
+    display: contents;
 
     @include horizontal {
       display: flex;
       align-items: center;
-      gap: $size-2; // 16px
+      gap: $size-2;
     }
   }
 
   &__footer {
     @include horizontal {
       justify-content: space-between;
-      margin-top: auto; // tablet: pinned to the bottom
+      margin-top: auto;
     }
 
     @include desktop {
@@ -114,7 +113,7 @@ $horizontal-min-width: 560px;
     min-width: 0;
     overflow: hidden;
     font-family: $font-family-primary;
-    font-size: $font-size-headline-small; // 20px
+    font-size: $font-size-headline-small;
     font-weight: $font-weight-bold;
     line-height: normal;
     color: $color-on-primary;
@@ -122,7 +121,7 @@ $horizontal-min-width: 560px;
     text-overflow: ellipsis;
 
     @include desktop {
-      font-size: $font-size-headline-medium; // 24px
+      font-size: $font-size-headline-medium;
     }
   }
 
@@ -130,13 +129,13 @@ $horizontal-min-width: 560px;
     grid-area: category;
     flex-shrink: 0;
     justify-self: start;
-    margin-top: $size-1; // 8px under the title (vertical card)
+    margin-top: $size-1;
     padding: 3px 7px;
     border: 1.5px solid $color-on-primary;
     border-radius: $corner-full;
     background-color: $color-secondary;
     font-family: $font-family-primary;
-    font-size: $font-size-label-medium; // 12px
+    font-size: $font-size-label-medium;
     font-weight: $font-weight-bold;
     line-height: 1.25;
     color: $color-on-primary;
@@ -152,17 +151,17 @@ $horizontal-min-width: 560px;
     flex-shrink: 0;
     justify-self: end;
     font-family: $font-family-primary;
-    font-size: $font-size-headline-small; // 20px
+    font-size: $font-size-headline-small;
     font-weight: $font-weight-bold;
     line-height: normal;
     color: $color-on-primary;
 
     @include horizontal {
-      margin-left: auto; // pushed to the right edge of the header row
+      margin-left: auto;
     }
 
     @include desktop {
-      font-size: $font-size-headline-medium; // 24px
+      font-size: $font-size-headline-medium;
     }
 
     &--free {
@@ -176,24 +175,23 @@ $horizontal-min-width: 560px;
     grid-area: description;
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: var(--lines); // trailing "…" on the last visible line
+    -webkit-line-clamp: var(--lines);
     overflow: hidden;
-    margin-top: 12px; // vertical card
+    margin-top: 12px;
     font-family: $font-family-primary;
-    font-size: $font-size-body-small; // 14px
-    // a fixed line-height, not normal: otherwise emoji (another font) make their line taller
+    font-size: $font-size-body-small;
     line-height: 20px;
     color: $color-on-bg;
 
     @include horizontal {
-      margin-top: $size-1; // tablet: 8px under the header
+      margin-top: $size-1;
     }
 
     @include desktop {
       --lines: 3;
 
-      margin-block: auto; // desktop: centered between header and footer
-      font-size: $font-size-body-medium; // 16px
+      margin-block: auto;
+      font-size: $font-size-body-medium;
       line-height: 22px;
     }
   }
@@ -203,9 +201,9 @@ $horizontal-min-width: 560px;
     display: flex;
     align-items: center;
     gap: $size-2;
-    margin-top: 18px; // vertical card
+    margin-top: 18px;
     font-family: $font-family-primary;
-    font-size: $font-size-label-medium; // 12px
+    font-size: $font-size-label-medium;
     font-weight: $font-weight-bold;
     color: $color-on-primary;
 
@@ -214,7 +212,7 @@ $horizontal-min-width: 560px;
     }
 
     @include desktop {
-      font-size: $font-size-label-large; // 14px
+      font-size: $font-size-label-large;
     }
   }
 
@@ -230,17 +228,16 @@ $horizontal-min-width: 560px;
     height: 20px;
   }
 
-  // Style guide "9. Play / Details": primary → hover primary-high
   &__details {
     grid-area: details;
     height: 36px;
-    margin-top: 18px; // vertical card: full width under the stats
+    margin-top: 18px;
     padding-inline: 18px;
     border: $border-width solid $color-on-primary;
     border-radius: $corner-small;
     background-color: $color-primary;
     font-family: $font-family-primary;
-    font-size: $font-size-label-large; // 14px
+    font-size: $font-size-label-large;
     font-weight: $font-weight-bold;
     color: $color-on-primary;
     transition: background-color 0.2s ease;
@@ -249,12 +246,12 @@ $horizontal-min-width: 560px;
       flex-shrink: 0;
       height: 32px;
       margin-top: 0;
-      font-size: $font-size-label-medium; // 12px
+      font-size: $font-size-label-medium;
     }
 
     @include desktop {
       height: 36px;
-      font-size: $font-size-label-large; // 14px
+      font-size: $font-size-label-large;
     }
 
     @include hover {

@@ -2,7 +2,7 @@
 @use 'abstracts/breakpoints' as *;
 @use 'abstracts/mixins' as *;
 
-$focus-room: 4px; // space for the focus ring, which overflow would otherwise clip
+$focus-room: 4px;
 
 .category-chips {
   // <fieldset> has `min-inline-size: min-content` by default: it refuses to shrink
@@ -14,8 +14,7 @@ $focus-room: 4px; // space for the focus ring, which overflow would otherwise cl
 
   &__track {
     display: flex;
-    gap: $size-1; // 8px
-    // overflow-x: auto silently turns overflow-y into auto as well → clips outline vertically too
+    gap: $size-1;
     overflow-x: auto;
     padding: $focus-room;
     margin: -$focus-room;
@@ -24,7 +23,7 @@ $focus-room: 4px; // space for the focus ring, which overflow would otherwise cl
     user-select: none;
 
     @include desktop {
-      gap: $size-2; // 16px
+      gap: $size-2;
     }
 
     &.is-dragging {
@@ -33,7 +32,7 @@ $focus-room: 4px; // space for the focus ring, which overflow would otherwise cl
   }
 
   &__chip {
-    position: relative; // containing block for the visually hidden radio
+    position: relative;
     flex-shrink: 0;
     display: inline-flex;
     align-items: center;
@@ -43,7 +42,7 @@ $focus-room: 4px; // space for the focus ring, which overflow would otherwise cl
     border-radius: $corner-full;
     background-color: $color-white;
     font-family: $font-family-primary;
-    font-size: $font-size-label-medium; // 12px
+    font-size: $font-size-label-medium;
     font-weight: $font-weight-bold;
     line-height: 1;
     color: $color-on-primary;
@@ -52,7 +51,7 @@ $focus-room: 4px; // space for the focus ring, which overflow would otherwise cl
     transition: background-color 0.2s ease;
 
     @include tablet {
-      font-size: $font-size-label-large; // 14px
+      font-size: $font-size-label-large;
     }
 
     @include hover {

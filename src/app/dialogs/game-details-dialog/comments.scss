@@ -3,11 +3,11 @@
 .comments {
   display: flex;
   flex-direction: column;
-  gap: $size-2; // 16px: heading → form → list
+  gap: $size-2;
 
   &__title {
     font-family: $font-family-primary;
-    font-size: $font-size-body-medium; // 16px
+    font-size: $font-size-body-medium;
     font-weight: $font-weight-bold;
     line-height: 20px;
     color: $color-on-primary;
@@ -16,6 +16,6 @@
   &__list {
     display: flex;
     flex-direction: column;
-    gap: $size-2; // 16px between the cards
+    gap: $size-2;
   }
 }

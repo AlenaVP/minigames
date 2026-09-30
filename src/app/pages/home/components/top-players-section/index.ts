@@ -6,8 +6,8 @@ interface Player {
   initials: string;
   name: string;
   games: number;
-  score: string; // "94,250"
-  scoreShort: string; // "94.2K"
+  score: string;
+  scoreShort: string;
   streakDays: number;
   favoriteGame: string;
 }

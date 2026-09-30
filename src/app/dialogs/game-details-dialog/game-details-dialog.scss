@@ -3,7 +3,7 @@
 @use 'abstracts/mixins' as *;
 @use 'abstracts/dialog' as *;
 
-$close-offset: 14px; // 16px from the outer edge of the dialog − 2px border (Figma)
+$close-offset: 14px;
 $close-size-mobile: 32px;
 $close-size: 40px;
 
@@ -30,7 +30,7 @@ $close-size: 40px;
     border: 2px solid $color-on-primary;
     border-radius: $corner-full;
     background-color: $color-white;
-    box-shadow: 2px 2px 0 0 $color-on-primary;
+    box-shadow: $shadow-p2;
     color: $color-on-primary;
     transition: background-color 0.2s ease;
 

@@ -33,9 +33,6 @@ export class GameDetailsContent extends ComponentBase {
     const content = document.createElement('div');
     content.classList.add('game-details__content');
 
-    // The close button is a direct child of the whole content (not of the 220px hero):
-    // a sticky element can only stick within its parent, and the parent here is as tall as the dialog.
-    // It is also the first focusable element → showModal() puts the focus on it.
     content.innerHTML = `
       <button type="button" class="game-details__close" aria-label="Close game details" data-dialog-close>
         ${closeIcon()}
@@ -44,7 +41,6 @@ export class GameDetailsContent extends ComponentBase {
 
     this.mountChild(new GameDetailsHero({ slug: game.slug }), content);
 
-    // Sections under the hero
     const body = document.createElement('div');
     body.classList.add('game-details__body');
     content.append(body);

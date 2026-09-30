@@ -6,7 +6,6 @@ export abstract class ComponentBase {
   protected abstract render(): HTMLElement;
 
   mount(parent: HTMLElement): void {
-    // created BEFORE render(), so listeners added in render() can already use destroySignal
     this.abortController = new AbortController();
     this.element = this.render();
     parent.append(this.element);

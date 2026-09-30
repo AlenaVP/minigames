@@ -11,17 +11,17 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: $size-2; // 16px
+    gap: $size-2;
     padding-block: $size-2;
 
     @include tablet {
-      gap: $size-3; // 24px
+      gap: $size-3;
       padding-block: $size-3;
     }
 
     @include desktop-mid {
       flex-direction: row;
-      gap: $size-5; // 40px
+      gap: $size-5;
       padding-block: $size-5;
     }
   }
@@ -30,13 +30,13 @@
     display: block;
     flex-shrink: 0;
     width: 100%;
-    max-width: 343px; // = 375 - 16×2
+    max-width: 343px;
     height: 227px;
     object-fit: cover;
     border-radius: $corner-large;
 
     @include tablet {
-      max-width: 688px; // = 768 - 40×2
+      max-width: 688px;
       height: 300px;
     }
 
@@ -54,7 +54,7 @@
     gap: 16px;
     width: 100%;
     max-width: 343px;
-    padding: $size-3; // 24px
+    padding: $size-3;
 
     background-color: $color-white;
     border: 2px solid $color-on-primary;
@@ -62,14 +62,14 @@
 
     @include tablet {
       max-width: 688px;
-      padding: $size-4; // 32px
+      padding: $size-4;
     }
 
     @include desktop-mid {
       flex: 1;
       gap: 24px;
       max-width: none;
-      padding: $size-5; // 40px
+      padding: $size-5;
     }
   }
 
@@ -77,28 +77,28 @@
     margin: 0;
     font-family: $font-family-primary;
     font-weight: $font-weight-extrabold;
-    font-size: $font-size-headline-medium; // 24px
+    font-size: $font-size-headline-medium;
 
     color: $color-on-primary;
 
     @include desktop {
-      font-size: $font-size-headline-large; // 32px
+      font-size: $font-size-headline-large;
     }
   }
 
   &__description {
     font-family: $font-family-primary;
-    font-size: $font-size-label-medium; // 12px (mobile)
+    font-size: $font-size-label-medium;
     line-height: 150%;
     color: $color-on-bg;
 
     @include tablet {
       max-width: 620px;
-      font-size: $font-size-body-small; // 14px
+      font-size: $font-size-body-small;
     }
 
     @include desktop {
-      font-size: $font-size-body-large; // 18px
+      font-size: $font-size-body-large;
       line-height: 150%;
     }
   }
@@ -106,26 +106,26 @@
   &__button {
     display: inline-flex;
     align-items: center;
-    gap: $size-1; // 8px
-    padding: $size-1 $size-2; // btn-small: 8px 16px (mobile)
+    gap: $size-1;
+    padding: $size-1 $size-2;
     border: 2px solid $color-on-primary;
     border-radius: $corner-small;
     background-color: $color-primary;
     color: $color-on-primary;
     font-family: $font-family-primary;
     font-weight: $font-weight-bold;
-    font-size: $font-size-label-medium; // 12px
+    font-size: $font-size-label-medium;
     cursor: pointer;
     transition: background-color 0.2s ease;
 
     @include tablet {
-      padding: $btn-medium-y $btn-medium-x; // 10px 20px
-      font-size: $font-size-label-large; // 14px
+      padding: $btn-medium-y $btn-medium-x;
+      font-size: $font-size-label-large;
     }
 
     @include desktop {
-      padding: $btn-large-y $btn-large-x; // 16px 24px
-      font-size: $font-size-label-xl; // 16px
+      padding: $btn-large-y $btn-large-x;
+      font-size: $font-size-label-xl;
       letter-spacing: 0.05em;
     }
 
@@ -151,7 +151,7 @@
 
   &__contact {
     font-family: $font-family-primary;
-    font-size: $font-size-label-medium; // 12px
+    font-size: $font-size-label-medium;
     color: $color-on-bg-low;
 
     @include desktop {

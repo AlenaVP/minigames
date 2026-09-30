@@ -4,19 +4,19 @@
 
 .auth-dialog {
   width: 420px;
-  max-width: calc(100% - #{$size-4}); // mobile 16px
-  max-height: calc(100dvh - #{$size-4}); // register (768px) does not fit to the short screen
+  max-width: calc(100% - #{$size-4});
+  max-height: calc(100dvh - #{$size-4});
 
   @include dialog-shell;
 
   &__inner {
     display: flex;
     flex-direction: column;
-    gap: $size-3; // 24px
-    padding: $size-3; // 24px mobile
+    gap: $size-3;
+    padding: $size-3;
 
     @include tablet {
-      padding: $size-4; // 32px
+      padding: $size-4;
     }
   }
 
@@ -30,10 +30,10 @@
 
   &__tab {
     flex: 1;
-    height: 44px; // 48 − 2×2px
+    height: 44px;
     border-radius: $corner-small;
     font-family: $font-family-primary;
-    font-size: $font-size-body-medium; // 16px
+    font-size: $font-size-body-medium;
     font-weight: $font-weight-bold;
     color: $color-on-bg;
     transition:

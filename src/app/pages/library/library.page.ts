@@ -19,7 +19,6 @@ interface LibraryState {
 
 export class LibraryPage extends ComponentBase {
   private options: LibraryPageOptions;
-  // Single source of truth for the page. Story 3: state → API query; Story 4: state ↔ URL
   private state: LibraryState = { category: DEFAULT_CATEGORY, sort: DEFAULT_SORT, page: 1 };
 
   constructor(options: LibraryPageOptions) {
@@ -79,6 +78,5 @@ export class LibraryPage extends ComponentBase {
 
   private setState(patch: Partial<LibraryState>): void {
     this.state = { ...this.state, ...patch };
-    // Story 2: nothing else happens on purpose — no real filtering, sorting or page switching yet
   }
 }

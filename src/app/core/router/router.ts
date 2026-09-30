@@ -48,10 +48,8 @@ export class Router {
     };
   }
 
-  // One delegated listener for every link in the app — the routerLink analogue
   private handleDocumentClick = (event: MouseEvent): void => {
     if (event.defaultPrevented || event.button !== 0) return;
-    // Ctrl/Cmd/Shift/Alt + click: let the browser open a new tab/window as usual
     if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
     if (!(event.target instanceof Element)) return;
 

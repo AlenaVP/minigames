@@ -79,3 +79,48 @@ export const LIBRARY_GAMES_MOCK: readonly GameSummary[] = [
     featured: true,
   },
 ];
+
+const MORE_FEATURED_GAMES_MOCK: readonly GameSummary[] = [
+  {
+    slug: 'tiny-glade',
+    name: 'Tiny Glade',
+    category: 'arcade',
+    price: '$3.99',
+    shortDescription:
+      'A small diorama builder where you doodle whimsical castles, cozy cottages & romantic ruins. No management, combat or goals — just lovable dioramas.',
+    rating: 4.9,
+    likesCount: 67_300,
+    cardImage: '/assets/images/games/tiny-glade-card.jpg',
+    featured: true,
+  },
+  {
+    slug: 'tailside-cozy-cafe-sim',
+    name: 'Tailside: Cozy Cafe Sim',
+    category: 'strategy',
+    price: 'Free',
+    shortDescription:
+      'Run your own cozy café in Tailside! Brew coffee, decorate your café, follow small stories in the daily newspaper. Unlock new items, skills, villagers, and creature visitors.',
+    rating: 4.8,
+    likesCount: 35_600,
+    cardImage: '/assets/images/games/tailside-cozy-cafe-sim-card.jpg',
+    featured: true,
+  },
+  {
+    slug: 'islanders-new-shores',
+    name: 'ISLANDERS: New Shores',
+    category: 'strategy',
+    price: 'Free',
+    shortDescription:
+      'Build your island retreat in a calm, minimalist world with exciting new features that keep the classic charm while inspiring fresh creativity.',
+    rating: 4.9,
+    likesCount: 54_200,
+    cardImage: '/assets/images/games/islanders-new-shores-card.jpg',
+    featured: true,
+  },
+];
+
+/**
+ * Home slider (2-3-1): exactly the 9 games with "featured": true, in seed order.
+ * The first 6 are the Library page-1 games — all of them featured.
+ */
+export const FEATURED_GAMES_MOCK: readonly GameSummary[] = [...LIBRARY_GAMES_MOCK, ...MORE_FEATURED_GAMES_MOCK];

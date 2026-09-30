@@ -1,5 +1,3 @@
-// Same shape as tasks/mock-data/game-tukoni-forest-keepers.json → data
-
 export interface GameSpecs {
   genre: string;
   players: string;
@@ -27,7 +25,6 @@ export interface GameDetails {
   topRecords: readonly TopRecord[];
 }
 
-// Same shape as tasks/mock-data/comments-tukoni-forest-keepers.json → data[]
 export interface GameComment {
   commentId: string;
   authorName: string;

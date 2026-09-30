@@ -6,7 +6,6 @@ interface GameDetailsHeroOptions {
   slug: string;
 }
 
-// The cover is decorative: the game title follows right after it as a heading
 export class GameDetailsHero extends ComponentBase {
   private options: GameDetailsHeroOptions;
 

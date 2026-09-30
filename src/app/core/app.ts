@@ -35,8 +35,7 @@ export function bootstrapApp(): void {
   gameDetailsDialog.mount(document.body);
 
   const router = new Router(pageOutlet, {
-    home: () => new HomePage(),
-    // Story 2: the slug is ignored — the dialog always shows the static Tukoni game
+    home: () => new HomePage({ onGameDetails: () => gameDetailsDialog.open() }),
     library: () => new LibraryPage({ onGameDetails: () => gameDetailsDialog.open() }),
   });
 

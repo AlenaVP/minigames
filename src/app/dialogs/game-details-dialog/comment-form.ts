@@ -26,7 +26,6 @@ export class CommentForm extends ComponentBase {
     form.classList.add('comment-form');
     form.noValidate = true;
 
-    // Auto-grow (up to 88px, then an inner scrollbar) is pure CSS: field-sizing: content
     form.innerHTML = `
       <span class="comment-form__avatar" aria-hidden="true">${this.options.userInitial}</span>
       <label for="${INPUT_ID}" class="visually-hidden">Write a comment</label>
@@ -46,7 +45,6 @@ export class CommentForm extends ComponentBase {
     const input = form.querySelector<HTMLTextAreaElement>('.comment-form__input');
     const submit = form.querySelector<HTMLButtonElement>('.comment-form__submit');
 
-    // Style guide "Disabled / Empty": nothing to send → the button is disabled
     input?.addEventListener('input', () => {
       if (submit) submit.disabled = input.value.trim() === '';
     });
