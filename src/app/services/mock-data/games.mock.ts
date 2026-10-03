@@ -16,7 +16,6 @@ export const LIBRARY_GAMES_MOCK: readonly GameSummary[] = [
     rating: 4.8,
     likesCount: 28_750,
     cardImage: '/assets/images/games/vacation-cafe-simulator-card.jpg',
-    featured: true,
   },
   {
     slug: 'winter-burrow',
@@ -28,7 +27,6 @@ export const LIBRARY_GAMES_MOCK: readonly GameSummary[] = [
     rating: 4.9,
     likesCount: 32_400,
     cardImage: '/assets/images/games/winter-burrow-card.jpg',
-    featured: true,
   },
   {
     slug: 'shelve-the-potions',
@@ -40,7 +38,6 @@ export const LIBRARY_GAMES_MOCK: readonly GameSummary[] = [
     rating: 4.7,
     likesCount: 21_300,
     cardImage: '/assets/images/games/shelve-the-potions-card.jpg',
-    featured: true,
   },
   {
     slug: 'heartopia',
@@ -52,7 +49,6 @@ export const LIBRARY_GAMES_MOCK: readonly GameSummary[] = [
     rating: 4.6,
     likesCount: 46_800,
     cardImage: '/assets/images/games/heartopia-card.jpg',
-    featured: true,
   },
   {
     slug: 'palia',
@@ -64,7 +60,6 @@ export const LIBRARY_GAMES_MOCK: readonly GameSummary[] = [
     rating: 4.8,
     likesCount: 89_500,
     cardImage: '/assets/images/games/palia-card.jpg',
-    featured: true,
   },
   {
     slug: 'cat-mail-co',
@@ -76,7 +71,6 @@ export const LIBRARY_GAMES_MOCK: readonly GameSummary[] = [
     rating: 4.9,
     likesCount: 38_200,
     cardImage: '/assets/images/games/cat-mail-co-card.jpg',
-    featured: true,
   },
 ];
 
@@ -91,7 +85,6 @@ const MORE_FEATURED_GAMES_MOCK: readonly GameSummary[] = [
     rating: 4.9,
     likesCount: 67_300,
     cardImage: '/assets/images/games/tiny-glade-card.jpg',
-    featured: true,
   },
   {
     slug: 'tailside-cozy-cafe-sim',
@@ -103,7 +96,6 @@ const MORE_FEATURED_GAMES_MOCK: readonly GameSummary[] = [
     rating: 4.8,
     likesCount: 35_600,
     cardImage: '/assets/images/games/tailside-cozy-cafe-sim-card.jpg',
-    featured: true,
   },
   {
     slug: 'islanders-new-shores',
@@ -115,7 +107,6 @@ const MORE_FEATURED_GAMES_MOCK: readonly GameSummary[] = [
     rating: 4.9,
     likesCount: 54_200,
     cardImage: '/assets/images/games/islanders-new-shores-card.jpg',
-    featured: true,
   },
 ];
 
