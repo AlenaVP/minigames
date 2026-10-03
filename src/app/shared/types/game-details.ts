@@ -34,3 +34,17 @@ export interface GameComment {
   /** ISO 8601 date-time */
   createdAt: string;
 }
+
+export type CommentsSort = 'newest' | 'oldest';
+
+export interface CommentsQuery {
+  limit?: number;
+  sort?: CommentsSort;
+}
+
+/** The latest comments plus the total count for the "Comments (12)" heading */
+export interface CommentsPage {
+  comments: readonly GameComment[];
+  /** Full count for the game, even when `limit` trims the list */
+  total: number;
+}

@@ -1,7 +1,10 @@
+/** GET /api/categories → data[] */
 export interface Category {
-  /** string, not a union: in Story 3 the list comes from the API and may grow */
+  /** string, not a union: the list comes from the API and may grow */
   slug: string;
   label: string;
+  /** Exactly one category is the default selection */
+  isDefault: boolean;
 }
 
 export type SortValue = 'rating-asc' | 'rating-desc' | 'name-asc' | 'name-desc';
@@ -14,7 +17,7 @@ export interface SortOption {
   srLabel: string;
 }
 
-/** Card-level game data — same shape as tasks/mock-data/all-games-seed.json → data[] */
+/** GET /api/games → data[] (no `featured` field: the seed JSON has it, the API does not) */
 export interface GameSummary {
   slug: string;
   name: string;
@@ -24,6 +27,22 @@ export interface GameSummary {
   shortDescription: string;
   rating: number;
   likesCount: number;
+  /** Path inside the frontend's assets — covers are resolved by slug instead (shared/utils/game-cover.ts) */
   cardImage: string;
-  featured: boolean;
+}
+
+/** Query parameters of GET /api/games (Library mode) */
+export interface GamesQuery {
+  category: string;
+  sort: SortValue;
+  page: number;
+  limit: number;
+}
+
+/** One Library page plus the metadata the pagination is built from */
+export interface GamesPage {
+  games: readonly GameSummary[];
+  page: number;
+  totalPages: number;
+  totalItems: number;
 }
