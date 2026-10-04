@@ -1,5 +1,6 @@
 import { ComponentBase } from '@app/core/component.base';
 import { sendIcon } from '@shared/ui/icons';
+import { snackbar } from '@shared/ui/snackbar';
 import './comment-form.scss';
 
 interface CommentFormOptions {
@@ -10,8 +11,8 @@ interface CommentFormOptions {
 const INPUT_ID = 'game-comment-input';
 
 /**
- * Story 2: layout + UI states only. Submitting does nothing (2-2-6);
- * Story 3: POST the comment, lock the form during the request, show a snackbar.
+ * Layout + UI states. Story 3 is read-only, so sending only explains why it can't happen yet;
+ * Story 4: POST the comment, lock the form during the request, show a snackbar.
  */
 export class CommentForm extends ComponentBase {
   private options: CommentFormOptions;
@@ -49,7 +50,11 @@ export class CommentForm extends ComponentBase {
       if (submit) submit.disabled = input.value.trim() === '';
     });
 
-    form.addEventListener('submit', (event) => event.preventDefault());
+    // The draft stays in the field: after signing in (Story 4) it can be sent as is
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      snackbar.info('Sign in to leave a comment.');
+    });
 
     return form;
   }
