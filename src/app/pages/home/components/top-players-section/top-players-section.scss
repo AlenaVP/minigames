@@ -275,3 +275,29 @@
     white-space: nowrap;
   }
 }
+
+// --- Loading placeholders: bars sized like the values they stand for ---
+.top-players__skeleton {
+  width: 64%;
+  height: $size-2;
+  margin-inline: auto;
+
+  &--rank {
+    width: $size-4;
+  }
+
+  &--avatar {
+    margin-inline: 0;
+  }
+
+  &--badge {
+    width: 72%;
+    height: $size-p28;
+    border-radius: $corner-full;
+  }
+
+  .top-players__player > & {
+    flex: 1;
+    margin-inline: 0;
+  }
+}
