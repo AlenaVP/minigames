@@ -14,8 +14,13 @@ export function formatRating(value: number): string {
 
 const integerFormat = new Intl.NumberFormat('en');
 
+/** 94250 → "94,250" */
+export function formatInteger(value: number): string {
+  return integerFormat.format(value);
+}
+
 export function formatScore(value: number): string {
-  return `${integerFormat.format(value)} pts`;
+  return `${formatInteger(value)} pts`;
 }
 
 // numeric: 'always' → "1 day ago" (as in Figma), not "yesterday"
