@@ -94,7 +94,10 @@ export function renderLibraryGameCardSkeleton(): string {
             </span>
           </p>
           <div class="library-card__footer">
-            <p class="library-card__stats"><span class="skeleton-text">★ 4.9 ♥ 12.3K</span></p>
+            <p class="library-card__stats">
+              <span class="library-card__stat"><span class="library-card__icon skeleton"></span><span class="skeleton-text">4.9</span></span>
+              <span class="library-card__stat"><span class="library-card__icon skeleton"></span><span class="skeleton-text">12.3K</span></span>
+            </p>
             <span class="library-card__details skeleton">Details</span>
           </div>
         </div>

@@ -6,7 +6,7 @@ import './top-records.scss';
 
 interface TopRecordsOptions {
   records: readonly TopRecord[];
-  /** The moment "ago" is counted from: MOCK_NOW in Story 2, the real clock later */
+  /** The moment "ago" is counted from; the real clock by default */
   now?: Date;
 }
 
@@ -34,7 +34,8 @@ export class TopRecords extends ComponentBase {
         <span aria-hidden="true">🏆</span>
         Top Records
       </h3>
-      <ol class="top-records__list">
+      ${records.length === 0 ? '<p class="top-records__empty">No records yet — be the first to set one.</p>' : ''}
+      <ol class="top-records__list"${records.length === 0 ? ' hidden' : ''}>
         ${records
           .map(
             ({ position, playerName, score, achievedAt }) => `

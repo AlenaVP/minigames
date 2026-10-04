@@ -37,8 +37,8 @@ export function bootstrapApp(): void {
   snackbar.mount(document.body);
 
   const router = new Router(pageOutlet, {
-    home: () => new HomePage({ onGameDetails: () => gameDetailsDialog.open() }),
-    library: () => new LibraryPage({ onGameDetails: () => gameDetailsDialog.open() }),
+    home: () => new HomePage({ onGameDetails: (slug) => gameDetailsDialog.open(slug) }),
+    library: () => new LibraryPage({ onGameDetails: (slug) => gameDetailsDialog.open(slug) }),
   });
 
   router.onChange((route) => {

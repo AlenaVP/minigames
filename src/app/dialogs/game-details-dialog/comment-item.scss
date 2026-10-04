@@ -33,6 +33,10 @@ $avatar-palette: $color-primary, $color-avatar-1, $color-avatar-2, $color-avatar
     font-size: $font-size-label-medium;
     font-weight: $font-weight-bold;
 
+    &--skeleton {
+      border-color: transparent;
+    }
+
     @for $i from 1 through list.length($avatar-palette) {
       &--#{$i - 1} {
         background-color: list.nth($avatar-palette, $i);
