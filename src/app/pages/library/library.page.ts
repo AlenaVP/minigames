@@ -1,29 +1,76 @@
 import { ComponentBase } from '@app/core/component.base';
-import { LIBRARY_GAMES_MOCK, LIBRARY_TOTAL_GAMES_MOCK } from '@app/services/mock-data/games.mock';
-import type { SortValue } from '@shared/types/game';
+import { HttpError } from '@app/core/http';
+import { catalogApi, gamesApi } from '@app/services/api';
+import { AsyncContent } from '@shared/ui/async-content';
+import { EmptyState } from '@shared/ui/empty-state';
+import { snackbar } from '@shared/ui/snackbar';
+import type { Category, GamesPage } from '@shared/types/game';
 import { FilterSortBar } from './components/filter-sort-bar';
-import { GameCardsSection } from './components/game-cards-section';
+import { GameCardsSection, renderGameCardsSkeleton } from './components/game-cards-section';
 import { Pagination } from './components/pagination';
-import { CATEGORIES, DEFAULT_CATEGORY, DEFAULT_SORT, LIBRARY_PAGE_SIZE, SORT_OPTIONS } from './library.constants';
+import { LIBRARY_PAGE_SIZE, SORT_OPTIONS } from './library.constants';
+import type { QueryAwarePage } from '@app/core/router';
+import { INITIAL_LIBRARY_STATE, type LibraryState, isSameLibraryState, resolveCategory } from './library-state';
+import { parseLibraryQuery } from './library-query';
 import './library.page.scss';
 
 interface LibraryPageOptions {
+  /** The query the page was opened with (deep link, Back/Forward, a nav link) */
+  initialQuery: URLSearchParams;
   onGameDetails: (slug: string) => void;
+  /**
+   * The page never changes its state by itself: it asks for a URL.
+   * replace = a correction (canonical form, invalid input), not a step the user can go Back to.
+   */
+  onNavigate: (state: LibraryState, options: { replace: boolean }) => void;
 }
 
-interface LibraryState {
-  category: string;
-  sort: SortValue;
-  page: number;
-}
+/**
+ * Container component: turns the URL's LibraryState into ONE games request and pushes the result
+ * down to the presentational parts (chips, sort, cards, pagination).
+ *
+ *   control → requestState(patch) → onNavigate → URL (pushState)
+ *   URL (any source) → onQueryChange → applyState(state) → GET /games → cards + pagination from meta
+ *                                                        └→ resolved state differs? → onNavigate(replace)
+ */
+export class LibraryPage extends ComponentBase implements QueryAwarePage {
+  private readonly options: LibraryPageOptions;
+  private state: LibraryState = INITIAL_LIBRARY_STATE;
+  private hasRequested = false;
+  private categories: readonly Category[] = [];
 
-export class LibraryPage extends ComponentBase {
-  private options: LibraryPageOptions;
-  private state: LibraryState = { category: DEFAULT_CATEGORY, sort: DEFAULT_SORT, page: 1 };
+  private filterBar: FilterSortBar | null = null;
+  private results: HTMLElement | null = null;
+  private gamesArea: AsyncContent<GamesPage> | null = null;
+  private pagination: Pagination | null = null;
 
   constructor(options: LibraryPageOptions) {
     super();
     this.options = options;
+  }
+
+  mount(parent: HTMLElement): void {
+    super.mount(parent);
+    this.onQueryChange(this.options.initialQuery);
+  }
+
+  /** Called by the router for every URL change on this page (filters, Back/Forward, dialogs) */
+  onQueryChange(query: URLSearchParams): void {
+    const { state, issues } = parseLibraryQuery(query);
+    for (const issue of issues) snackbar.warning(issue);
+    this.applyState(state);
+  }
+
+  /** The one way in for a new state. The same state again is a no-op — no duplicate requests. */
+  applyState(next: LibraryState): void {
+    if (this.hasRequested && isSameLibraryState(next, this.state)) return;
+
+    this.state = next;
+    // No category in the URL = the default one: known already if the categories are loaded
+    const category =
+      next.category ?? (this.categories.length > 0 ? resolveCategory(undefined, this.categories).slug : undefined);
+    if (category !== undefined) this.filterBar?.sync(category, next.sort);
+    this.load();
   }
 
   protected render(): HTMLElement {
@@ -36,47 +83,132 @@ export class LibraryPage extends ComponentBase {
           <h1 id="library-title" class="library__title">Game Library</h1>
           <p class="library__subtitle">Browse our collection of casual mini-games</p>
         </div>
+        <div class="library__results"></div>
       </section>
     `;
 
     const section = page.querySelector<HTMLElement>('.library');
+    this.results = page.querySelector<HTMLElement>('.library__results');
+    if (!section || !this.results) return page;
 
-    if (section) {
-      this.mountChild(
-        new FilterSortBar({
-          categories: CATEGORIES,
-          selectedCategory: this.state.category,
-          sortOptions: SORT_OPTIONS,
-          selectedSort: this.state.sort,
-          onCategoryChange: (category) => this.setState({ category }),
-          onSortChange: (sort) => this.setState({ sort }),
-        }),
-        section,
-      );
+    this.filterBar = new FilterSortBar({
+      sortOptions: SORT_OPTIONS,
+      selectedSort: this.state.sort,
+      onCategoryChange: (category) => this.requestState({ category }),
+      onSortChange: (sort) => this.requestState({ sort }),
+    });
+    this.mountChild(this.filterBar, section);
+    // The bar must stand above the results — mountChild appends, so move the results after it
+    section.append(this.results);
 
-      this.mountChild(
-        new GameCardsSection({
-          games: LIBRARY_GAMES_MOCK,
-          categories: CATEGORIES,
-          onDetailsClick: (slug) => this.options.onGameDetails(slug),
-        }),
-        section,
-      );
+    this.gamesArea = this.mountChild(
+      new AsyncContent<GamesPage>({
+        label: 'games',
+        isEmpty: ({ games }) => games.length === 0,
+        renderSkeleton: () => renderGameCardsSkeleton(LIBRARY_PAGE_SIZE),
+        renderContent: ({ games }) =>
+          new GameCardsSection({ games, categories: this.categories, onDetailsClick: this.options.onGameDetails }),
+        renderEmpty: () =>
+          new EmptyState({ title: 'Data Not Found', message: 'There are no games here yet. Try another category.' }),
+        onStateChange: (state) => {
+          if (state.status === 'success' || state.status === 'empty') {
+            const { page: currentPage, totalPages } = state.data;
+            this.pagination?.setState({ currentPage, totalPages });
+            this.pagination?.setVisible(true);
+          }
+          // No metadata to build it from
+          if (state.status === 'error') this.pagination?.setVisible(false);
+        },
+      }),
+      this.results,
+    );
 
-      this.mountChild(
-        new Pagination({
-          totalPages: Math.ceil(LIBRARY_TOTAL_GAMES_MOCK / LIBRARY_PAGE_SIZE),
-          currentPage: this.state.page,
-          onPageChange: (pageNumber) => this.setState({ page: pageNumber }),
-        }),
-        section,
-      );
-    }
+    this.pagination = this.mountChild(
+      new Pagination({
+        onPageChange: (pageNumber) => {
+          this.requestState({ page: pageNumber });
+          this.scrollResultsIntoView();
+        },
+      }),
+      section,
+    );
 
     return page;
   }
 
-  private setState(patch: Partial<LibraryState>): void {
-    this.state = { ...this.state, ...patch };
+  /** A user action → a new URL (and only then a request). 3-2-4: a new category or sort starts from page 1. */
+  private requestState(patch: Partial<LibraryState>): void {
+    const resetsPage = patch.category !== undefined || patch.sort !== undefined;
+    this.options.onNavigate({ ...this.state, ...patch, ...(resetsPage ? { page: 1 } : {}) }, { replace: false });
   }
+
+  private load(): void {
+    this.hasRequested = true;
+    const requested = this.state;
+    void this.gamesArea?.load((signal) => this.fetchGames(requested, signal));
+  }
+
+  /**
+   * One "request" for the area = categories (cached after the first time) + games.
+   * Invalid input is fixed here, with a warning, instead of being sent to the API:
+   * an unknown category → default; a page past the end → the last page.
+   */
+  private async fetchGames(requested: LibraryState, signal: AbortSignal): Promise<GamesPage> {
+    const categories = await this.loadCategories();
+    throwIfAborted(signal);
+
+    const category = resolveCategory(requested.category, categories);
+    if (category.isFallback) {
+      snackbar.warning(`Category "${requested.category ?? ''}" doesn't exist — showing all games.`);
+    }
+
+    let resolved: LibraryState = { ...requested, category: category.slug };
+    let result = await gamesApi.getGames({ ...resolved, category: category.slug, limit: LIBRARY_PAGE_SIZE }, signal);
+
+    if (result.totalPages > 0 && result.page > result.totalPages) {
+      snackbar.warning(`Page ${result.page} doesn't exist — showing page ${result.totalPages}.`);
+      resolved = { ...resolved, page: result.totalPages };
+      result = await gamesApi.getGames({ ...resolved, category: category.slug, limit: LIBRARY_PAGE_SIZE }, signal);
+    }
+
+    throwIfAborted(signal);
+    this.commitResolvedState(resolved);
+    return result;
+  }
+
+  private async loadCategories(): Promise<readonly Category[]> {
+    try {
+      const categories = await catalogApi.getCategories();
+      if (categories !== this.categories) {
+        this.categories = categories;
+        this.filterBar?.setCategories(categories, resolveCategory(this.state.category, categories).slug);
+      }
+      return categories;
+    } catch (error) {
+      this.filterBar?.clearCategories();
+      throw error;
+    }
+  }
+
+  /**
+   * The state as actually loaded (default category filled in, page clamped) → the canonical URL.
+   * Not a user action, so history.replaceState: Back doesn't step through corrections.
+   * The router then calls onQueryChange with this same state → isSameLibraryState → no second request.
+   */
+  private commitResolvedState(resolved: LibraryState): void {
+    this.state = resolved;
+    if (resolved.category !== undefined) this.filterBar?.sync(resolved.category, resolved.sort);
+    this.options.onNavigate(resolved, { replace: true });
+  }
+
+  /** After a page click at the bottom, bring the top of the new list into view */
+  private scrollResultsIntoView(): void {
+    if (this.results && this.results.getBoundingClientRect().top < 0) {
+      this.results.scrollIntoView({ block: 'start' });
+    }
+  }
+}
+
+function throwIfAborted(signal: AbortSignal): void {
+  if (signal.aborted) throw new HttpError('aborted');
 }

@@ -201,4 +201,11 @@ $spec-shadow: $shadow-level-1;
       clip-path: none;
     }
   }
+
+  // Loading placeholder of the buttons: same box, no frame, no shadow, no label
+  &__action--skeleton {
+    border-color: transparent;
+    box-shadow: none;
+    color: transparent;
+  }
 }

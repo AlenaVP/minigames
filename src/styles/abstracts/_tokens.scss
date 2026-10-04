@@ -34,6 +34,21 @@ $color-disabled-outline: rgba($color-on-primary, 0.1); // pagination: disabled a
 $color-disabled-content: rgba($color-on-primary, 0.4); // pagination: disabled arrow icon
 $color-disabled-on-outline: color.mix($color-on-primary, $color-outline, 30%); // send button: disabled icon
 
+// --- Feedback states (Story 3: snackbar, banners, skeleton — not in Figma, built from the palette above) ---
+$color-success: $color-price-free;
+$color-info: $color-tertiary;
+$color-success-container: color.mix($color-success, $color-white, 12%);
+$color-error-container: color.mix($color-error, $color-white, 10%);
+$color-warning-container: $color-primary-low;
+$color-info-container: $color-secondary;
+$color-skeleton: $color-outline;
+$color-skeleton-shine: color.mix($color-outline, $color-white, 35%);
+$color-hover-overlay: rgba($color-on-primary, 0.08); // hover of an icon-only button on a tinted background
+
+// 404 page: the big "404" (not in Figma)
+$font-size-error-code-mobile: 72px;
+$font-size-error-code: 120px;
+
 // --- Additional (avatar placeholders) ---
 $color-avatar-1: #e9eef6;
 $color-avatar-2: #a3e2c9;
@@ -86,6 +101,8 @@ $size-15: 120px;
 
 // --- Custom sizes: $size-pN = N px (values that are not in the scale above) ---
 $size-p28: 28px; // comment and leaderboard avatars
+$size-p480: 480px; // snackbar: max width on wide screens
+$size-p640: 640px; // 404 card: max width
 
 // --- Corner radii ---
 $corner-extra-small: 4px;

@@ -62,4 +62,18 @@ $close-size: 40px;
     // Figma: 24px from the dialog's OUTER edge; the 2px border already takes 2 of them
     padding: $size-3 22px 22px;
   }
+
+  // ---------- Story 3: loading / failure states of the details request ----------
+  // Error banner and Game Not Found get the body's padding, plus room under the sticky close button
+  &__content > .async-content > :is(.error-banner, .empty-state) {
+    margin: ($close-offset * 2 + $close-size-mobile) 22px 22px;
+
+    @include tablet {
+      margin-top: $close-offset * 2 + $close-size;
+    }
+  }
+
+  &__skeleton .game-details-hero__image {
+    border-radius: 0;
+  }
 }

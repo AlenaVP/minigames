@@ -1,8 +1,8 @@
-import { DEFAULT_ROUTE, toHref, type RouteId } from '../constants/routes';
+import { DEFAULT_ROUTE, toHref, type PageRouteId, type RouteId } from '../constants/routes';
 import type { NavLink } from '../constants/nav-links';
 
-/** Attributes for any in-app link: real href (semantics, Story 4) + data-route (SPA click). */
-export function routeLinkAttributes(route: RouteId): string {
+/** Attributes for any in-app link: a real href (semantics, Ctrl-click, copy link) + data-route (SPA click). */
+export function routeLinkAttributes(route: PageRouteId): string {
   return `href="${toHref(route)}" data-route="${route}"`;
 }
 

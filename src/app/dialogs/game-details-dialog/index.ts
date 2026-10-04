@@ -1,23 +1,35 @@
 import { DialogBase } from '@app/core/dialog.base';
-import { GAME_COMMENTS_MOCK, GAME_DETAILS_MOCK, MOCK_NOW } from '@app/services/mock-data/game-details.mock';
 import { GAME_DETAILS_TITLE_ID, GameDetailsContent } from './game-details-content';
 import './game-details-dialog.scss';
 
+interface GameDetailsDialogOptions {
+  onClose?: () => void;
+}
+
 /**
- * Story 2: always shows the static "Tukoni: Forest Keepers" (Common Game Details Content Requirements).
- * Story 3: open(slug) → GET /games/:slug; Story 4: ?game=slug in the URL.
+ * open(slug) → GET /games/{slug} (+ its comments). Driven by ?game=<slug> in the URL.
  */
 export class GameDetailsDialog extends DialogBase {
   private content: GameDetailsContent | null = null;
+  private slug: string | null = null;
 
-  constructor() {
-    super({ className: 'game-details', ariaLabelledBy: GAME_DETAILS_TITLE_ID });
+  constructor({ onClose }: GameDetailsDialogOptions = {}) {
+    super({
+      className: 'game-details',
+      ariaLabelledBy: GAME_DETAILS_TITLE_ID,
+      // While loading / in the error states there is no title yet: an aria-labelledby pointing to
+      // a missing id is ignored, and the dialog falls back to this name
+      ariaLabel: 'Game details',
+      onClose,
+    });
   }
 
-  open(): void {
-    if (!this.dialog || this.isOpen) return;
+  /** Idempotent: the same game again does nothing; another game (Back/Forward between two ?game=) swaps the content */
+  open(slug: string): void {
+    if (!this.dialog || (this.isOpen && slug === this.slug)) return;
 
-    this.renderContent(this.dialog);
+    this.slug = slug;
+    this.replaceContent(slug);
     this.dialog.scrollTop = 0;
     this.show();
   }
@@ -28,9 +40,26 @@ export class GameDetailsDialog extends DialogBase {
     super.destroy();
   }
 
+  /** Nothing to show until open(slug) */
   protected renderContent(dialog: HTMLDialogElement): void {
+    // Closed → cancel what is still loading and free the content, but only after the closing animation
+    dialog.addEventListener('close', () => {
+      void Promise.allSettled(dialog.getAnimations().map((animation) => animation.finished)).then(() => {
+        if (!dialog.open) this.clearContent();
+      });
+    });
+  }
+
+  private replaceContent(slug: string): void {
+    if (!this.dialog) return;
+
+    this.clearContent();
+    this.content = new GameDetailsContent({ slug, onClose: () => this.close() });
+    this.content.mount(this.dialog);
+  }
+
+  private clearContent(): void {
     this.content?.destroy();
-    this.content = new GameDetailsContent({ game: GAME_DETAILS_MOCK, comments: GAME_COMMENTS_MOCK, now: MOCK_NOW });
-    this.content.mount(dialog);
+    this.content = null;
   }
 }

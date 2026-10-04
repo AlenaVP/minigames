@@ -6,6 +6,8 @@ export interface DialogConfig {
   ariaLabel?: string;
   /** …or the id of a heading inside the dialog */
   ariaLabelledBy?: string;
+  /** Any way of closing (✕, backdrop, Esc, close()) — the app uses it to update the URL */
+  onClose?: () => void;
 }
 
 /**
@@ -50,6 +52,7 @@ export abstract class DialogBase extends ComponentBase {
     this.dialog = dialog;
     this.renderContent(dialog);
     this.bindCloseTriggers(dialog);
+    dialog.addEventListener('close', () => this.config.onClose?.());
 
     return dialog;
   }

@@ -1,0 +1,81 @@
+@use 'abstracts/tokens' as *;
+@use 'abstracts/breakpoints' as *;
+@use 'abstracts/mixins' as *;
+
+.error-banner {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: $size-2;
+  padding: $size-2;
+  border: 2px solid $color-on-primary;
+  border-radius: $corner-large;
+  background-color: $color-error-container;
+  box-shadow: $shadow-level-1;
+  font-family: $font-family-primary;
+  color: $color-on-primary;
+
+  @include tablet {
+    grid-template-columns: auto 1fr auto;
+    padding: $size-3;
+  }
+
+  &__icon {
+    align-self: start;
+    color: $color-error;
+  }
+
+  &__text {
+    display: grid;
+    gap: $size-05;
+  }
+
+  &__title {
+    font-size: $font-size-body-large;
+    font-weight: $font-weight-bold;
+    line-height: 1.4;
+  }
+
+  &__message {
+    font-size: $font-size-body-small;
+    line-height: 1.5;
+    color: $color-on-bg;
+  }
+
+  // Under the text on mobile, to the right of it from tablet
+  &__retry {
+    grid-column: 1 / -1;
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    gap: $size-1;
+    padding: $btn-medium-y $btn-medium-x;
+    border: 2px solid $color-on-primary;
+    border-radius: $corner-small;
+    background-color: $color-primary;
+    box-shadow: $shadow-level-1;
+    font-weight: $font-weight-bold;
+    font-size: $font-size-label-large;
+    white-space: nowrap;
+    transition:
+      background-color 0.2s ease,
+      box-shadow 0.1s ease,
+      translate 0.1s ease;
+
+    @include tablet {
+      grid-column: auto;
+    }
+
+    @include hover {
+      background-color: $color-primary-high;
+    }
+
+    @include focus-ring;
+
+    &:active {
+      translate: 2px 2px;
+      box-shadow: $shadow-p2;
+      background-color: $color-primary-high;
+    }
+  }
+}

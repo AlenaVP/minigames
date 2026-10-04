@@ -12,3 +12,16 @@ export function getAvatarColorIndex(name: string): number {
 export function getInitial(name: string): string {
   return name.trim().charAt(0).toUpperCase() || '?';
 }
+
+/**
+ * Two letters from a nickname's first two "words" — split on "_", digits, spaces and camelCase:
+ * "Alex_Pro99" → "AP", "CozyGamer_x" → "CG", "MatchMaster" → "MM", "sudoku" → "S".
+ */
+export function getPlayerInitials(name: string): string {
+  const words = name.match(/\p{Lu}?\p{Ll}+|\p{Lu}+(?!\p{Ll})/gu) ?? [];
+  const initials = words
+    .slice(0, 2)
+    .map((word) => word.charAt(0).toUpperCase())
+    .join('');
+  return initials || getInitial(name);
+}

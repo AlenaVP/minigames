@@ -103,12 +103,21 @@ $slide-easing: ease-in-out;
     }
 
     @include hover {
-      background-color: $color-primary;
+      &:not(:disabled) {
+        background-color: $color-primary;
+      }
     }
 
     &:focus-visible {
       outline: 2px solid $color-tertiary;
       outline-offset: 2px;
+    }
+
+    // While the games load or after an error there is nothing to scroll
+    &:disabled {
+      border-color: $color-disabled-outline;
+      color: $color-disabled-content;
+      cursor: default;
     }
   }
 
@@ -170,6 +179,13 @@ $slide-easing: ease-in-out;
 
     @include desktop-mid {
       height: 384px;
+    }
+
+    // Loading placeholder: a transparent border = the same 2px as .game-card, so the widths match exactly.
+    // Declared BEFORE the positions: their `border-inline-width: 0` for collapsed slots must win
+    &.skeleton {
+      border: 2px solid transparent;
+      border-radius: $corner-large;
     }
 
     &[data-position='center'] {

@@ -267,4 +267,28 @@ $horizontal-min-width: 560px;
       outline-offset: 2px;
     }
   }
+
+  // ---------- Loading placeholder (renderLibraryGameCardSkeleton) ----------
+  &--skeleton {
+    // Same frame size as a real card, but without the dark outline and shadow
+    border-color: $color-outline;
+    box-shadow: none;
+  }
+
+  &--skeleton &__category,
+  &--skeleton &__details {
+    border-color: transparent;
+    color: transparent;
+  }
+
+  // The "…" of line-clamp is painted in the paragraph's colour, not the span's
+  &--skeleton &__description {
+    color: transparent;
+  }
+
+  &--skeleton &__details {
+    display: grid;
+    place-items: center;
+    cursor: default;
+  }
 }

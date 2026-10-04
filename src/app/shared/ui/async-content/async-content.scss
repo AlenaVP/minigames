@@ -1,0 +1,6 @@
+.async-content {
+  // Programmatic focus target only (tabindex="-1"): no ring around the whole area
+  &:focus {
+    outline: none;
+  }
+}

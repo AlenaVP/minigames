@@ -41,3 +41,22 @@
   white-space: nowrap;
   border: 0;
 }
+
+// Same ring as the other custom controls (tertiary = focus colour in the Guidebook)
+@mixin focus-ring {
+  &:focus-visible {
+    outline: 2px solid $color-tertiary;
+    outline-offset: 2px;
+  }
+}
+
+// Placeholder block with a light sweeping highlight. Shapes (size, radius) stay in each section's skeleton.
+@mixin skeleton {
+  background: linear-gradient(90deg, $color-skeleton 25%, $color-skeleton-shine 50%, $color-skeleton 75%) 0 0 / 300% 100%
+    $color-skeleton;
+  animation: skeleton-shine 1.4s ease-in-out infinite;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}

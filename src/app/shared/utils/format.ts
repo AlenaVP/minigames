@@ -14,45 +14,49 @@ export function formatRating(value: number): string {
 
 const integerFormat = new Intl.NumberFormat('en');
 
-export function formatScore(value: number): string {
-  return `${integerFormat.format(value)} pts`;
+/** 94250 → "94,250" */
+export function formatInteger(value: number): string {
+  return integerFormat.format(value);
 }
 
-// numeric: 'always' → "1 day ago" (as in Figma), not "yesterday"
-const relativeTimeFormat = new Intl.RelativeTimeFormat('en', { numeric: 'always' });
+export function formatScore(value: number): string {
+  return `${formatInteger(value)} pts`;
+}
 
 const MINUTE_MS = 60 * 1000;
 const HOUR_MS = 60 * MINUTE_MS;
 const DAY_MS = 24 * HOUR_MS;
 
 const DAYS_IN_WEEK = 7;
+const WEEKS_SHOWN = 3; // 3-3-2: "1–3 weeks", then months
 const DAYS_IN_MONTH = 30;
+const MONTHS_SHOWN = 11; // "1–11 months", then years
 const DAYS_IN_YEAR = 365;
 
-/** Whole calendar days between two moments, counted in UTC (the API sends ISO dates in UTC). */
-function calendarDaysBetween(from: Date, to: Date): number {
-  const fromDay = Date.UTC(from.getUTCFullYear(), from.getUTCMonth(), from.getUTCDate());
-  const toDay = Date.UTC(to.getUTCFullYear(), to.getUTCMonth(), to.getUTCDate());
-  return Math.round((toDay - fromDay) / DAY_MS);
+function ago(count: number, unit: string): string {
+  return `${count} ${unit}${count === 1 ? '' : 's'} ago`;
 }
 
 /**
- * "3 hours ago", "1 day ago", "2 weeks ago" …
- * Same calendar day → minutes/hours; otherwise calendar days, then weeks, months, years.
- * `now` is a parameter, not `new Date()` inside: tests (Story 4) and the Story 2 mock pass a fixed moment.
+ * 3-3-2 relative time, by ELAPSED time (not calendar days):
+ *
+ *   < 1 min → "just now"     1–59 min → "N min ago"      1–23 h → "N hour(s) ago"
+ *   1–6 days → "N day(s)"    7–27 days → "1–3 weeks"      28–364 days → "1–11 months"     ≥ 365 days → "N year(s)"
+ *
+ * Weeks stop at 3 and months at 11, exactly as the task lists them: day 28 is already "1 month ago",
+ * day 360 is still "11 months ago". A date in the future (clock skew) counts as "just now".
+ * `now` is a parameter (default: the real clock) → deterministic unit tests in Story 4.
  */
 export function formatRelativeTime(isoDate: string, now: Date = new Date()): string {
-  const date = new Date(isoDate);
-  const days = calendarDaysBetween(date, now);
+  const elapsed = now.getTime() - new Date(isoDate).getTime();
 
-  if (days === 0) {
-    const elapsed = now.getTime() - date.getTime();
-    if (elapsed < HOUR_MS) return relativeTimeFormat.format(-Math.max(1, Math.floor(elapsed / MINUTE_MS)), 'minute');
-    return relativeTimeFormat.format(-Math.floor(elapsed / HOUR_MS), 'hour');
-  }
+  if (Number.isNaN(elapsed) || elapsed < MINUTE_MS) return 'just now';
+  if (elapsed < HOUR_MS) return `${Math.floor(elapsed / MINUTE_MS)} min ago`;
+  if (elapsed < DAY_MS) return ago(Math.floor(elapsed / HOUR_MS), 'hour');
 
-  if (days < DAYS_IN_WEEK) return relativeTimeFormat.format(-days, 'day');
-  if (days < DAYS_IN_MONTH) return relativeTimeFormat.format(-Math.floor(days / DAYS_IN_WEEK), 'week');
-  if (days < DAYS_IN_YEAR) return relativeTimeFormat.format(-Math.floor(days / DAYS_IN_MONTH), 'month');
-  return relativeTimeFormat.format(-Math.floor(days / DAYS_IN_YEAR), 'year');
+  const days = Math.floor(elapsed / DAY_MS);
+  if (days < DAYS_IN_WEEK) return ago(days, 'day');
+  if (days < DAYS_IN_WEEK * (WEEKS_SHOWN + 1)) return ago(Math.floor(days / DAYS_IN_WEEK), 'week');
+  if (days < DAYS_IN_YEAR) return ago(Math.min(Math.max(1, Math.floor(days / DAYS_IN_MONTH)), MONTHS_SHOWN), 'month');
+  return ago(Math.floor(days / DAYS_IN_YEAR), 'year');
 }

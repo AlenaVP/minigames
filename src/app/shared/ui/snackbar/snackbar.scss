@@ -1,0 +1,110 @@
+@use 'abstracts/tokens' as *;
+@use 'abstracts/breakpoints' as *;
+@use 'abstracts/mixins' as *;
+
+$snackbar-transition: 0.25s ease;
+$snackbar-hidden-transform: translateY($size-2);
+
+// The container is an always-open, see-through popover: only the messages themselves catch the pointer
+.snackbar {
+  // Overrides of the popover's UA styles (centred box with a border and a Canvas background)
+  inset: auto 0 $size-2;
+  width: min(100% - 2 * $size-2, $size-p480);
+  height: auto;
+  margin: 0 auto;
+  padding: 0;
+  border: 0;
+  background: none;
+  overflow: visible;
+  pointer-events: none;
+
+  display: flex;
+  flex-direction: column;
+  gap: $size-1;
+
+  @include tablet {
+    inset-block-end: $size-3;
+  }
+
+  &__item {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: $size-1 $size-2;
+    padding: $size-1 $size-1 $size-1 $size-2;
+    border: 2px solid $color-on-primary;
+    border-radius: $corner-medium;
+    box-shadow: $shadow-level-1;
+    font-family: $font-family-primary;
+    color: $color-on-primary;
+    pointer-events: auto;
+
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity $snackbar-transition,
+      transform $snackbar-transition;
+
+    @starting-style {
+      opacity: 0;
+      transform: $snackbar-hidden-transform;
+    }
+
+    &--leaving {
+      opacity: 0;
+      transform: $snackbar-hidden-transform;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
+
+    // Variants differ by background AND icon (not by colour alone)
+    &--success {
+      background-color: $color-success-container;
+      --snackbar-icon-color: #{$color-success};
+    }
+
+    &--error {
+      background-color: $color-error-container;
+      --snackbar-icon-color: #{$color-error};
+    }
+
+    &--warning {
+      background-color: $color-warning-container;
+      --snackbar-icon-color: #{$color-on-primary};
+    }
+
+    &--info {
+      background-color: $color-info-container;
+      --snackbar-icon-color: #{$color-info};
+    }
+  }
+
+  &__icon {
+    color: var(--snackbar-icon-color);
+  }
+
+  &__text {
+    padding-block: $size-05;
+    font-size: $font-size-body-small;
+    font-weight: $font-weight-medium;
+    line-height: 1.4;
+  }
+
+  &__close {
+    display: grid;
+    place-items: center;
+    width: $size-5;
+    height: $size-5;
+    border-radius: $corner-small;
+    color: $color-on-primary;
+    transition: background-color 0.2s ease;
+
+    @include hover {
+      background-color: $color-hover-overlay;
+    }
+
+    @include focus-ring;
+  }
+}

@@ -1,3 +1,4 @@
+@use 'abstracts/tokens' as *;
 @use 'abstracts/mixins' as *;
 
 // --- Reset ---
@@ -85,4 +86,35 @@ a {
 
 .page-outlet {
   flex: 1 0 auto;
+}
+
+// --- Loading placeholders (Story 3) ---
+@keyframes skeleton-shine {
+  from {
+    background-position: 100% 0;
+  }
+
+  to {
+    background-position: 0 0;
+  }
+}
+
+.skeleton {
+  @include skeleton;
+  display: block;
+  border-radius: $corner-small;
+}
+
+// Text-shaped placeholder: real (invisible) text gets the shimmer as an inline background,
+// so the block keeps exactly the height of the text it stands for — line by line, clamping included
+.skeleton-text {
+  @include skeleton;
+  // Smaller glyphs → visible gaps between the bars. vertical-align: top keeps the line box exactly as tall
+  // as with real text (with baseline alignment a smaller font would push it 1px taller per line)
+  font-size: 0.8em;
+  vertical-align: top;
+  color: transparent;
+  border-radius: $corner-extra-small;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }

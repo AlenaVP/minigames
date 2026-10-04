@@ -1,17 +1,6 @@
-import type { Category, SortOption, SortValue } from '@shared/types/game';
+import type { SortOption, SortValue } from '@shared/types/game';
 
-export const CATEGORIES: readonly Category[] = [
-  { slug: 'all', label: 'All Games' },
-  { slug: 'puzzle', label: 'Puzzle' },
-  { slug: 'card', label: 'Card' },
-  { slug: 'match', label: 'Match' },
-  { slug: 'farm', label: 'Farm' },
-  { slug: 'strategy', label: 'Strategy' },
-  { slug: 'arcade', label: 'Arcade' },
-];
-
-export const DEFAULT_CATEGORY = 'all';
-
+// Categories come from GET /api/categories; sort options are client constants (no endpoint for them)
 export const SORT_OPTIONS: readonly SortOption[] = [
   { value: 'rating-asc', label: 'Rating ↑', srLabel: 'Rating, low to high' },
   { value: 'rating-desc', label: 'Rating ↓', srLabel: 'Rating, high to low' },
@@ -21,4 +10,5 @@ export const SORT_OPTIONS: readonly SortOption[] = [
 
 export const DEFAULT_SORT: SortValue = 'rating-desc';
 
+/** 3-2-1: the API is always asked for exactly 6 cards */
 export const LIBRARY_PAGE_SIZE = 6;

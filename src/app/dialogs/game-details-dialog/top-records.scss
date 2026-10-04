@@ -66,4 +66,15 @@
     color: $color-on-bg;
     white-space: nowrap;
   }
+
+  &__empty {
+    font-family: $font-family-primary;
+    font-size: $font-size-body-small;
+    color: $color-on-bg;
+  }
+
+  // `display: flex` above would beat the browser's [hidden] rule
+  &__list[hidden] {
+    display: none;
+  }
 }

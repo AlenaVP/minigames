@@ -71,3 +71,37 @@ export class LibraryGameCard extends ComponentBase {
     return card;
   }
 }
+
+/**
+ * Placeholder with the card's real structure and classes: the same container queries and grid areas
+ * place it, and the `.skeleton-text` lines have the height of the text they stand for → no jump on load.
+ */
+export function renderLibraryGameCardSkeleton(): string {
+  return `
+    <li class="library-card library-card--skeleton">
+      <div class="library-card__inner">
+        <span class="library-card__image skeleton"></span>
+        <div class="library-card__body">
+          <div class="library-card__header">
+            <p class="library-card__title"><span class="skeleton-text">Game title placeholder</span></p>
+            <p class="library-card__category skeleton">Category</p>
+            <p class="library-card__price"><span class="skeleton-text">$0.00</span></p>
+          </div>
+          <p class="library-card__description">
+            <span class="skeleton-text">
+              A short description placeholder that is long enough to fill every visible line of the card text
+              block, whatever the width of the card is, so the clamped lines look just like the real ones do.
+            </span>
+          </p>
+          <div class="library-card__footer">
+            <p class="library-card__stats">
+              <span class="library-card__stat"><span class="library-card__icon skeleton"></span><span class="skeleton-text">4.9</span></span>
+              <span class="library-card__stat"><span class="library-card__icon skeleton"></span><span class="skeleton-text">12.3K</span></span>
+            </p>
+            <span class="library-card__details skeleton">Details</span>
+          </div>
+        </div>
+      </div>
+    </li>
+  `;
+}

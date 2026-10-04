@@ -1,0 +1,64 @@
+@use 'abstracts/tokens' as *;
+@use 'abstracts/breakpoints' as *;
+@use 'abstracts/mixins' as *;
+
+.empty-state {
+  display: grid;
+  justify-items: center;
+  gap: $size-1;
+  padding: $size-5 $size-2;
+  border: 2px dashed $color-outline-variant;
+  border-radius: $corner-large;
+  font-family: $font-family-primary;
+  color: $color-on-bg;
+  text-align: center;
+
+  @include tablet {
+    padding: $size-8 $size-3;
+  }
+
+  &__icon {
+    color: $color-on-bg-low;
+  }
+
+  &__title {
+    font-size: $font-size-headline-small;
+    font-weight: $font-weight-bold;
+    line-height: 1.4;
+    color: $color-on-primary;
+  }
+
+  &__message {
+    max-width: 48ch;
+    font-size: $font-size-body-medium;
+    line-height: 1.5;
+  }
+
+  &__action {
+    margin-top: $size-2;
+    padding: $btn-medium-y $btn-medium-x;
+    border: 2px solid $color-on-primary;
+    border-radius: $corner-small;
+    background-color: $color-white;
+    box-shadow: $shadow-level-1;
+    font-family: $font-family-primary;
+    font-size: $font-size-label-large;
+    font-weight: $font-weight-bold;
+    color: $color-on-primary;
+    transition:
+      background-color 0.2s ease,
+      box-shadow 0.1s ease,
+      translate 0.1s ease;
+
+    @include hover {
+      background-color: $color-surface;
+    }
+
+    @include focus-ring;
+
+    &:active {
+      translate: 2px 2px;
+      box-shadow: $shadow-p2;
+    }
+  }
+}

@@ -1,6 +1,8 @@
 import { ComponentBase } from '@app/core/component.base';
 import type { GameComment } from '@shared/types/game-details';
 import { heartOutlineIcon } from '@shared/ui/icons';
+import { snackbar } from '@shared/ui/snackbar';
+import { decodeHtmlEntities } from '@shared/utils/decode-html';
 import { getAvatarColorIndex, getInitial } from '@shared/utils/avatar';
 import { escapeHtml } from '@shared/utils/escape-html';
 import { formatRelativeTime } from '@shared/utils/format';
@@ -11,15 +13,13 @@ interface CommentItemOptions {
   now?: Date;
 }
 
-/** One comment with its own like state: toggling here never touches the other comments. */
+/** One comment, read-only in Story 3: the like state comes from the API (false for a guest). */
 export class CommentItem extends ComponentBase {
   private options: CommentItemOptions;
-  private isLiked: boolean;
 
   constructor(options: CommentItemOptions) {
     super();
     this.options = options;
-    this.isLiked = options.comment.isLikedByCurrentUser;
   }
 
   protected render(): HTMLElement {
@@ -39,8 +39,8 @@ export class CommentItem extends ComponentBase {
             ${formatRelativeTime(comment.createdAt, now)}
           </time>
         </header>
-        <p class="comment__text">${escapeHtml(comment.text)}</p>
-        <button type="button" class="comment__like" aria-pressed="${this.isLiked}">
+        <p class="comment__text">${escapeHtml(decodeHtmlEntities(comment.text))}</p>
+        <button type="button" class="comment__like" aria-pressed="${comment.isLikedByCurrentUser}">
           ${heartOutlineIcon(16)}
           <span class="visually-hidden">Like comment by ${author},</span>
           <span class="comment__like-count">${comment.likesCount}</span>
@@ -49,12 +49,8 @@ export class CommentItem extends ComponentBase {
       </article>
     `;
 
-    const likeButton = item.querySelector<HTMLButtonElement>('.comment__like');
-
-    likeButton?.addEventListener('click', () => {
-      this.isLiked = !this.isLiked;
-      likeButton.setAttribute('aria-pressed', String(this.isLiked));
-    });
+    // Guest-safe (3-3-2): liking is a Story 4 mutation; for now explain instead of faking a like
+    item.querySelector('.comment__like')?.addEventListener('click', () => snackbar.info('Sign in to like comments.'));
 
     return item;
   }
