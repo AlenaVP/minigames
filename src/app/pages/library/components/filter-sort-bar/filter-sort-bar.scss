@@ -15,8 +15,10 @@
     gap: $size-3;
   }
 
-  > .category-chips {
+  // Host of the chips (skeleton → real chips): takes the place the fieldset used to take
+  &__categories {
     align-self: stretch;
+    min-width: 0;
 
     @include desktop {
       flex: 0 1 auto;

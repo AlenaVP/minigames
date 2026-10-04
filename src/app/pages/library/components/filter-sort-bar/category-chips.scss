@@ -67,4 +67,11 @@ $focus-room: 4px;
       outline-offset: 2px;
     }
   }
+
+  // Loading placeholder: same box as a chip (height, padding, label width), no frame, invisible text
+  &__chip--skeleton {
+    border-color: transparent;
+    color: transparent;
+    cursor: default;
+  }
 }

@@ -1,6 +1,7 @@
 import { ComponentBase } from '@app/core/component.base';
 import type { Category } from '@shared/types/game';
 import { enableDragScroll } from '@shared/utils/drag-scroll';
+import { escapeHtml } from '@shared/utils/escape-html';
 import './category-chips.scss';
 
 interface CategoryChipsOptions {
@@ -37,11 +38,11 @@ export class CategoryChips extends ComponentBase {
             <input
               type="radio"
               name="category"
-              value="${slug}"
+              value="${escapeHtml(slug)}"
               class="category-chips__input visually-hidden"
               ${slug === selected ? 'checked' : ''}
             />
-            ${label}
+            ${escapeHtml(label)}
           </label>`,
           )
           .join('')}
@@ -57,4 +58,25 @@ export class CategoryChips extends ComponentBase {
 
     return fieldset;
   }
+
+  /** Outside change (state resolved by the page, later Back/Forward): no `change` event, no onChange */
+  select(slug: string): void {
+    for (const input of this.element?.querySelectorAll<HTMLInputElement>('.category-chips__input') ?? []) {
+      input.checked = input.value === slug;
+    }
+  }
+}
+
+/** Seven chip-shaped placeholders (the API list is short and stable) in the same track as the real chips */
+export function renderCategoryChipsSkeleton(): HTMLElement {
+  const placeholders = ['All Games', 'Puzzle', 'Card', 'Match', 'Farm', 'Strategy', 'Arcade'];
+
+  const element = document.createElement('div');
+  element.classList.add('category-chips');
+  element.innerHTML = `
+    <div class="category-chips__track">
+      ${placeholders.map((label) => `<span class="category-chips__chip category-chips__chip--skeleton skeleton">${label}</span>`).join('')}
+    </div>
+  `;
+  return element;
 }
