@@ -109,6 +109,10 @@ a {
 // so the block keeps exactly the height of the text it stands for — line by line, clamping included
 .skeleton-text {
   @include skeleton;
+  // Smaller glyphs → visible gaps between the bars. vertical-align: top keeps the line box exactly as tall
+  // as with real text (with baseline alignment a smaller font would push it 1px taller per line)
+  font-size: 0.8em;
+  vertical-align: top;
   color: transparent;
   border-radius: $corner-extra-small;
   -webkit-box-decoration-break: clone;
