@@ -39,4 +39,10 @@ export abstract class ComponentBase {
     this.children.push(child);
     return child;
   }
+
+  /** For children that get replaced at runtime (loading → content → error): destroys one and forgets it. */
+  protected destroyChild(child: ComponentBase): void {
+    child.destroy();
+    this.children = this.children.filter((item) => item !== child);
+  }
 }

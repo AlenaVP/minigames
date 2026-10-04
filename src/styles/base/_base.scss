@@ -1,3 +1,4 @@
+@use 'abstracts/tokens' as *;
 @use 'abstracts/mixins' as *;
 
 // --- Reset ---
@@ -85,4 +86,21 @@ a {
 
 .page-outlet {
   flex: 1 0 auto;
+}
+
+// --- Loading placeholders (Story 3) ---
+@keyframes skeleton-shine {
+  from {
+    background-position: 100% 0;
+  }
+
+  to {
+    background-position: 0 0;
+  }
+}
+
+.skeleton {
+  @include skeleton;
+  display: block;
+  border-radius: $corner-small;
 }
