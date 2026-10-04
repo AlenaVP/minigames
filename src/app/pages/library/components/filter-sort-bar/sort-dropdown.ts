@@ -77,6 +77,12 @@ export class SortDropdown extends ComponentBase {
     return root;
   }
 
+  /** Outside change (state resolved by the page, later Back/Forward): updates the UI without onChange */
+  setValue(value: SortValue): void {
+    this.selected = value;
+    this.syncSelection();
+  }
+
   private get optionElements(): HTMLLIElement[] {
     return [...(this.list?.querySelectorAll<HTMLLIElement>('[role="option"]') ?? [])];
   }

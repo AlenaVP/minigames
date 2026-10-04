@@ -1,6 +1,6 @@
 import { ComponentBase } from '@app/core/component.base';
 import type { Category, GameSummary } from '@shared/types/game';
-import { LibraryGameCard } from './library-game-card';
+import { LibraryGameCard, renderLibraryGameCardSkeleton } from './library-game-card';
 import './game-cards-section.scss';
 
 interface GameCardsSectionOptions {
@@ -33,4 +33,12 @@ export class GameCardsSection extends ComponentBase {
 
     return list;
   }
+}
+
+/** The same grid as the real list, `count` card-shaped placeholders */
+export function renderGameCardsSkeleton(count: number): HTMLElement {
+  const list = document.createElement('ul');
+  list.classList.add('game-cards');
+  list.innerHTML = Array.from({ length: count }, () => renderLibraryGameCardSkeleton()).join('');
+  return list;
 }
