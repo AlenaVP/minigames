@@ -10,16 +10,24 @@ const TABS: { mode: AuthMode; label: string }[] = [
   { mode: 'signup', label: 'Register' },
 ];
 
+interface AuthDialogOptions {
+  onClose?: () => void;
+  /** The user switched Login ↔ Register inside the dialog (the URL follows: ?auth=register) */
+  onModeChange?: (mode: AuthMode) => void;
+}
+
 export class AuthDialog extends DialogBase {
-  constructor() {
-    super({ className: 'auth-dialog', ariaLabel: 'Sign in or create an account' });
+  private readonly onModeChange?: (mode: AuthMode) => void;
+
+  constructor({ onClose, onModeChange }: AuthDialogOptions = {}) {
+    super({ className: 'auth-dialog', ariaLabel: 'Sign in or create an account', onClose });
+    this.onModeChange = onModeChange;
   }
 
+  /** Idempotent: already open → only the tab follows (Back/Forward between ?auth=login and ?auth=register) */
   open(mode: AuthMode = 'login'): void {
-    if (this.isOpen) return;
-
     this.setMode(mode);
-    this.show();
+    if (!this.isOpen) this.show();
   }
 
   protected renderContent(dialog: HTMLDialogElement): void {
@@ -45,15 +53,21 @@ export class AuthDialog extends DialogBase {
     const panels = dialog.querySelector<HTMLElement>('.auth-dialog__panels');
 
     if (panels) {
-      this.mountChild(new AuthForm({ config: LOGIN_FORM_CONFIG, onSwitch: () => this.setMode('signup') }), panels);
-      this.mountChild(new AuthForm({ config: REGISTER_FORM_CONFIG, onSwitch: () => this.setMode('login') }), panels);
+      this.mountChild(new AuthForm({ config: LOGIN_FORM_CONFIG, onSwitch: () => this.switchMode('signup') }), panels);
+      this.mountChild(new AuthForm({ config: REGISTER_FORM_CONFIG, onSwitch: () => this.switchMode('login') }), panels);
     }
 
     for (const tab of dialog.querySelectorAll<HTMLButtonElement>('.auth-dialog__tab')) {
       tab.addEventListener('click', () => {
-        this.setMode(tab.dataset.mode === 'signup' ? 'signup' : 'login');
+        this.switchMode(tab.dataset.mode === 'signup' ? 'signup' : 'login');
       });
     }
+  }
+
+  /** A user action: shown at once, and reported so the URL can follow */
+  private switchMode(mode: AuthMode): void {
+    this.setMode(mode);
+    this.onModeChange?.(mode);
   }
 
   private setMode(mode: AuthMode): void {

@@ -2,25 +2,33 @@ import { DialogBase } from '@app/core/dialog.base';
 import { GAME_DETAILS_TITLE_ID, GameDetailsContent } from './game-details-content';
 import './game-details-dialog.scss';
 
+interface GameDetailsDialogOptions {
+  onClose?: () => void;
+}
+
 /**
- * open(slug) → GET /games/{slug} (+ its comments). Branch spa-router: ?game=slug in the URL.
+ * open(slug) → GET /games/{slug} (+ its comments). Driven by ?game=<slug> in the URL.
  */
 export class GameDetailsDialog extends DialogBase {
   private content: GameDetailsContent | null = null;
+  private slug: string | null = null;
 
-  constructor() {
+  constructor({ onClose }: GameDetailsDialogOptions = {}) {
     super({
       className: 'game-details',
       ariaLabelledBy: GAME_DETAILS_TITLE_ID,
       // While loading / in the error states there is no title yet: an aria-labelledby pointing to
       // a missing id is ignored, and the dialog falls back to this name
       ariaLabel: 'Game details',
+      onClose,
     });
   }
 
+  /** Idempotent: the same game again does nothing; another game (Back/Forward between two ?game=) swaps the content */
   open(slug: string): void {
-    if (!this.dialog || this.isOpen) return;
+    if (!this.dialog || (this.isOpen && slug === this.slug)) return;
 
+    this.slug = slug;
     this.replaceContent(slug);
     this.dialog.scrollTop = 0;
     this.show();
