@@ -9,22 +9,31 @@ import { FilterSortBar } from './components/filter-sort-bar';
 import { GameCardsSection, renderGameCardsSkeleton } from './components/game-cards-section';
 import { Pagination } from './components/pagination';
 import { LIBRARY_PAGE_SIZE, SORT_OPTIONS } from './library.constants';
+import type { QueryAwarePage } from '@app/core/router';
 import { INITIAL_LIBRARY_STATE, type LibraryState, isSameLibraryState, resolveCategory } from './library-state';
+import { parseLibraryQuery } from './library-query';
 import './library.page.scss';
 
 interface LibraryPageOptions {
+  /** The query the page was opened with (deep link, Back/Forward, a nav link) */
+  initialQuery: URLSearchParams;
   onGameDetails: (slug: string) => void;
+  /**
+   * The page never changes its state by itself: it asks for a URL.
+   * replace = a correction (canonical form, invalid input), not a step the user can go Back to.
+   */
+  onNavigate: (state: LibraryState, options: { replace: boolean }) => void;
 }
 
 /**
- * Container component: owns LibraryState, turns it into ONE games request and pushes the result
+ * Container component: turns the URL's LibraryState into ONE games request and pushes the result
  * down to the presentational parts (chips, sort, cards, pagination).
  *
- *   control → requestState(patch) → applyState(state) → GET /games → cards + pagination from meta
- *
- * Branch spa-router: requestState() goes to the URL instead, and the router calls applyState().
+ *   control → requestState(patch) → onNavigate → URL (pushState)
+ *   URL (any source) → onQueryChange → applyState(state) → GET /games → cards + pagination from meta
+ *                                                        └→ resolved state differs? → onNavigate(replace)
  */
-export class LibraryPage extends ComponentBase {
+export class LibraryPage extends ComponentBase implements QueryAwarePage {
   private readonly options: LibraryPageOptions;
   private state: LibraryState = INITIAL_LIBRARY_STATE;
   private hasRequested = false;
@@ -42,7 +51,14 @@ export class LibraryPage extends ComponentBase {
 
   mount(parent: HTMLElement): void {
     super.mount(parent);
-    this.load();
+    this.onQueryChange(this.options.initialQuery);
+  }
+
+  /** Called by the router for every URL change on this page (filters, Back/Forward, dialogs) */
+  onQueryChange(query: URLSearchParams): void {
+    const { state, issues } = parseLibraryQuery(query);
+    for (const issue of issues) snackbar.warning(issue);
+    this.applyState(state);
   }
 
   /** The one way in for a new state. The same state again is a no-op — no duplicate requests. */
@@ -50,7 +66,10 @@ export class LibraryPage extends ComponentBase {
     if (this.hasRequested && isSameLibraryState(next, this.state)) return;
 
     this.state = next;
-    if (next.category !== undefined) this.filterBar?.sync(next.category, next.sort);
+    // No category in the URL = the default one: known already if the categories are loaded
+    const category =
+      next.category ?? (this.categories.length > 0 ? resolveCategory(undefined, this.categories).slug : undefined);
+    if (category !== undefined) this.filterBar?.sync(category, next.sort);
     this.load();
   }
 
@@ -117,13 +136,10 @@ export class LibraryPage extends ComponentBase {
     return page;
   }
 
-  /**
-   * A user action. 3-2-4: a new category or sort starts again from page 1.
-   * Branch spa-router: this becomes "navigate to the URL of this state".
-   */
+  /** A user action → a new URL (and only then a request). 3-2-4: a new category or sort starts from page 1. */
   private requestState(patch: Partial<LibraryState>): void {
     const resetsPage = patch.category !== undefined || patch.sort !== undefined;
-    this.applyState({ ...this.state, ...patch, ...(resetsPage ? { page: 1 } : {}) });
+    this.options.onNavigate({ ...this.state, ...patch, ...(resetsPage ? { page: 1 } : {}) }, { replace: false });
   }
 
   private load(): void {
@@ -174,10 +190,15 @@ export class LibraryPage extends ComponentBase {
     }
   }
 
-  /** Normalisation is not a user action: it replaces the state silently (spa-router: history.replaceState) */
+  /**
+   * The state as actually loaded (default category filled in, page clamped) → the canonical URL.
+   * Not a user action, so history.replaceState: Back doesn't step through corrections.
+   * The router then calls onQueryChange with this same state → isSameLibraryState → no second request.
+   */
   private commitResolvedState(resolved: LibraryState): void {
     this.state = resolved;
     if (resolved.category !== undefined) this.filterBar?.sync(resolved.category, resolved.sort);
+    this.options.onNavigate(resolved, { replace: true });
   }
 
   /** After a page click at the bottom, bring the top of the new list into view */
