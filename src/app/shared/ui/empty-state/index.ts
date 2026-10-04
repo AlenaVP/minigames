@@ -7,6 +7,8 @@ export interface EmptyStateOptions {
   /** "Data Not Found" */
   title: string;
   message?: string;
+  /** A way out, e.g. "Close" in the Game Not Found dialog state */
+  action?: { label: string; onClick: () => void };
 }
 
 /**
@@ -22,7 +24,7 @@ export class EmptyState extends ComponentBase {
   }
 
   protected render(): HTMLElement {
-    const { title, message } = this.options;
+    const { title, message, action } = this.options;
 
     const element = document.createElement('div');
     element.classList.add('empty-state');
@@ -30,7 +32,10 @@ export class EmptyState extends ComponentBase {
       <span class="empty-state__icon">${searchOffIcon(48)}</span>
       <p class="empty-state__title">${escapeHtml(title)}</p>
       ${message ? `<p class="empty-state__message">${escapeHtml(message)}</p>` : ''}
+      ${action ? `<button type="button" class="empty-state__action">${escapeHtml(action.label)}</button>` : ''}
     `;
+
+    if (action) element.querySelector('.empty-state__action')?.addEventListener('click', action.onClick);
 
     return element;
   }
