@@ -1,0 +1,35 @@
+@use 'abstracts/tokens' as *;
+@use 'abstracts/breakpoints' as *;
+
+.empty-state {
+  display: grid;
+  justify-items: center;
+  gap: $size-1;
+  padding: $size-5 $size-2;
+  border: 2px dashed $color-outline-variant;
+  border-radius: $corner-large;
+  font-family: $font-family-primary;
+  color: $color-on-bg;
+  text-align: center;
+
+  @include tablet {
+    padding: $size-8 $size-3;
+  }
+
+  &__icon {
+    color: $color-on-bg-low;
+  }
+
+  &__title {
+    font-size: $font-size-headline-small;
+    font-weight: $font-weight-bold;
+    line-height: 1.4;
+    color: $color-on-primary;
+  }
+
+  &__message {
+    max-width: 48ch;
+    font-size: $font-size-body-medium;
+    line-height: 1.5;
+  }
+}
