@@ -1,9 +1,9 @@
-import type { RouteId } from './routes';
+import type { PageRouteId } from './routes';
 
 export interface NavLink {
   label: string;
   /** Page this link represents. `null` — the page doesn't exist in the mockup, link leads to Home. */
-  page: RouteId | null;
+  page: PageRouteId | null;
 }
 
 export const PRIMARY_NAV_LINKS: readonly NavLink[] = [
