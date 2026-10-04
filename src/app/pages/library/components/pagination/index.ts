@@ -4,9 +4,12 @@ import { getVisiblePages } from '@shared/utils/pagination';
 import './pagination.scss';
 
 interface PaginationOptions {
-  totalPages: number;
-  currentPage: number;
   onPageChange: (page: number) => void;
+}
+
+export interface PaginationState {
+  currentPage: number;
+  totalPages: number;
 }
 
 const MAX_VISIBLE_MOBILE = 3;
@@ -19,9 +22,14 @@ function renderChevron(path: string): string {
   return `<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="${path}" fill="currentColor" /></svg>`;
 }
 
+/**
+ * Built from the API response meta (page, totalPages) via setState().
+ * Even an empty result shows page "1" with both arrows disabled (3-2-4).
+ */
 export class Pagination extends ComponentBase {
-  private options: PaginationOptions;
-  private currentPage: number;
+  private readonly options: PaginationOptions;
+  private currentPage = 1;
+  private totalPages = 1;
   private maxVisible = MAX_VISIBLE_MOBILE;
   private list: HTMLUListElement | null = null;
   private previousButton: HTMLButtonElement | null = null;
@@ -30,14 +38,25 @@ export class Pagination extends ComponentBase {
   constructor(options: PaginationOptions) {
     super();
     this.options = options;
-    this.currentPage = options.currentPage;
+  }
+
+  /** totalPages 0 (empty list) is shown as a single page */
+  setState({ currentPage, totalPages }: PaginationState): void {
+    this.totalPages = Math.max(1, totalPages);
+    this.currentPage = Math.min(Math.max(currentPage, 1), this.totalPages);
+    this.update();
+  }
+
+  /** Hidden until the first response, and while the list shows an error */
+  setVisible(visible: boolean): void {
+    if (this.element) this.element.hidden = !visible;
   }
 
   protected render(): HTMLElement {
     const nav = document.createElement('nav');
     nav.classList.add('pagination');
     nav.setAttribute('aria-label', 'Pagination');
-    nav.hidden = this.options.totalPages <= 1;
+    nav.hidden = true;
 
     nav.innerHTML = `
       <button type="button" class="pagination__arrow" data-page="previous" aria-label="Previous page">
@@ -81,7 +100,7 @@ export class Pagination extends ComponentBase {
   }
 
   private goTo(page: number): void {
-    const target = Math.min(Math.max(page, 1), this.options.totalPages);
+    const target = Math.min(Math.max(page, 1), this.totalPages);
     if (target === this.currentPage) return;
 
     this.currentPage = target;
@@ -97,7 +116,7 @@ export class Pagination extends ComponentBase {
     const focused = document.activeElement;
     const hadFocusOnPage = focused instanceof HTMLElement && list.contains(focused);
 
-    list.innerHTML = getVisiblePages(this.currentPage, this.options.totalPages, this.maxVisible)
+    list.innerHTML = getVisiblePages(this.currentPage, this.totalPages, this.maxVisible)
       .map((page) => {
         const current = page === this.currentPage ? ' aria-current="page"' : '';
         return `<li><button type="button" class="pagination__page" data-page="${page}" aria-label="Page ${page}"${current}>${page}</button></li>`;
@@ -105,7 +124,7 @@ export class Pagination extends ComponentBase {
       .join('');
 
     previousButton.disabled = this.currentPage === 1;
-    nextButton.disabled = this.currentPage === this.options.totalPages;
+    nextButton.disabled = this.currentPage === this.totalPages;
 
     const lostFocus = hadFocusOnPage || (focused instanceof HTMLButtonElement && focused.disabled);
     if (lostFocus) list.querySelector<HTMLButtonElement>('[aria-current="page"]')?.focus();
