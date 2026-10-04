@@ -117,7 +117,8 @@ export class AsyncContent<T> extends ComponentBase {
 
   private createSkeleton(): HTMLElement {
     const skeleton = this.options.renderSkeleton();
-    skeleton.setAttribute('aria-hidden', 'true');
+    // inert, not only aria-hidden: a placeholder may reuse real markup with buttons, which must not get focus
+    skeleton.inert = true;
 
     const wrapper = document.createElement('div');
     wrapper.classList.add('async-content__loading');

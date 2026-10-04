@@ -104,3 +104,13 @@ a {
   display: block;
   border-radius: $corner-small;
 }
+
+// Text-shaped placeholder: real (invisible) text gets the shimmer as an inline background,
+// so the block keeps exactly the height of the text it stands for — line by line, clamping included
+.skeleton-text {
+  @include skeleton;
+  color: transparent;
+  border-radius: $corner-extra-small;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
