@@ -5,6 +5,7 @@ import { AuthDialog } from '@dialogs/auth-dialog';
 import { GameDetailsDialog } from '@dialogs/game-details-dialog';
 import { HomePage } from '@app/pages/home/home.page';
 import { LibraryPage } from '@app/pages/library/library.page';
+import { NotFoundPage } from '@app/pages/not-found/not-found.page';
 import { toLibraryQuery } from '@app/pages/library/library-query';
 import type { AuthMode } from '@shared/types/auth';
 import { snackbar } from '@shared/ui/snackbar';
@@ -72,6 +73,7 @@ export function bootstrapApp(): void {
         onGameDetails: openGameDetails,
         onNavigate: (state, { replace }) => router.updateQuery(toLibraryQuery(state), { replace }),
       }),
+    'not-found': () => new NotFoundPage(),
   });
 
   /** URL → dialogs. Idempotent: called on every navigation, opens/switches/closes only what differs */

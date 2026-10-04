@@ -122,7 +122,7 @@ export class Router {
   private applyLocation(): void {
     const parsed = parseLocation(location.pathname, location.search, BASE);
 
-    // Until a 404 page is registered, unknown paths fall back to Home
+    // An app without a 404 page: unknown paths fall back to Home
     if (parsed.route === 'not-found' && !this.pages['not-found']) {
       history.replaceState(history.state, '', buildUrl(DEFAULT_ROUTE, parsed.query, BASE));
       this.applyLocation();
