@@ -2,7 +2,9 @@
 @use 'abstracts/tokens' as *;
 @use 'abstracts/mixins' as *;
 
-$avatar-palette: $color-primary, $color-avatar-1, $color-avatar-2, $color-avatar-4, $color-avatar-3, $color-avatar-5;
+$avatar-palette:
+  $color-primary, $color-avatar-random-1, $color-avatar-random-2, $color-avatar-random-4, $color-avatar-random-3,
+  $color-avatar-random-5;
 
 .comment {
   display: flex;

@@ -44,7 +44,7 @@ $horizontal-min-width: 560px;
     object-fit: cover;
 
     &--placeholder {
-      background-color: $color-avatar-2;
+      background-color: $color-avatar-random-2;
     }
 
     @include horizontal {
