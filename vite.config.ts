@@ -11,6 +11,7 @@ export default defineConfig({
       '@dialogs': fileURLToPath(new URL('src/app/dialogs', import.meta.url)),
       '@styles': fileURLToPath(new URL('src/styles', import.meta.url)),
       '@assets': fileURLToPath(new URL('src/assets', import.meta.url)),
+      '@testing': fileURLToPath(new URL('src/testing', import.meta.url)),
     },
   },
   css: {
