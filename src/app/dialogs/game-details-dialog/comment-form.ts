@@ -50,7 +50,6 @@ export class CommentForm extends ComponentBase {
       if (submit) submit.disabled = input.value.trim() === '';
     });
 
-    // The draft stays in the field: after signing in (Story 4) it can be sent as is
     form.addEventListener('submit', (event) => {
       event.preventDefault();
       snackbar.info('Sign in to leave a comment.');

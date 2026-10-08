@@ -3,8 +3,6 @@
 @use 'abstracts/mixins' as *;
 
 $border-width: 2px;
-// Horizontal layout as soon as the CARD (not the viewport) is wide enough:
-// on 425–~600px viewports a 268px image would squeeze the text, so the card stays vertical there
 $horizontal-min-width: 560px;
 
 @mixin horizontal {
@@ -62,7 +60,6 @@ $horizontal-min-width: 560px;
     }
   }
 
-  // ---------- Vertical card (mobile): one grid, items placed by areas ----------
   &__body {
     flex: 1;
     min-width: 0;
@@ -77,7 +74,6 @@ $horizontal-min-width: 560px;
     align-items: center;
     padding: $size-2 14px 14px;
 
-    // ---------- Horizontal card: header / description / footer ----------
     @include horizontal {
       display: flex;
       flex-direction: column;
@@ -268,9 +264,7 @@ $horizontal-min-width: 560px;
     }
   }
 
-  // ---------- Loading placeholder (renderLibraryGameCardSkeleton) ----------
   &--skeleton {
-    // Same frame size as a real card, but without the dark outline and shadow
     border-color: $color-outline;
     box-shadow: none;
   }
@@ -281,7 +275,6 @@ $horizontal-min-width: 560px;
     color: transparent;
   }
 
-  // The "…" of line-clamp is painted in the paragraph's colour, not the span's
   &--skeleton &__description {
     color: transparent;
   }

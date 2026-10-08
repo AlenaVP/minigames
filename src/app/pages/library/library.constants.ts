@@ -1,6 +1,5 @@
 import type { SortOption, SortValue } from '@shared/types/game';
 
-// Categories come from GET /api/categories; sort options are client constants (no endpoint for them)
 export const SORT_OPTIONS: readonly SortOption[] = [
   { value: 'rating-asc', label: 'Rating ↑', srLabel: 'Rating, low to high' },
   { value: 'rating-desc', label: 'Rating ↓', srLabel: 'Rating, high to low' },

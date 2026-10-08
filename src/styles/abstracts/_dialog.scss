@@ -5,8 +5,6 @@ $dialog-transition: 0.25s ease;
 $dialog-hidden-transform: translateY($size-2) scale(0.96);
 $dialog-backdrop-color: color.change($color-bg-footer, $alpha: 0.6);
 
-// Frame, open/close animation and backdrop of a native <dialog>.
-// Dialogs differ only in size and content — those stay in their own files.
 @mixin dialog-shell {
   padding: 0;
   border: 2px solid $color-on-primary;
@@ -29,7 +27,6 @@ $dialog-backdrop-color: color.change($color-bg-footer, $alpha: 0.6);
     opacity: 1;
     transform: none;
 
-    // start state of the opening animation
     @starting-style {
       opacity: 0;
       transform: $dialog-hidden-transform;
@@ -52,7 +49,6 @@ $dialog-backdrop-color: color.change($color-bg-footer, $alpha: 0.6);
     }
   }
 
-  // Users who asked the OS for less motion get an instant open/close
   @media (prefers-reduced-motion: reduce) {
     transition: none;
 

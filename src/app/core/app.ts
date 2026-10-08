@@ -64,7 +64,6 @@ export function bootstrapApp(): void {
   gameDetailsDialog.mount(document.body);
   snackbar.mount(document.body);
 
-  // The callbacks above use `router` only when they run — after this line
   const router = new Router(pageOutlet, {
     home: () => new HomePage({ onGameDetails: openGameDetails }),
     library: ({ query }) =>
@@ -81,13 +80,11 @@ export function bootstrapApp(): void {
     const slug = query.get(DIALOG_QUERY.game);
     const auth = parseAuthQueryValue(query.get(DIALOG_QUERY.auth));
 
-    // Both in one URL (hand-edited) → one modal at a time: the game wins
     if (slug && auth) {
       router.updateQuery({ [DIALOG_QUERY.auth]: null }, { replace: true });
       return;
     }
 
-    // ?auth=whatever → the login tab, and the URL says so
     if (auth && !auth.isValid) {
       router.updateQuery({ [DIALOG_QUERY.auth]: toAuthQueryValue(auth.mode) }, { replace: true });
       return;

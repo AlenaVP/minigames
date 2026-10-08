@@ -49,7 +49,6 @@ export class CommentItem extends ComponentBase {
       </article>
     `;
 
-    // Guest-safe (3-3-2): liking is a Story 4 mutation; for now explain instead of faking a like
     item.querySelector('.comment__like')?.addEventListener('click', () => snackbar.info('Sign in to like comments.'));
 
     return item;

@@ -29,10 +29,10 @@ $color-outline: #e5e7eb;
 $color-outline-variant: #d2d2d2;
 
 // --- Derived (no separate swatches in Figma; computed from the tokens above) ---
-$color-scrim: rgba($color-black, 0.72); // dark gradient under the text on slider cards
-$color-disabled-outline: rgba($color-on-primary, 0.1); // pagination: disabled arrow border
-$color-disabled-content: rgba($color-on-primary, 0.4); // pagination: disabled arrow icon
-$color-disabled-on-outline: color.mix($color-on-primary, $color-outline, 30%); // send button: disabled icon
+$color-scrim: rgba($color-black, 0.72);
+$color-disabled-outline: rgba($color-on-primary, 0.1);
+$color-disabled-content: rgba($color-on-primary, 0.4);
+$color-disabled-on-outline: color.mix($color-on-primary, $color-outline, 30%);
 
 // --- Feedback states (Story 3: snackbar, banners, skeleton — not in Figma, built from the palette above) ---
 $color-success: $color-price-free;
@@ -43,9 +43,9 @@ $color-warning-container: $color-primary-low;
 $color-info-container: $color-secondary;
 $color-skeleton: $color-outline;
 $color-skeleton-shine: color.mix($color-outline, $color-white, 35%);
-$color-hover-overlay: rgba($color-on-primary, 0.08); // hover of an icon-only button on a tinted background
+$color-hover-overlay: rgba($color-on-primary, 0.08);
 
-// 404 page: the big "404" (not in Figma)
+// --- 404 page: the big "404" (not in Figma) ---
 $font-size-error-code-mobile: 72px;
 $font-size-error-code: 120px;
 
@@ -100,9 +100,9 @@ $size-14: 112px;
 $size-15: 120px;
 
 // --- Custom sizes: $size-pN = N px (values that are not in the scale above) ---
-$size-p28: 28px; // comment and leaderboard avatars
-$size-p480: 480px; // snackbar: max width on wide screens
-$size-p640: 640px; // 404 card: max width
+$size-p28: 28px;
+$size-p480: 480px;
+$size-p640: 640px;
 
 // --- Corner radii ---
 $corner-extra-small: 4px;
@@ -122,5 +122,5 @@ $btn-medium-y: 10px;
 $shadow-level-1: 4px 4px 0 0 $color-on-primary;
 $shadow-level-2: 6px 6px 0 0 $color-on-primary;
 $shadow-level-3: 8px 8px 0 0 $color-on-primary;
-$shadow-p2: 2px 2px 0 0 $color-on-primary; // dialog close button, pressed action button
-$shadow-inset-p1: inset 0 0 0 1px $color-on-primary; // textarea focus: looks like a 2px border, text does not shift
+$shadow-p2: 2px 2px 0 0 $color-on-primary;
+$shadow-inset-p1: inset 0 0 0 1px $color-on-primary;

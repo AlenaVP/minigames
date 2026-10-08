@@ -16,7 +16,6 @@ interface CommentsSectionOptions {
 const TITLE_ID = 'game-comments-title';
 /** 3-3-2: the 3 latest comments; the heading still shows the TOTAL count */
 const COMMENTS_LIMIT = 3;
-// Story 4: the logged-in user's initial
 const CURRENT_USER_INITIAL = 'U';
 
 export class CommentsSection extends ComponentBase {
@@ -48,7 +47,6 @@ export class CommentsSection extends ComponentBase {
         renderContent: ({ comments }) => new CommentList({ comments, now }),
         renderEmpty: () => new EmptyState({ title: 'No comments yet', message: 'Be the first to share your thoughts.' }),
         onStateChange: (state) => {
-          // "Comments (12)" only when the number is known; while loading or after an error — just "Comments"
           const hasTotal = state.status === 'success' || state.status === 'empty';
           if (title) title.textContent = hasTotal ? `Comments (${state.data.total})` : 'Comments';
         },

@@ -34,7 +34,6 @@
     }
   }
 
-  // The same "offset shadow" language as the cards and buttons, just in type
   &__code {
     font-size: $font-size-error-code-mobile;
     font-weight: $font-weight-extrabold;
@@ -75,7 +74,6 @@
     color: $color-on-primary;
   }
 
-  // An <a>, not a <button>: it navigates (real href → Ctrl-click / copy link work); looks like the primary button
   &__action {
     margin-top: $size-1;
     padding: $btn-medium-y $btn-medium-x;

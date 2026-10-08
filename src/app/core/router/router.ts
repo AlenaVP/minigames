@@ -65,7 +65,6 @@ export class Router {
   }
 
   start(): void {
-    // Scroll is handled per navigation below; the browser's own restoration fights async content
     history.scrollRestoration = 'manual';
     document.addEventListener('click', this.handleDocumentClick);
     globalThis.addEventListener('popstate', () => this.applyLocation());
@@ -80,7 +79,6 @@ export class Router {
   /** Same page, some query keys changed: Library state, dialogs */
   updateQuery(patch: QueryPatch, options: NavigateOptions = {}): void {
     const route = this.current?.route;
-    // Query changes on the 404 view stay on its URL path: there is no page route to rebuild it from
     const pageRoute = route && isPageRouteId(route) ? route : null;
     const query = mergeQuery(this.current?.query ?? new URLSearchParams(), patch);
 
@@ -107,10 +105,8 @@ export class Router {
   }
 
   private commitUrl(url: string, { replace = false, dialog }: NavigateOptions): void {
-    // The same URL again (a click on the active link, an already-canonical state) → no new history entry
     if (url === `${location.pathname}${location.search}`) return;
 
-    // replace keeps the entry's dialog flag unless told otherwise (e.g. switching Login ↔ Register tabs)
     const state: HistoryState = { dialog: dialog ?? (replace ? this.isDialogEntry : false) };
 
     if (replace) history.replaceState(state, '', url);
@@ -122,7 +118,6 @@ export class Router {
   private applyLocation(): void {
     const parsed = parseLocation(location.pathname, location.search, BASE);
 
-    // An app without a 404 page: unknown paths fall back to Home
     if (parsed.route === 'not-found' && !this.pages['not-found']) {
       history.replaceState(history.state, '', buildUrl(DEFAULT_ROUTE, parsed.query, BASE));
       this.applyLocation();

@@ -5,9 +5,7 @@
 $snackbar-transition: 0.25s ease;
 $snackbar-hidden-transform: translateY($size-2);
 
-// The container is an always-open, see-through popover: only the messages themselves catch the pointer
 .snackbar {
-  // Overrides of the popover's UA styles (centred box with a border and a Canvas background)
   inset: auto 0 $size-2;
   width: min(100% - 2 * $size-2, $size-p480);
   height: auto;
@@ -59,7 +57,6 @@ $snackbar-hidden-transform: translateY($size-2);
       transition: none;
     }
 
-    // Variants differ by background AND icon (not by colour alone)
     &--success {
       background-color: $color-success-container;
       --snackbar-icon-color: #{$color-success};
