@@ -73,7 +73,6 @@
     color: $color-on-bg;
   }
 
-  // `display: flex` above would beat the browser's [hidden] rule
   &__list[hidden] {
     display: none;
   }

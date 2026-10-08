@@ -31,7 +31,7 @@ export class NewGamesSection extends ComponentBase {
     const section = document.createElement('section');
     section.classList.add('new-games');
     section.setAttribute('aria-labelledby', 'new-games-title');
-    section.setAttribute('aria-roledescription', 'carousel'); // APG carousel pattern
+    section.setAttribute('aria-roledescription', 'carousel');
 
     section.innerHTML = `
       <div class="new-games__inner">
@@ -76,7 +76,6 @@ export class NewGamesSection extends ComponentBase {
         renderEmpty: () =>
           new EmptyState({ title: 'No new games yet', message: 'Check back soon — new games arrive regularly.' }),
         onStateChange: (state) => {
-          // The carousel component exists only in the success state
           if (state.status !== 'success') this.carousel = null;
           this.setArrowsEnabled(this.carousel?.canScroll ?? false);
         },

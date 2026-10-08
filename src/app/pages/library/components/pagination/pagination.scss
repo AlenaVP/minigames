@@ -20,7 +20,6 @@ $pagination-gap-desktop: $size-2;
     gap: $pagination-gap-desktop;
   }
 
-  // `display: flex` above would beat the browser's [hidden] rule
   &[hidden] {
     display: none;
   }

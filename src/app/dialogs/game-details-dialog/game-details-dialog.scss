@@ -7,8 +7,6 @@ $close-offset: 14px;
 $close-size-mobile: 32px;
 $close-size: 40px;
 
-// Figma: 600px on tablet and desktop, the full 375px on mobile.
-// Centering comes from showModal() (UA styles: position: fixed; inset: 0; margin: auto).
 .game-details {
   width: 600px;
   max-width: 100%;
@@ -16,8 +14,6 @@ $close-size: 40px;
 
   @include dialog-shell;
 
-  // Sticky: exactly where Figma puts it at the top, and still reachable after scrolling down to the comments.
-  // Negative bottom margin = the button takes no room, so the hero starts at the very top under it.
   &__close {
     position: sticky;
     top: $close-offset;
@@ -50,7 +46,6 @@ $close-size: 40px;
     }
   }
 
-  // Query container for the sections: they switch layout by the dialog's width, not the viewport's
   &__content {
     container: game-details / inline-size;
   }
@@ -58,13 +53,10 @@ $close-size: 40px;
   &__body {
     display: flex;
     flex-direction: column;
-    gap: $size-3; // 24px between the sections
-    // Figma: 24px from the dialog's OUTER edge; the 2px border already takes 2 of them
+    gap: $size-3;
     padding: $size-3 22px 22px;
   }
 
-  // ---------- Story 3: loading / failure states of the details request ----------
-  // Error banner and Game Not Found get the body's padding, plus room under the sticky close button
   &__content > .async-content > :is(.error-banner, .empty-state) {
     margin: ($close-offset * 2 + $close-size-mobile) 22px 22px;
 

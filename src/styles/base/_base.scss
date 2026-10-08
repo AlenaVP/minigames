@@ -1,7 +1,6 @@
 @use 'abstracts/tokens' as *;
 @use 'abstracts/mixins' as *;
 
-// --- Reset ---
 *,
 *::before,
 *::after {
@@ -67,17 +66,14 @@ a {
   color: inherit;
 }
 
-// --- Common ---
 .nowrap {
   white-space: nowrap;
 }
 
-// Hidden visually, but still read by screen readers and reachable for form controls
 .visually-hidden {
   @include visually-hidden;
 }
 
-// --- App shell ---
 #app {
   display: flex;
   flex-direction: column;
@@ -88,7 +84,6 @@ a {
   flex: 1 0 auto;
 }
 
-// --- Loading placeholders (Story 3) ---
 @keyframes skeleton-shine {
   from {
     background-position: 100% 0;
@@ -105,12 +100,8 @@ a {
   border-radius: $corner-small;
 }
 
-// Text-shaped placeholder: real (invisible) text gets the shimmer as an inline background,
-// so the block keeps exactly the height of the text it stands for — line by line, clamping included
 .skeleton-text {
   @include skeleton;
-  // Smaller glyphs → visible gaps between the bars. vertical-align: top keeps the line box exactly as tall
-  // as with real text (with baseline alignment a smaller font would push it 1px taller per line)
   font-size: 0.8em;
   vertical-align: top;
   color: transparent;

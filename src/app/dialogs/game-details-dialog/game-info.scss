@@ -1,8 +1,6 @@
 @use 'abstracts/tokens' as *;
 @use 'abstracts/mixins' as *;
 
-// Layout follows the width of the DIALOG, not the viewport:
-// the 600px dialog (tablet, desktop) is "wide", the full-width 375px one is "narrow"
 @mixin wide {
   @container game-details (min-width: 560px) {
     @content;
@@ -16,7 +14,6 @@ $spec-shadow: $shadow-level-1;
   flex-direction: column;
   gap: $size-3;
 
-  // ---------- title + rating ----------
   &__heading {
     display: flex;
     flex-direction: column;
@@ -63,7 +60,6 @@ $spec-shadow: $shadow-level-1;
     height: 24px;
   }
 
-  // ---------- description ----------
   &__description {
     font-family: $font-family-primary;
     font-size: $font-size-body-medium;
@@ -71,7 +67,6 @@ $spec-shadow: $shadow-level-1;
     color: $color-on-bg;
   }
 
-  // ---------- specs: <dl> of label/value pairs ----------
   &__specs {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -110,7 +105,6 @@ $spec-shadow: $shadow-level-1;
     color: $color-on-primary;
   }
 
-  // ---------- actions ----------
   &__actions {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
@@ -202,7 +196,6 @@ $spec-shadow: $shadow-level-1;
     }
   }
 
-  // Loading placeholder of the buttons: same box, no frame, no shadow, no label
   &__action--skeleton {
     border-color: transparent;
     box-shadow: none;

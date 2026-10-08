@@ -2,8 +2,6 @@
 @use 'abstracts/breakpoints' as *;
 
 $border-width: 2px;
-// 2-3-1: from this RENDERED card width on, the card shows title, rating and likes.
-// The query container is the button INSIDE the 2px border → 288 − 2 × 2 = 284px of it
 $info-min-width: 288px;
 $info-min-inner-width: $info-min-width - 2 * $border-width;
 
@@ -22,7 +20,6 @@ $info-min-inner-width: $info-min-width - 2 * $border-width;
     box-shadow: $shadow-level-3;
   }
 
-  // The button fills the card; it is also the container the width threshold is measured on
   &__inner {
     container-type: inline-size;
     container-name: game-card;
@@ -55,8 +52,6 @@ $info-min-inner-width: $info-min-width - 2 * $border-width;
     background-color: $color-avatar-2;
   }
 
-  // Not display: none ↔ flex — that switch can't be animated and would blink mid-slide.
-  // Opacity + visibility fade the info in when the growing card passes 288px
   &__overlay {
     position: absolute;
     inset-inline: 0;

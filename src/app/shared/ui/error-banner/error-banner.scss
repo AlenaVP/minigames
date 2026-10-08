@@ -42,7 +42,6 @@
     color: $color-on-bg;
   }
 
-  // Under the text on mobile, to the right of it from tablet
   &__retry {
     grid-column: 1 / -1;
     justify-self: start;

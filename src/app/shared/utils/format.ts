@@ -28,9 +28,9 @@ const HOUR_MS = 60 * MINUTE_MS;
 const DAY_MS = 24 * HOUR_MS;
 
 const DAYS_IN_WEEK = 7;
-const WEEKS_SHOWN = 3; // 3-3-2: "1–3 weeks", then months
+const WEEKS_SHOWN = 3;
 const DAYS_IN_MONTH = 30;
-const MONTHS_SHOWN = 11; // "1–11 months", then years
+const MONTHS_SHOWN = 11;
 const DAYS_IN_YEAR = 365;
 
 function ago(count: number, unit: string): string {
