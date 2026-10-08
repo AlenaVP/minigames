@@ -3,12 +3,13 @@
 @use 'abstracts/mixins' as *;
 @use 'abstracts/dialog' as *;
 
-$close-offset: 14px;
-$close-size-mobile: 32px;
-$close-size: 40px;
+$close-offset: $size-p14;
+$close-size-mobile: $size-4;
+$close-size: $size-5;
+$body-inset: $size-3 - $border-width-thick;
 
 .game-details {
-  width: 600px;
+  width: $size-p600;
   max-width: 100%;
   max-height: calc(100dvh - #{$size-4});
 
@@ -23,7 +24,7 @@ $close-size: 40px;
     width: $close-size-mobile;
     height: $close-size-mobile;
     margin: $close-offset $close-offset (-$close-offset - $close-size-mobile) auto;
-    border: 2px solid $color-on-primary;
+    border: $border-width-thick solid $color-on-primary;
     border-radius: $corner-full;
     background-color: $color-white;
     box-shadow: $shadow-p2;
@@ -41,8 +42,8 @@ $close-size: 40px;
     }
 
     &:focus-visible {
-      outline: 2px solid $color-tertiary;
-      outline-offset: 2px;
+      outline: $focus-ring-width solid $color-tertiary;
+      outline-offset: $focus-ring-offset;
     }
   }
 
@@ -54,11 +55,11 @@ $close-size: 40px;
     display: flex;
     flex-direction: column;
     gap: $size-3;
-    padding: $size-3 22px 22px;
+    padding: $size-3 $body-inset $body-inset;
   }
 
   &__content > .async-content > :is(.error-banner, .empty-state) {
-    margin: ($close-offset * 2 + $close-size-mobile) 22px 22px;
+    margin: ($close-offset * 2 + $close-size-mobile) $body-inset $body-inset;
 
     @include tablet {
       margin-top: $close-offset * 2 + $close-size;

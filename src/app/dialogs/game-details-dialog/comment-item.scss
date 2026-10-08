@@ -28,7 +28,7 @@ $avatar-palette:
     place-items: center;
     width: $size-p28;
     height: $size-p28;
-    border: 1px solid $color-on-primary;
+    border: $border-width-thin solid $color-on-primary;
     border-radius: $corner-full;
     font-size: $font-size-label-medium;
     font-weight: $font-weight-bold;
@@ -63,7 +63,7 @@ $avatar-palette:
   &__text {
     margin-top: $size-05;
     font-size: $font-size-body-small;
-    line-height: 20px;
+    line-height: $line-height-p20;
     overflow-wrap: anywhere;
   }
 
@@ -77,7 +77,7 @@ $avatar-palette:
     border-radius: $corner-full;
     font-size: $font-size-label-medium;
     font-weight: $font-weight-bold;
-    line-height: 16px;
+    line-height: $line-height-p16;
     color: $color-on-primary;
     transition:
       background-color $duration-normal $easing-standard,
@@ -92,8 +92,8 @@ $avatar-palette:
     }
 
     &:focus-visible {
-      outline: 2px solid $color-tertiary;
-      outline-offset: 2px;
+      outline: $focus-ring-width solid $color-tertiary;
+      outline-offset: $focus-ring-offset;
     }
   }
 }

@@ -21,7 +21,7 @@
     width: 100%;
     max-width: $size-p640;
     padding: $size-5 $size-2;
-    border: 2px solid $color-on-primary;
+    border: $border-width-thick solid $color-on-primary;
     border-radius: $corner-large;
     background-color: $color-white;
     box-shadow: $shadow-level-2;
@@ -38,12 +38,12 @@
     font-size: $font-size-error-code-mobile;
     font-weight: $font-weight-extrabold;
     line-height: 1;
-    letter-spacing: 0.04em;
-    text-shadow: 4px 4px 0 $color-primary;
+    letter-spacing: $letter-spacing-wide;
+    text-shadow: $shadow-offset-1 $shadow-offset-1 0 $color-primary;
 
     @include tablet {
       font-size: $font-size-error-code;
-      text-shadow: 6px 6px 0 $color-primary;
+      text-shadow: $shadow-offset-2 $shadow-offset-2 0 $color-primary;
     }
   }
 
@@ -60,7 +60,7 @@
   &__message {
     max-width: 48ch;
     font-size: $font-size-body-medium;
-    line-height: 1.5;
+    line-height: $line-height-relaxed;
     color: $color-on-bg;
     overflow-wrap: anywhere;
   }
@@ -77,7 +77,7 @@
   &__action {
     margin-top: $size-1;
     padding: $btn-medium-y $btn-medium-x;
-    border: 2px solid $color-on-primary;
+    border: $border-width-thick solid $color-on-primary;
     border-radius: $corner-small;
     background-color: $color-primary;
     box-shadow: $shadow-level-1;
@@ -102,7 +102,7 @@
     @include focus-ring;
 
     &:active {
-      translate: 2px 2px;
+      translate: $shadow-offset-p2 $shadow-offset-p2;
       box-shadow: $shadow-p2;
       background-color: $color-primary-high;
     }

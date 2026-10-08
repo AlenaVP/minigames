@@ -37,13 +37,13 @@
 
   &__accent {
     display: block;
-    width: 8px;
-    height: 24px;
+    width: $size-1;
+    height: $size-3;
     border-radius: $corner-full;
     background-color: $color-primary;
 
     @include desktop {
-      height: 32px;
+      height: $size-4;
     }
   }
 
@@ -98,7 +98,7 @@
 
   &__table-wrapper {
     overflow-x: auto;
-    border: 2px solid $color-on-primary;
+    border: $border-width-thick solid $color-on-primary;
     border-radius: $corner-large;
     box-shadow: $shadow-level-1;
 
@@ -122,10 +122,10 @@
   td:first-child {
     box-sizing: content-box;
     padding-left: $size-2;
-    width: 40px;
+    width: $size-5;
 
     @include tablet {
-      width: 80px;
+      width: $size-10;
     }
 
     @include desktop {
@@ -134,7 +134,7 @@
   }
 
   thead th {
-    padding: $size-2 4px;
+    padding: $size-2 $size-05;
     background-color: $color-tertiary;
     color: $color-white;
     font-size: $font-size-label-large;
@@ -144,7 +144,7 @@
     white-space: nowrap;
 
     @include tablet {
-      padding: $size-2 6px;
+      padding: $size-2 $size-p6;
     }
 
     @include desktop {
@@ -169,7 +169,7 @@
   }
 
   &__row {
-    border-top: 1px solid $color-outline;
+    border-top: $border-width-thin solid $color-outline;
 
     &--desktop-only {
       display: none;
@@ -223,8 +223,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 24px;
-    height: 24px;
+    width: $size-3;
+    height: $size-3;
     border-radius: $corner-full;
     font-size: $font-size-label-small;
     font-weight: $font-weight-bold;
@@ -236,8 +236,8 @@
     }
 
     @include desktop {
-      width: 40px;
-      height: 40px;
+      width: $size-5;
+      height: $size-5;
       font-size: $font-size-label-medium;
     }
 
@@ -269,7 +269,7 @@
   &__badge {
     display: inline-block;
     padding: $size-05 $size-2;
-    border: 1px solid $color-outline-variant;
+    border: $border-width-thin solid $color-outline-variant;
     border-radius: $corner-full;
     font-size: $font-size-label-medium;
     white-space: nowrap;

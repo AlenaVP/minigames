@@ -2,7 +2,7 @@
 @use 'abstracts/mixins' as *;
 
 @mixin wide {
-  @container game-details (min-width: 560px) {
+  @container game-details (min-width: #{$size-p560}) {
     @content;
   }
 }
@@ -24,7 +24,7 @@ $spec-shadow: $shadow-level-1;
       flex-direction: row;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      gap: $size-p12;
     }
   }
 
@@ -44,7 +44,7 @@ $spec-shadow: $shadow-level-1;
     font-family: $font-family-primary;
     font-size: $font-size-label-large;
     font-weight: $font-weight-bold;
-    line-height: 24px;
+    line-height: $line-height-p24;
     color: $color-on-primary;
   }
 
@@ -56,14 +56,14 @@ $spec-shadow: $shadow-level-1;
 
   &__icon {
     flex-shrink: 0;
-    width: 24px;
-    height: 24px;
+    width: $size-3;
+    height: $size-3;
   }
 
   &__description {
     font-family: $font-family-primary;
     font-size: $font-size-body-medium;
-    line-height: 20px;
+    line-height: $line-height-p20;
     color: $color-on-bg;
   }
 
@@ -82,8 +82,8 @@ $spec-shadow: $shadow-level-1;
     display: flex;
     flex-direction: column;
     gap: $size-1;
-    padding: 7px $size-2;
-    border: 1px solid $color-outline-variant;
+    padding: $size-p7 $size-2;
+    border: $border-width-thin solid $color-outline-variant;
     border-radius: $corner-small;
     background-color: $color-white;
     box-shadow: $spec-shadow;
@@ -120,9 +120,9 @@ $spec-shadow: $shadow-level-1;
     justify-content: center;
     align-items: center;
     gap: $size-1;
-    height: 48px;
+    height: $size-6;
     padding-inline: $size-3;
-    border: 2px solid $color-on-primary;
+    border: $border-width-thick solid $color-on-primary;
     border-radius: $corner-small;
     box-shadow: $shadow-level-1;
     font-family: $font-family-primary;
@@ -136,13 +136,13 @@ $spec-shadow: $shadow-level-1;
       translate $duration-faster $easing-standard;
 
     &:active {
-      translate: 2px 2px;
+      translate: $shadow-offset-p2 $shadow-offset-p2;
       box-shadow: $shadow-p2;
     }
 
     &:focus-visible {
-      outline: 2px solid $color-tertiary;
-      outline-offset: 2px;
+      outline: $focus-ring-width solid $color-tertiary;
+      outline-offset: $focus-ring-offset;
     }
 
     &--play {
@@ -158,7 +158,7 @@ $spec-shadow: $shadow-level-1;
     }
 
     &--favorite {
-      width: 48px;
+      width: $size-6;
       padding: 0;
       border-color: $color-outline-variant;
       background-color: $color-white;

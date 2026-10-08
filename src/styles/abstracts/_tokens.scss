@@ -77,6 +77,21 @@ $font-weight-medium: 500;
 $font-weight-bold: 700;
 $font-weight-extrabold: 800;
 
+// --- Typography: line height ---
+$line-height-tight: 1.25;
+$line-height-normal: 1.4;
+$line-height-relaxed: 1.5;
+$line-height-p16: 16px;
+$line-height-p20: 20px;
+$line-height-p22: 22px;
+$line-height-p24: 24px;
+
+// --- Typography: letter spacing and decoration ---
+$letter-spacing-wide: 0.04em;
+$letter-spacing-wider: 0.05em;
+$letter-spacing-widest: 0.09em;
+$underline-offset: 3px;
+
 // --- Typography: family ---
 $font-family-primary: 'Inter', sans-serif;
 $font-family-secondary: 'Roboto', sans-serif;
@@ -100,9 +115,47 @@ $size-14: 112px;
 $size-15: 120px;
 
 // --- Custom sizes: $size-pN = N px (values that are not in the scale above) ---
+$size-p3: 3px;
+$size-p6: 6px;
+$size-p7: 7px;
+$size-p12: 12px;
+$size-p14: 14px;
+$size-p18: 18px;
+$size-p20: 20px;
+$size-p22: 22px;
 $size-p28: 28px;
+$size-p36: 36px;
+$size-p44: 44px;
+$size-p50: 50px;
+$size-p52: 52px;
+$size-p85: 85px;
+$size-p148: 148px;
+$size-p182: 182px;
+$size-p190: 190px;
+$size-p196: 196px;
+$size-p200: 200px;
+$size-p220: 220px;
+$size-p227: 227px;
+$size-p268: 268px;
+$size-p280: 280px;
+$size-p288: 288px;
+$size-p300: 300px;
+$size-p318: 318px;
+$size-p331: 331px;
+$size-p343: 343px;
+$size-p383: 383px;
+$size-p384: 384px;
+$size-p400: 400px;
+$size-p403: 403px;
+$size-p420: 420px;
 $size-p480: 480px;
+$size-p560: 560px;
+$size-p600: 600px;
+$size-p620: 620px;
+$size-p627: 627px;
 $size-p640: 640px;
+$size-p680: 680px;
+$size-p688: 688px;
 
 // --- Corner radii ---
 $corner-extra-small: 4px;
@@ -118,12 +171,26 @@ $btn-large-y: 16px;
 $btn-medium-x: 20px;
 $btn-medium-y: 10px;
 
-// --- Shadows ---
-$shadow-level-1: 4px 4px 0 0 $color-on-primary;
-$shadow-level-2: 6px 6px 0 0 $color-on-primary;
-$shadow-level-3: 8px 8px 0 0 $color-on-primary;
-$shadow-p2: 2px 2px 0 0 $color-on-primary;
-$shadow-inset-p1: inset 0 0 0 1px $color-on-primary;
+// --- Strokes ---
+$border-width-thin: 1px;
+$border-width-medium: 1.5px;
+$border-width-thick: 2px;
+
+// --- Focus ring ---
+$focus-ring-width: 2px;
+$focus-ring-offset: 2px;
+$focus-ring-offset-wide: 4px;
+
+// --- Shadows (offset = how far a pressed element moves onto its shadow) ---
+$shadow-offset-p2: 2px;
+$shadow-offset-1: 4px;
+$shadow-offset-2: 6px;
+$shadow-offset-3: 8px;
+$shadow-level-1: $shadow-offset-1 $shadow-offset-1 0 0 $color-on-primary;
+$shadow-level-2: $shadow-offset-2 $shadow-offset-2 0 0 $color-on-primary;
+$shadow-level-3: $shadow-offset-3 $shadow-offset-3 0 0 $color-on-primary;
+$shadow-p2: $shadow-offset-p2 $shadow-offset-p2 0 0 $color-on-primary;
+$shadow-inset-p1: inset 0 0 0 $border-width-thin $color-on-primary;
 
 // --- Opacity ---
 $opacity-overlay: 0.55;

@@ -30,7 +30,7 @@ $snackbar-hidden-transform: translateY($size-2);
     align-items: center;
     gap: $size-1 $size-2;
     padding: $size-1 $size-1 $size-1 $size-2;
-    border: 2px solid $color-on-primary;
+    border: $border-width-thick solid $color-on-primary;
     border-radius: $corner-medium;
     box-shadow: $shadow-level-1;
     font-family: $font-family-primary;
@@ -86,7 +86,7 @@ $snackbar-hidden-transform: translateY($size-2);
     padding-block: $size-05;
     font-size: $font-size-body-small;
     font-weight: $font-weight-medium;
-    line-height: 1.4;
+    line-height: $line-height-normal;
   }
 
   &__close {

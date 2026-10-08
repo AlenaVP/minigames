@@ -7,7 +7,7 @@ $dialog-backdrop-color: color.change($color-bg-footer, $alpha: 0.6);
 
 @mixin dialog-shell {
   padding: 0;
-  border: 2px solid $color-on-primary;
+  border: $border-width-thick solid $color-on-primary;
   border-radius: $corner-extra-large;
   background-color: $color-bg;
   color: $color-on-primary;

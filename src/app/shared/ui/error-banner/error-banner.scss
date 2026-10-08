@@ -8,7 +8,7 @@
   align-items: center;
   gap: $size-2;
   padding: $size-2;
-  border: 2px solid $color-on-primary;
+  border: $border-width-thick solid $color-on-primary;
   border-radius: $corner-large;
   background-color: $color-error-container;
   box-shadow: $shadow-level-1;
@@ -33,12 +33,12 @@
   &__title {
     font-size: $font-size-body-large;
     font-weight: $font-weight-bold;
-    line-height: 1.4;
+    line-height: $line-height-normal;
   }
 
   &__message {
     font-size: $font-size-body-small;
-    line-height: 1.5;
+    line-height: $line-height-relaxed;
     color: $color-on-bg;
   }
 
@@ -49,7 +49,7 @@
     align-items: center;
     gap: $size-1;
     padding: $btn-medium-y $btn-medium-x;
-    border: 2px solid $color-on-primary;
+    border: $border-width-thick solid $color-on-primary;
     border-radius: $corner-small;
     background-color: $color-primary;
     box-shadow: $shadow-level-1;
@@ -72,7 +72,7 @@
     @include focus-ring;
 
     &:active {
-      translate: 2px 2px;
+      translate: $shadow-offset-p2 $shadow-offset-p2;
       box-shadow: $shadow-p2;
       background-color: $color-primary-high;
     }

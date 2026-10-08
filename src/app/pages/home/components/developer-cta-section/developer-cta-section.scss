@@ -30,20 +30,20 @@
     display: block;
     flex-shrink: 0;
     width: 100%;
-    max-width: 343px;
-    height: 227px;
+    max-width: $size-p343;
+    height: $size-p227;
     object-fit: cover;
     border-radius: $corner-large;
 
     @include tablet {
-      max-width: 688px;
-      height: 300px;
+      max-width: $size-p688;
+      height: $size-p300;
     }
 
     @include desktop-mid {
-      flex: 0 0 680px;
+      flex: 0 0 $size-p680;
       max-width: none;
-      height: 480px;
+      height: $size-p480;
     }
   }
 
@@ -51,23 +51,23 @@
     display: flex;
     flex-direction: column;
     align-items: start;
-    gap: 16px;
+    gap: $size-2;
     width: 100%;
-    max-width: 343px;
+    max-width: $size-p343;
     padding: $size-3;
 
     background-color: $color-white;
-    border: 2px solid $color-on-primary;
+    border: $border-width-thick solid $color-on-primary;
     border-radius: $corner-extra-large;
 
     @include tablet {
-      max-width: 688px;
+      max-width: $size-p688;
       padding: $size-4;
     }
 
     @include desktop-mid {
       flex: 1;
-      gap: 24px;
+      gap: $size-3;
       max-width: none;
       padding: $size-5;
     }
@@ -89,17 +89,17 @@
   &__description {
     font-family: $font-family-primary;
     font-size: $font-size-label-medium;
-    line-height: 150%;
+    line-height: $line-height-relaxed;
     color: $color-on-bg;
 
     @include tablet {
-      max-width: 620px;
+      max-width: $size-p620;
       font-size: $font-size-body-small;
     }
 
     @include desktop {
       font-size: $font-size-body-large;
-      line-height: 150%;
+      line-height: $line-height-relaxed;
     }
   }
 
@@ -108,7 +108,7 @@
     align-items: center;
     gap: $size-1;
     padding: $size-1 $size-2;
-    border: 2px solid $color-on-primary;
+    border: $border-width-thick solid $color-on-primary;
     border-radius: $corner-small;
     background-color: $color-primary;
     color: $color-on-primary;
@@ -126,7 +126,7 @@
     @include desktop {
       padding: $btn-large-y $btn-large-x;
       font-size: $font-size-label-xl;
-      letter-spacing: 0.05em;
+      letter-spacing: $letter-spacing-wider;
     }
 
     &:hover {
@@ -140,12 +140,12 @@
 
   &__button-icon {
     flex-shrink: 0;
-    width: 16px;
-    height: 16px;
+    width: $size-2;
+    height: $size-2;
 
     @include desktop {
-      width: 24px;
-      height: 24px;
+      width: $size-3;
+      height: $size-3;
     }
   }
 
@@ -155,7 +155,7 @@
     color: $color-on-bg-low;
 
     @include desktop {
-      letter-spacing: 0.09em;
+      letter-spacing: $letter-spacing-widest;
     }
   }
 

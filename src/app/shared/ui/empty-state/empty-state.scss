@@ -7,7 +7,7 @@
   justify-items: center;
   gap: $size-1;
   padding: $size-5 $size-2;
-  border: 2px dashed $color-outline-variant;
+  border: $border-width-thick dashed $color-outline-variant;
   border-radius: $corner-large;
   font-family: $font-family-primary;
   color: $color-on-bg;
@@ -24,20 +24,20 @@
   &__title {
     font-size: $font-size-headline-small;
     font-weight: $font-weight-bold;
-    line-height: 1.4;
+    line-height: $line-height-normal;
     color: $color-on-primary;
   }
 
   &__message {
     max-width: 48ch;
     font-size: $font-size-body-medium;
-    line-height: 1.5;
+    line-height: $line-height-relaxed;
   }
 
   &__action {
     margin-top: $size-2;
     padding: $btn-medium-y $btn-medium-x;
-    border: 2px solid $color-on-primary;
+    border: $border-width-thick solid $color-on-primary;
     border-radius: $corner-small;
     background-color: $color-white;
     box-shadow: $shadow-level-1;
@@ -57,7 +57,7 @@
     @include focus-ring;
 
     &:active {
-      translate: 2px 2px;
+      translate: $shadow-offset-p2 $shadow-offset-p2;
       box-shadow: $shadow-p2;
     }
   }
