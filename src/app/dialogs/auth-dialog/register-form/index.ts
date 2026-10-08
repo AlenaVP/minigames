@@ -2,6 +2,13 @@ import type { AuthFormConfig } from '@dialogs/auth-dialog/auth-form';
 import personIconUrl from '@assets/icons/person.svg';
 import mailIconUrl from '@assets/icons/mail.svg';
 import lockIconUrl from '@assets/icons/lock.svg';
+import {
+  confirmPasswordValidators,
+  emailValidators,
+  registerPasswordValidators,
+  trimValue,
+  usernameValidators,
+} from '@dialogs/auth-dialog/auth-validators';
 
 export const REGISTER_FORM_CONFIG: AuthFormConfig = {
   mode: 'signup',
@@ -13,8 +20,9 @@ export const REGISTER_FORM_CONFIG: AuthFormConfig = {
       label: 'Username',
       type: 'text',
       autocomplete: 'username',
-      placeholder: 'e.g. CozyGamer_99',
+      placeholder: 'e.g. CozyGamer99',
       iconUrl: personIconUrl,
+      validators: usernameValidators,
     },
     {
       name: 'email',
@@ -23,15 +31,17 @@ export const REGISTER_FORM_CONFIG: AuthFormConfig = {
       autocomplete: 'email',
       placeholder: 'your.email@domain.com',
       iconUrl: mailIconUrl,
+      validators: emailValidators,
+      normalize: trimValue,
     },
     {
       name: 'password',
       label: 'Password',
       type: 'password',
       autocomplete: 'new-password',
-      placeholder: 'Min. 8 characters',
+      placeholder: 'Min. 6 characters',
       iconUrl: lockIconUrl,
-      minLength: 8,
+      validators: registerPasswordValidators,
     },
     {
       name: 'confirmPassword',
@@ -40,7 +50,7 @@ export const REGISTER_FORM_CONFIG: AuthFormConfig = {
       autocomplete: 'new-password',
       placeholder: 'Repeat your password',
       iconUrl: lockIconUrl,
-      minLength: 8,
+      validators: confirmPasswordValidators('password'),
     },
   ],
   submitLabel: 'Create Account',
