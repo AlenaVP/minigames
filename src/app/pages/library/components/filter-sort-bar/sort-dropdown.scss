@@ -31,7 +31,7 @@
     color: $color-on-primary;
     white-space: nowrap;
     anchor-name: var(--sort-anchor);
-    transition: background-color 0.2s ease;
+    transition: background-color $duration-normal $easing-standard;
 
     @include tablet {
       font-size: $font-size-label-large;
@@ -75,10 +75,10 @@
     opacity: 0;
     translate: 0 -4px;
     transition:
-      opacity 0.15s ease,
-      translate 0.15s ease,
-      overlay 0.15s allow-discrete,
-      display 0.15s allow-discrete;
+      opacity $duration-fast $easing-standard,
+      translate $duration-fast $easing-standard,
+      overlay $duration-fast allow-discrete,
+      display $duration-fast allow-discrete;
 
     &:popover-open {
       opacity: 1;

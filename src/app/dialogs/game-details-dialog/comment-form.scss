@@ -46,8 +46,8 @@ $input-max-height: 88px;
     line-height: 20px;
     color: $color-on-primary;
     transition:
-      background-color 0.2s ease,
-      box-shadow 0.2s ease;
+      background-color $duration-normal $easing-standard,
+      box-shadow $duration-normal $easing-standard;
 
     &::placeholder {
       color: $color-on-bg-low;
@@ -68,7 +68,7 @@ $input-max-height: 88px;
     border-radius: $corner-small;
     background-color: $color-on-primary;
     color: $color-white;
-    transition: background-color 0.2s ease;
+    transition: background-color $duration-normal $easing-standard;
 
     &:not(:disabled) {
       @include hover {

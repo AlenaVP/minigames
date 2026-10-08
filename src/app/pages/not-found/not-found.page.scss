@@ -86,9 +86,9 @@
     color: $color-on-primary;
     text-decoration: none;
     transition:
-      background-color 0.2s ease,
-      box-shadow 0.1s ease,
-      translate 0.1s ease;
+      background-color $duration-normal $easing-standard,
+      box-shadow $duration-faster $easing-standard,
+      translate $duration-faster $easing-standard;
 
     @include tablet {
       padding: $btn-large-y $btn-large-x;

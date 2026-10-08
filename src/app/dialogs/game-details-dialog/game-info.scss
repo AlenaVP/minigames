@@ -131,9 +131,9 @@ $spec-shadow: $shadow-level-1;
     color: $color-on-primary;
     white-space: nowrap;
     transition:
-      background-color 0.2s ease,
-      box-shadow 0.1s ease,
-      translate 0.1s ease;
+      background-color $duration-normal $easing-standard,
+      box-shadow $duration-faster $easing-standard,
+      translate $duration-faster $easing-standard;
 
     &:active {
       translate: 2px 2px;
@@ -174,7 +174,7 @@ $spec-shadow: $shadow-level-1;
 
       svg {
         flex-shrink: 0;
-        transition: color 0.2s ease;
+        transition: color $duration-normal $easing-standard;
       }
     }
 

@@ -124,3 +124,21 @@ $shadow-level-2: 6px 6px 0 0 $color-on-primary;
 $shadow-level-3: 8px 8px 0 0 $color-on-primary;
 $shadow-p2: 2px 2px 0 0 $color-on-primary;
 $shadow-inset-p1: inset 0 0 0 1px $color-on-primary;
+
+// --- Opacity ---
+$opacity-overlay: 0.55;
+
+// --- Layers (z-index) ---
+$z-index-raised: 1;
+$z-index-drawer: 100;
+
+// --- Motion ---
+$duration-faster: 0.1s;
+$duration-fast: 0.15s;
+$duration-normal: 0.2s;
+$duration-moderate: 0.25s;
+$duration-slow: 0.3s;
+$duration-slower: 0.5s;
+$duration-shimmer: 1.4s;
+$easing-standard: ease;
+$easing-in-out: ease-in-out;

@@ -140,7 +140,7 @@
     border-radius: $corner-full;
     background-color: $color-bg-footer-low;
     color: $color-white;
-    transition: background-color 0.2s ease;
+    transition: background-color $duration-normal $easing-standard;
 
     svg {
       width: 16px;

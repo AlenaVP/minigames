@@ -236,7 +236,7 @@ $horizontal-min-width: 560px;
     font-size: $font-size-label-large;
     font-weight: $font-weight-bold;
     color: $color-on-primary;
-    transition: background-color 0.2s ease;
+    transition: background-color $duration-normal $easing-standard;
 
     @include horizontal {
       flex-shrink: 0;

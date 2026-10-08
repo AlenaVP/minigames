@@ -64,8 +64,8 @@ $info-min-inner-width: $info-min-width - 2 * $border-width;
     opacity: 0;
     visibility: hidden;
     transition:
-      opacity 0.2s ease,
-      visibility 0.2s ease;
+      opacity $duration-normal $easing-standard,
+      visibility $duration-normal $easing-standard;
 
     @container game-card (min-width: #{$info-min-inner-width}) {
       opacity: 1;

@@ -1,7 +1,7 @@
 @use 'sass:color';
 @use 'abstracts/tokens' as *;
 
-$dialog-transition: 0.25s ease;
+$dialog-transition: $duration-moderate $easing-standard;
 $dialog-hidden-transform: translateY($size-2) scale(0.96);
 $dialog-backdrop-color: color.change($color-bg-footer, $alpha: 0.6);
 

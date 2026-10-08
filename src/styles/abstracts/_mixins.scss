@@ -48,7 +48,7 @@
 @mixin skeleton {
   background: linear-gradient(90deg, $color-skeleton 25%, $color-skeleton-shine 50%, $color-skeleton 75%) 0 0 / 300% 100%
     $color-skeleton;
-  animation: skeleton-shine 1.4s ease-in-out infinite;
+  animation: skeleton-shine $duration-shimmer $easing-in-out infinite;
 
   @media (prefers-reduced-motion: reduce) {
     animation: none;

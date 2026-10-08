@@ -2,8 +2,8 @@
 @use 'abstracts/breakpoints' as *;
 @use 'abstracts/mixins' as *;
 
-$slide-duration: 0.5s;
-$slide-easing: ease-in-out;
+$slide-duration: $duration-slower;
+$slide-easing: $easing-in-out;
 
 .new-games {
   background-color: $color-bg;
@@ -85,7 +85,7 @@ $slide-easing: ease-in-out;
     background-color: $color-white;
     color: $color-on-primary;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: background-color $duration-normal $easing-standard;
 
     svg {
       width: 20px;

@@ -17,7 +17,7 @@ $close-size: 40px;
   &__close {
     position: sticky;
     top: $close-offset;
-    z-index: 1;
+    z-index: $z-index-raised;
     display: grid;
     place-items: center;
     width: $close-size-mobile;
@@ -28,7 +28,7 @@ $close-size: 40px;
     background-color: $color-white;
     box-shadow: $shadow-p2;
     color: $color-on-primary;
-    transition: background-color 0.2s ease;
+    transition: background-color $duration-normal $easing-standard;
 
     @include tablet {
       width: $close-size;

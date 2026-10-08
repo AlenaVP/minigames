@@ -46,7 +46,7 @@ $focus-room: 4px;
     color: $color-on-primary;
     white-space: nowrap;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: background-color $duration-normal $easing-standard;
 
     @include tablet {
       font-size: $font-size-label-large;

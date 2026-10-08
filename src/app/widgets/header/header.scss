@@ -109,7 +109,7 @@
     border-radius: $corner-small;
     border: 2px solid $color-on-primary;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: background-color $duration-normal $easing-standard;
 
     &--filled {
       background-color: $color-primary;

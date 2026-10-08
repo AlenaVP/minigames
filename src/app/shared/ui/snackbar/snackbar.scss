@@ -2,7 +2,7 @@
 @use 'abstracts/breakpoints' as *;
 @use 'abstracts/mixins' as *;
 
-$snackbar-transition: 0.25s ease;
+$snackbar-transition: $duration-moderate $easing-standard;
 $snackbar-hidden-transform: translateY($size-2);
 
 .snackbar {
@@ -96,7 +96,7 @@ $snackbar-hidden-transform: translateY($size-2);
     height: $size-5;
     border-radius: $corner-small;
     color: $color-on-primary;
-    transition: background-color 0.2s ease;
+    transition: background-color $duration-normal $easing-standard;
 
     @include hover {
       background-color: $color-hover-overlay;

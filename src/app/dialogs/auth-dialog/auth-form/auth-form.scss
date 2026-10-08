@@ -4,7 +4,7 @@
   display: flex;
   flex-direction: column;
   gap: $size-3;
-  animation: auth-form-in 0.25s ease;
+  animation: auth-form-in $duration-moderate $easing-standard;
 
   &[hidden] {
     display: none;
@@ -81,9 +81,9 @@
     font-weight: $font-weight-bold;
     color: $color-on-primary;
     transition:
-      background-color 0.2s ease,
-      box-shadow 0.1s ease,
-      transform 0.1s ease;
+      background-color $duration-normal $easing-standard,
+      box-shadow $duration-faster $easing-standard,
+      transform $duration-faster $easing-standard;
 
     &:hover {
       background-color: $color-primary-high;
@@ -128,7 +128,7 @@
     font-size: $font-size-body-medium;
     font-weight: $font-weight-bold;
     color: $color-on-primary;
-    transition: background-color 0.2s ease;
+    transition: background-color $duration-normal $easing-standard;
 
     &:hover {
       background-color: $color-surface;
@@ -164,7 +164,7 @@
     border: 2px solid $color-on-primary;
     border-radius: $corner-small;
     background-color: $color-white;
-    transition: background-color 0.2s ease;
+    transition: background-color $duration-normal $easing-standard;
 
     &:focus-within {
       background-color: $color-surface-low;
