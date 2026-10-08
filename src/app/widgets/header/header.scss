@@ -4,23 +4,23 @@
 
 .header {
   background-color: $color-bg;
-  border-bottom: 2px solid $color-on-primary;
+  border-bottom: $border-width-thick solid $color-on-primary;
 
   &__inner {
     @include content-width;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 64px;
+    height: $size-8;
     padding-inline: $size-2;
 
     @include tablet {
-      height: 72px;
+      height: $size-9;
       padding-inline: $size-5;
     }
 
     @include desktop {
-      height: 85px;
+      height: $size-p85;
       padding-inline: $size-10;
     }
   }
@@ -44,8 +44,8 @@
 
   &__logo-icon {
     display: block;
-    width: 32px;
-    height: 32px;
+    width: $size-4;
+    height: $size-4;
   }
 
   &__logo-text {
@@ -107,9 +107,9 @@
     font-weight: $font-weight-bold;
     padding: $btn-medium-y $btn-medium-x;
     border-radius: $corner-small;
-    border: 2px solid $color-on-primary;
+    border: $border-width-thick solid $color-on-primary;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: background-color $duration-normal $easing-standard;
 
     &--filled {
       background-color: $color-primary;
@@ -151,9 +151,9 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 4px;
-    width: 32px;
-    height: 32px;
+    gap: $size-05;
+    width: $size-4;
+    height: $size-4;
     padding: 0;
     border: none;
     background: none;
@@ -166,8 +166,8 @@
 
   &__burger-line {
     display: block;
-    width: 16px;
-    height: 2px;
+    width: $size-2;
+    height: $border-width-thick;
     background-color: $color-on-primary;
   }
 }

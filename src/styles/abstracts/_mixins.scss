@@ -2,7 +2,7 @@
 @use 'abstracts/breakpoints' as *;
 
 @mixin content-width {
-  max-width: 1920px;
+  max-width: $bp-max;
   margin-inline: auto;
 }
 
@@ -40,15 +40,15 @@
 
 @mixin focus-ring {
   &:focus-visible {
-    outline: 2px solid $color-tertiary;
-    outline-offset: 2px;
+    outline: $focus-ring-width solid $color-tertiary;
+    outline-offset: $focus-ring-offset;
   }
 }
 
 @mixin skeleton {
   background: linear-gradient(90deg, $color-skeleton 25%, $color-skeleton-shine 50%, $color-skeleton 75%) 0 0 / 300% 100%
     $color-skeleton;
-  animation: skeleton-shine 1.4s ease-in-out infinite;
+  animation: skeleton-shine $duration-shimmer $easing-in-out infinite;
 
   @media (prefers-reduced-motion: reduce) {
     animation: none;

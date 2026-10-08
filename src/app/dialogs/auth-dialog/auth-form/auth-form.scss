@@ -4,7 +4,7 @@
   display: flex;
   flex-direction: column;
   gap: $size-3;
-  animation: auth-form-in 0.25s ease;
+  animation: auth-form-in $duration-moderate $easing-standard;
 
   &[hidden] {
     display: none;
@@ -49,7 +49,7 @@
     font-weight: $font-weight-bold;
     color: $color-on-primary;
     text-decoration: underline;
-    text-underline-offset: 3px;
+    text-underline-offset: $underline-offset;
 
     &:hover {
       color: $color-tertiary;
@@ -71,8 +71,8 @@
   }
 
   &__submit {
-    height: 52px;
-    border: 2px solid $color-on-primary;
+    height: $size-p52;
+    border: $border-width-thick solid $color-on-primary;
     border-radius: $corner-small;
     background-color: $color-primary;
     box-shadow: $shadow-level-1;
@@ -81,9 +81,9 @@
     font-weight: $font-weight-bold;
     color: $color-on-primary;
     transition:
-      background-color 0.2s ease,
-      box-shadow 0.1s ease,
-      transform 0.1s ease;
+      background-color $duration-normal $easing-standard,
+      box-shadow $duration-faster $easing-standard,
+      transform $duration-faster $easing-standard;
 
     &:hover {
       background-color: $color-primary-high;
@@ -91,7 +91,7 @@
 
     &:active {
       box-shadow: none;
-      transform: translate(4px, 4px);
+      transform: translate($shadow-offset-1, $shadow-offset-1);
     }
   }
 
@@ -110,7 +110,7 @@
     &::after {
       content: '';
       flex: 1;
-      height: 1px;
+      height: $border-width-thin;
       background-color: $color-outline;
     }
   }
@@ -120,15 +120,15 @@
     align-items: center;
     justify-content: center;
     gap: $size-2;
-    height: 50px;
-    border: 2px solid $color-on-primary;
+    height: $size-p50;
+    border: $border-width-thick solid $color-on-primary;
     border-radius: $corner-small;
     background-color: $color-white;
     font-family: $font-family-primary;
     font-size: $font-size-body-medium;
     font-weight: $font-weight-bold;
     color: $color-on-primary;
-    transition: background-color 0.2s ease;
+    transition: background-color $duration-normal $easing-standard;
 
     &:hover {
       background-color: $color-surface;
@@ -159,20 +159,20 @@
     display: flex;
     align-items: center;
     gap: $size-2;
-    height: 48px;
+    height: $size-6;
     padding-inline: $size-2;
-    border: 2px solid $color-on-primary;
+    border: $border-width-thick solid $color-on-primary;
     border-radius: $corner-small;
     background-color: $color-white;
-    transition: background-color 0.2s ease;
+    transition: background-color $duration-normal $easing-standard;
 
     &:focus-within {
       background-color: $color-surface-low;
     }
 
     &:has(:focus-visible) {
-      outline: 2px solid $color-tertiary;
-      outline-offset: 2px;
+      outline: $focus-ring-width solid $color-tertiary;
+      outline-offset: $focus-ring-offset;
     }
   }
 

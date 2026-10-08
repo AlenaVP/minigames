@@ -2,8 +2,8 @@
 @use 'abstracts/breakpoints' as *;
 @use 'abstracts/mixins' as *;
 
-$slide-duration: 0.5s;
-$slide-easing: ease-in-out;
+$slide-duration: $duration-slower;
+$slide-easing: $easing-in-out;
 
 .new-games {
   background-color: $color-bg;
@@ -41,13 +41,13 @@ $slide-easing: ease-in-out;
 
   &__accent {
     display: block;
-    width: 8px;
-    height: 24px;
+    width: $size-1;
+    height: $size-3;
     border-radius: $corner-full;
     background-color: $color-primary;
 
     @include desktop-mid {
-      height: 32px;
+      height: $size-4;
     }
   }
 
@@ -77,28 +77,28 @@ $slide-easing: ease-in-out;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
+    width: $size-5;
+    height: $size-5;
     padding: 0;
-    border: 2px solid $color-on-primary;
+    border: $border-width-thick solid $color-on-primary;
     border-radius: $corner-full;
     background-color: $color-white;
     color: $color-on-primary;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: background-color $duration-normal $easing-standard;
 
     svg {
-      width: 20px;
-      height: 20px;
+      width: $size-p20;
+      height: $size-p20;
     }
 
     @include desktop-mid {
-      width: 48px;
-      height: 48px;
+      width: $size-6;
+      height: $size-6;
 
       svg {
-        width: 16px;
-        height: 16px;
+        width: $size-2;
+        height: $size-2;
       }
     }
 
@@ -109,8 +109,8 @@ $slide-easing: ease-in-out;
     }
 
     &:focus-visible {
-      outline: 2px solid $color-tertiary;
-      outline-offset: 2px;
+      outline: $focus-ring-width solid $color-tertiary;
+      outline-offset: $focus-ring-offset;
     }
 
     &:disabled {
@@ -160,7 +160,7 @@ $slide-easing: ease-in-out;
   &__track > &__card {
     flex: 0 1 0;
     min-width: 0;
-    height: 200px;
+    height: $size-p200;
     margin-inline: calc(var(--slide-gap) / 2);
     transition:
       flex-grow $slide-duration $slide-easing,
@@ -169,15 +169,15 @@ $slide-easing: ease-in-out;
       opacity $slide-duration $slide-easing;
 
     @include tablet {
-      height: 280px;
+      height: $size-p280;
     }
 
     @include desktop-mid {
-      height: 384px;
+      height: $size-p384;
     }
 
     &.skeleton {
-      border: 2px solid transparent;
+      border: $border-width-thick solid transparent;
       border-radius: $corner-large;
     }
 
@@ -201,7 +201,7 @@ $slide-easing: ease-in-out;
       @include desktop-mid {
         flex-grow: var(--size-far);
         margin-inline: calc(var(--slide-gap) / 2);
-        border-inline-width: 2px;
+        border-inline-width: $border-width-thick;
         opacity: 1;
       }
     }

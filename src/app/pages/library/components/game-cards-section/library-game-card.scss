@@ -2,8 +2,8 @@
 @use 'abstracts/breakpoints' as *;
 @use 'abstracts/mixins' as *;
 
-$border-width: 2px;
-$horizontal-min-width: 560px;
+$border-width: $border-width-thick;
+$horizontal-min-width: $size-p560;
 
 @mixin horizontal {
   @container library-card (min-width: #{$horizontal-min-width}) {
@@ -27,11 +27,11 @@ $horizontal-min-width: 560px;
 
     @include horizontal {
       flex-direction: row;
-      height: 148px;
+      height: $size-p148;
     }
 
     @include desktop {
-      height: 196px;
+      height: $size-p196;
     }
   }
 
@@ -44,19 +44,19 @@ $horizontal-min-width: 560px;
     object-fit: cover;
 
     &--placeholder {
-      background-color: $color-avatar-2;
+      background-color: $color-avatar-random-2;
     }
 
     @include horizontal {
       width: 39.2%;
-      max-width: 268px;
+      max-width: $size-p268;
       height: 100%;
       aspect-ratio: auto;
     }
 
     @include desktop {
       width: 38.6%;
-      max-width: 318px;
+      max-width: $size-p318;
     }
   }
 
@@ -72,13 +72,13 @@ $horizontal-min-width: 560px;
       'stats price'
       'details details';
     align-items: center;
-    padding: $size-2 14px 14px;
+    padding: $size-2 $size-p14 $size-p14;
 
     @include horizontal {
       display: flex;
       flex-direction: column;
       align-items: stretch;
-      padding: 14px 14px 14px $size-2;
+      padding: $size-p14 $size-p14 $size-p14 $size-2;
     }
   }
 
@@ -126,14 +126,14 @@ $horizontal-min-width: 560px;
     flex-shrink: 0;
     justify-self: start;
     margin-top: $size-1;
-    padding: 3px 7px;
-    border: 1.5px solid $color-on-primary;
+    padding: $size-p3 $size-p7;
+    border: $border-width-medium solid $color-on-primary;
     border-radius: $corner-full;
     background-color: $color-secondary;
     font-family: $font-family-primary;
     font-size: $font-size-label-medium;
     font-weight: $font-weight-bold;
-    line-height: 1.25;
+    line-height: $line-height-tight;
     color: $color-on-primary;
     white-space: nowrap;
 
@@ -173,10 +173,10 @@ $horizontal-min-width: 560px;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: var(--lines);
     overflow: hidden;
-    margin-top: 12px;
+    margin-top: $size-p12;
     font-family: $font-family-primary;
     font-size: $font-size-body-small;
-    line-height: 20px;
+    line-height: $line-height-p20;
     color: $color-on-bg;
 
     @include horizontal {
@@ -188,7 +188,7 @@ $horizontal-min-width: 560px;
 
       margin-block: auto;
       font-size: $font-size-body-medium;
-      line-height: 22px;
+      line-height: $line-height-p22;
     }
   }
 
@@ -197,7 +197,7 @@ $horizontal-min-width: 560px;
     display: flex;
     align-items: center;
     gap: $size-2;
-    margin-top: 18px;
+    margin-top: $size-p18;
     font-family: $font-family-primary;
     font-size: $font-size-label-medium;
     font-weight: $font-weight-bold;
@@ -220,15 +220,15 @@ $horizontal-min-width: 560px;
 
   &__icon {
     flex-shrink: 0;
-    width: 20px;
-    height: 20px;
+    width: $size-p20;
+    height: $size-p20;
   }
 
   &__details {
     grid-area: details;
-    height: 36px;
-    margin-top: 18px;
-    padding-inline: 18px;
+    height: $size-p36;
+    margin-top: $size-p18;
+    padding-inline: $size-p18;
     border: $border-width solid $color-on-primary;
     border-radius: $corner-small;
     background-color: $color-primary;
@@ -236,17 +236,17 @@ $horizontal-min-width: 560px;
     font-size: $font-size-label-large;
     font-weight: $font-weight-bold;
     color: $color-on-primary;
-    transition: background-color 0.2s ease;
+    transition: background-color $duration-normal $easing-standard;
 
     @include horizontal {
       flex-shrink: 0;
-      height: 32px;
+      height: $size-4;
       margin-top: 0;
       font-size: $font-size-label-medium;
     }
 
     @include desktop {
-      height: 36px;
+      height: $size-p36;
       font-size: $font-size-label-large;
     }
 
@@ -259,8 +259,8 @@ $horizontal-min-width: 560px;
     }
 
     &:focus-visible {
-      outline: 2px solid $color-tertiary;
-      outline-offset: 2px;
+      outline: $focus-ring-width solid $color-tertiary;
+      outline-offset: $focus-ring-offset;
     }
   }
 

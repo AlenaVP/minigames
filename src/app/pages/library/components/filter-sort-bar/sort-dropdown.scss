@@ -7,11 +7,11 @@
   width: 100%;
 
   @include tablet {
-    width: 182px;
+    width: $size-p182;
   }
 
   @include desktop {
-    width: 190px;
+    width: $size-p190;
   }
 
   &__trigger {
@@ -19,9 +19,9 @@
     align-items: center;
     gap: 0.3em;
     width: 100%;
-    height: 40px;
-    padding-inline: 22px;
-    border: 2px solid $color-on-primary;
+    height: $size-5;
+    padding-inline: $size-p22;
+    border: $border-width-thick solid $color-on-primary;
     border-radius: $corner-full;
     background-color: $color-white;
     font-family: $font-family-primary;
@@ -31,14 +31,14 @@
     color: $color-on-primary;
     white-space: nowrap;
     anchor-name: var(--sort-anchor);
-    transition: background-color 0.2s ease;
+    transition: background-color $duration-normal $easing-standard;
 
     @include tablet {
       font-size: $font-size-label-large;
     }
 
     @include desktop {
-      height: 44px;
+      height: $size-p44;
     }
 
     @include hover {
@@ -46,8 +46,8 @@
     }
 
     &:focus-visible {
-      outline: 2px solid $color-tertiary;
-      outline-offset: 2px;
+      outline: $focus-ring-width solid $color-tertiary;
+      outline-offset: $focus-ring-offset;
     }
   }
 
@@ -61,7 +61,7 @@
     margin: $size-1 0 0;
     padding: 0;
     overflow: hidden;
-    border: 2px solid $color-on-primary;
+    border: $border-width-thick solid $color-on-primary;
     border-radius: $corner-medium;
     background-color: $color-white;
     box-shadow: $shadow-level-1;
@@ -73,12 +73,12 @@
     position-try-fallbacks: flip-block;
 
     opacity: 0;
-    translate: 0 -4px;
+    translate: 0 (-$size-05);
     transition:
-      opacity 0.15s ease,
-      translate 0.15s ease,
-      overlay 0.15s allow-discrete,
-      display 0.15s allow-discrete;
+      opacity $duration-fast $easing-standard,
+      translate $duration-fast $easing-standard,
+      overlay $duration-fast allow-discrete,
+      display $duration-fast allow-discrete;
 
     &:popover-open {
       opacity: 1;
@@ -86,7 +86,7 @@
 
       @starting-style {
         opacity: 0;
-        translate: 0 -4px;
+        translate: 0 (-$size-05);
       }
     }
   }
@@ -95,7 +95,7 @@
     display: flex;
     align-items: center;
     gap: $size-1;
-    padding: 14px $size-2;
+    padding: $size-p14 $size-2;
     font-family: $font-family-primary;
     font-size: $font-size-label-large;
     font-weight: $font-weight-medium;
@@ -103,7 +103,7 @@
     cursor: pointer;
 
     & + & {
-      border-top: 1px solid $color-outline;
+      border-top: $border-width-thin solid $color-outline;
     }
 
     @include hover {
@@ -111,8 +111,8 @@
     }
 
     &:focus-visible {
-      outline: 2px solid $color-tertiary;
-      outline-offset: -2px;
+      outline: $focus-ring-width solid $color-tertiary;
+      outline-offset: -$focus-ring-offset;
     }
 
     &[aria-selected='true'] {

@@ -1,8 +1,8 @@
 @use 'abstracts/tokens' as *;
 @use 'abstracts/breakpoints' as *;
 
-$border-width: 2px;
-$info-min-width: 288px;
+$border-width: $border-width-thick;
+$info-min-width: $size-p288;
 $info-min-inner-width: $info-min-width - 2 * $border-width;
 
 .game-card {
@@ -32,8 +32,8 @@ $info-min-inner-width: $info-min-width - 2 * $border-width;
     text-align: start;
 
     &:focus-visible {
-      outline: 2px solid $color-tertiary;
-      outline-offset: 4px;
+      outline: $focus-ring-width solid $color-tertiary;
+      outline-offset: $focus-ring-offset-wide;
     }
   }
 
@@ -49,7 +49,7 @@ $info-min-inner-width: $info-min-width - 2 * $border-width;
   }
 
   &__placeholder {
-    background-color: $color-avatar-2;
+    background-color: $color-avatar-random-2;
   }
 
   &__overlay {
@@ -64,8 +64,8 @@ $info-min-inner-width: $info-min-width - 2 * $border-width;
     opacity: 0;
     visibility: hidden;
     transition:
-      opacity 0.2s ease,
-      visibility 0.2s ease;
+      opacity $duration-normal $easing-standard,
+      visibility $duration-normal $easing-standard;
 
     @container game-card (min-width: #{$info-min-inner-width}) {
       opacity: 1;
@@ -112,7 +112,7 @@ $info-min-inner-width: $info-min-width - 2 * $border-width;
 
   &__icon {
     flex-shrink: 0;
-    width: 24px;
-    height: 24px;
+    width: $size-3;
+    height: $size-3;
   }
 }
