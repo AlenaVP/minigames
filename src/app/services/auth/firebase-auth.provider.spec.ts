@@ -69,6 +69,27 @@ describe('FirebaseAuthProvider', () => {
       expect(firebase.getAuth).toHaveBeenCalledTimes(1);
     });
 
+    it('preload() starts loading the SDK early and the first action reuses it', async () => {
+      firebase.signOut.mockImplementation(async () => {});
+
+      provider.preload();
+      await provider.signOut();
+
+      expect(firebase.initializeApp).toHaveBeenCalledTimes(1);
+    });
+
+    it('a failed preload stays silent (no unhandled rejection) and the next action tries again', async () => {
+      firebase.initializeApp.mockImplementationOnce(() => {
+        throw firebaseError('auth/invalid-api-key');
+      });
+      firebase.signOut.mockImplementation(async () => {});
+
+      provider.preload();
+      await new Promise((resolve) => setTimeout(resolve));
+      await expect(provider.signOut()).resolves.toBeUndefined();
+      expect(firebase.initializeApp).toHaveBeenCalledTimes(2);
+    });
+
     it('does not cache a failed initialization: the next action tries again', async () => {
       firebase.initializeApp.mockImplementationOnce(() => {
         throw firebaseError('auth/invalid-api-key');

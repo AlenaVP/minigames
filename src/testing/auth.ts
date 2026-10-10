@@ -10,6 +10,7 @@ export function makeAuthUser(overrides: Partial<AuthUser> = {}): AuthUser {
 export function createFakeAuthProvider() {
   const user = makeAuthUser();
   return {
+    preload: vi.fn<AuthProvider['preload']>(),
     signInWithEmail: vi.fn<AuthProvider['signInWithEmail']>(async () => user),
     signUpWithEmail: vi.fn<AuthProvider['signUpWithEmail']>(async () => ({ user, isDisplayNameSaved: true })),
     signInWithGoogle: vi.fn<AuthProvider['signInWithGoogle']>(async () => user),

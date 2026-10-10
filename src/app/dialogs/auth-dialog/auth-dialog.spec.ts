@@ -129,6 +129,9 @@ function submit(mode: 'login' | 'signup'): void {
   query<HTMLFormElement>(`#auth-panel-${mode} form`).requestSubmit();
 }
 
+const googleButton = (mode: 'login' | 'signup' = 'login'): HTMLButtonElement =>
+  query<HTMLButtonElement>(`#auth-panel-${mode} .auth-form__google`);
+
 const loginSubmit = (): HTMLButtonElement => query<HTMLButtonElement>('#auth-panel-login .auth-form__submit');
 
 describe('AuthDialog — email/password authentication', () => {
@@ -307,5 +310,131 @@ describe('AuthDialog — email/password authentication', () => {
     query<HTMLButtonElement>('.auth-form__forgot').click();
 
     expect(snackbar.info).toHaveBeenCalledWith('Password recovery is not available yet.');
+  });
+});
+
+describe('AuthDialog — Google sign-in', () => {
+  let dialog: AuthDialog;
+  let authProvider: ReturnType<typeof createFakeAuthProvider>;
+  let onAuthenticated: ReturnType<typeof vi.fn<(user: AuthUser) => AppSession>>;
+
+  beforeEach(() => {
+    authProvider = createFakeAuthProvider();
+    onAuthenticated = vi.fn((user: AuthUser) => ({
+      displayName: user.displayName ?? 'Player',
+      email: user.email ?? '',
+      authenticatedAt: 0,
+    }));
+    dialog = new AuthDialog({ authProvider, onAuthenticated });
+    dialog.mount(document.body);
+    vi.spyOn(snackbar, 'success');
+    vi.spyOn(snackbar, 'error');
+    vi.spyOn(snackbar, 'info');
+  });
+
+  afterEach(() => {
+    dialog.destroy();
+  });
+
+  it('starts loading the SDK when the dialog opens, so the popup is not blocked later', () => {
+    dialog.open('login');
+    dialog.open('signup');
+
+    expect(authProvider.preload).toHaveBeenCalledTimes(1);
+  });
+
+  it('works with an empty form: Google does not need the fields', async () => {
+    dialog.open('login');
+
+    googleButton().click();
+    await flush();
+
+    expect(authProvider.signInWithGoogle).toHaveBeenCalledTimes(1);
+    expect(authProvider.signInWithEmail).not.toHaveBeenCalled();
+  });
+
+  it('while the Google window is open: everything is locked and the dialog cannot be dismissed', async () => {
+    const request = deferred<AuthUser>();
+    authProvider.signInWithGoogle.mockReturnValue(request.promise);
+    dialog.open('login');
+
+    googleButton().click();
+
+    const controls = [...query('#auth-panel-login').querySelectorAll<HTMLInputElement | HTMLButtonElement>('input, button')];
+    expect(controls.every((control) => control.disabled)).toBe(true);
+    expect(googleButton().textContent?.trim()).toBe('Waiting for Google…');
+    expect(googleButton().classList.contains('auth-form__google--pending')).toBe(true);
+    expect(loginSubmit().classList.contains('auth-form__submit--pending')).toBe(false);
+
+    const escape = new KeyboardEvent('keydown', { key: 'Escape', cancelable: true });
+    query('dialog.auth-dialog').dispatchEvent(escape);
+    expect(escape.defaultPrevented).toBe(true);
+
+    // a second click cannot start a second popup
+    googleButton().dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    expect(authProvider.signInWithGoogle).toHaveBeenCalledTimes(1);
+
+    request.resolve(makeAuthUser());
+    await flush();
+  });
+
+  it('success: the same app session as email/password, a greeting, the dialog closes', async () => {
+    authProvider.signInWithGoogle.mockResolvedValue(
+      makeAuthUser({ displayName: 'Alena P', photoUrl: 'https://lh3.googleusercontent.com/a/x' }),
+    );
+    dialog.open('signup');
+
+    googleButton('signup').click();
+    await flush();
+
+    expect(onAuthenticated).toHaveBeenCalledWith(
+      makeAuthUser({ displayName: 'Alena P', photoUrl: 'https://lh3.googleusercontent.com/a/x' }),
+    );
+    expect(snackbar.success).toHaveBeenCalledWith('Welcome, Alena P!');
+    expect(dialog.isOpen).toBe(false);
+  });
+
+  it('a closed Google window: the dialog stays open, controls come back, an info (not error) Snackbar', async () => {
+    authProvider.signInWithGoogle.mockRejectedValue(new AuthError('cancelled'));
+    dialog.open('login');
+
+    googleButton().click();
+    await flush();
+
+    expect(dialog.isOpen).toBe(true);
+    expect(googleButton().disabled).toBe(false);
+    expect(googleButton().textContent?.trim()).toBe('Continue with Google');
+    expect(query<HTMLInputElement>('#login-email').disabled).toBe(false);
+    expect(snackbar.info).toHaveBeenCalledWith('Google sign-in was cancelled.');
+    expect(snackbar.error).not.toHaveBeenCalled();
+    expect(onAuthenticated).not.toHaveBeenCalled();
+  });
+
+  it('a failure (popup blocked) explains what to do and keeps the dialog open', async () => {
+    authProvider.signInWithGoogle.mockRejectedValue(new AuthError('popup-blocked'));
+    dialog.open('login');
+
+    googleButton().click();
+    await flush();
+
+    expect(dialog.isOpen).toBe(true);
+    expect(snackbar.error).toHaveBeenCalledWith(
+      'The Google sign-in window was blocked. Allow pop-ups for this site and try again.',
+    );
+  });
+
+  it('cannot start Google while an email login is pending', async () => {
+    const request = deferred<AuthUser>();
+    authProvider.signInWithEmail.mockReturnValue(request.promise);
+    dialog.open('login');
+    type('#login-email', 'alex@minigames.com');
+    type('#login-password', 'Secret1!');
+    submit('login');
+
+    googleButton().dispatchEvent(new MouseEvent('click', { bubbles: true }));
+
+    expect(authProvider.signInWithGoogle).not.toHaveBeenCalled();
+    request.resolve(makeAuthUser());
+    await flush();
   });
 });

@@ -30,6 +30,8 @@ export interface AuthFormConfig {
   /** Shown on the submit button while the request is pending */
   pendingLabel: string;
   googleLabel: string;
+  /** Shown on the Google button while the Google window is open */
+  googlePendingLabel: string;
   footerText: string;
   switchLabel: string;
 }
@@ -39,7 +41,12 @@ interface AuthFormOptions {
   onSwitch: () => void;
   /** A valid form was submitted: normalized values (trimmed email) */
   onSubmit?: (values: FormValues) => void;
+  /** "Continue with Google" — works regardless of the form fields */
+  onGoogle?: () => void;
 }
+
+/** Which button started the request: it gets the spinner, everything else is just disabled */
+export type AuthTrigger = 'submit' | 'google';
 
 const TOGGLE_LABEL = { show: 'Show password', hide: 'Hide password' } as const;
 const FORGOT_PASSWORD_MESSAGE = 'Password recovery is not available yet.';
@@ -70,7 +77,7 @@ export class AuthForm extends ComponentBase {
    * Login ↔ Register link are disabled, the submit button shows a spinner. Afterwards focus goes back
    * where it was, so a keyboard user can simply press Enter again after a failure.
    */
-  setPending(isPending: boolean): void {
+  setPending(isPending: boolean, trigger: AuthTrigger = 'submit'): void {
     const form = this.form;
     if (!form || this.isPending === isPending) return;
 
@@ -88,11 +95,17 @@ export class AuthForm extends ComponentBase {
     const switchButton = form.parentElement?.querySelector<HTMLButtonElement>('.auth-form__switch');
     if (switchButton) switchButton.disabled = isPending;
 
-    const submit = form.querySelector<HTMLButtonElement>('.auth-form__submit');
-    if (submit) {
-      submit.classList.toggle('auth-form__submit--pending', isPending);
-      const label = submit.querySelector('.auth-form__submit-label');
-      if (label) label.textContent = isPending ? this.options.config.pendingLabel : this.options.config.submitLabel;
+    const { config } = this.options;
+    const buttons = {
+      submit: { selector: '.auth-form__submit', idle: config.submitLabel, pending: config.pendingLabel },
+      google: { selector: '.auth-form__google', idle: config.googleLabel, pending: config.googlePendingLabel },
+    } as const;
+    const { selector, idle, pending } = buttons[trigger];
+    const button = form.querySelector<HTMLButtonElement>(selector);
+    if (button) {
+      button.classList.toggle(`${selector.slice(1)}--pending`, isPending);
+      const label = button.querySelector('[data-label]');
+      if (label) label.textContent = isPending ? pending : idle;
     }
 
     this.renderValidation();
@@ -135,12 +148,12 @@ export class AuthForm extends ComponentBase {
 
         <div class="auth-form__actions">
           <button type="submit" class="auth-form__submit" disabled>
-            <span class="auth-form__submit-label">${config.submitLabel}</span>
+            <span data-label>${config.submitLabel}</span>
           </button>
           <p class="auth-form__divider">or</p>
           <button type="button" class="auth-form__google">
             <img src="${googleIconUrl}" alt="" width="24" height="24" />
-            ${config.googleLabel}
+            <span data-label>${config.googleLabel}</span>
           </button>
         </div>
       </form>
@@ -212,6 +225,9 @@ export class AuthForm extends ComponentBase {
 
     panel.querySelector('.auth-form__switch')?.addEventListener('click', () => this.options.onSwitch());
     panel.querySelector('.auth-field__toggle')?.addEventListener('click', () => this.togglePasswordVisibility());
+    panel.querySelector('.auth-form__google')?.addEventListener('click', () => {
+      if (!this.isPending) this.options.onGoogle?.();
+    });
     panel.querySelector('.auth-form__forgot')?.addEventListener('click', () => snackbar.info(FORGOT_PASSWORD_MESSAGE));
 
     // input: every keystroke and paste; change: autofill in some browsers; focusout: the user left a field

@@ -4,7 +4,7 @@ import type { FormValues } from '@shared/forms/validators';
 import type { AuthMode, AuthUser } from '@shared/types/auth';
 import type { AppSession } from '@shared/types/session';
 import { snackbar } from '@shared/ui/snackbar';
-import { AuthForm } from './auth-form';
+import { AuthForm, type AuthTrigger } from './auth-form';
 import { LOGIN_FORM_CONFIG } from './login-form';
 import { REGISTER_FORM_CONFIG } from './register-form';
 import './auth-dialog.scss';
@@ -26,8 +26,15 @@ interface AuthDialogOptions {
 const MESSAGES = {
   welcomeBack: (name: string) => `Welcome back, ${name}!`,
   accountCreated: (name: string) => `Account created. Welcome, ${name}!`,
+  welcome: (name: string) => `Welcome, ${name}!`,
   displayNameNotSaved: 'Your account was created, but the username could not be saved to your profile.',
 } as const;
+
+/** What a sign-in attempt resolved with, and the greeting to show once the app session exists */
+interface SignInOutcome {
+  user: AuthUser;
+  announce: (session: AppSession) => void;
+}
 
 export class AuthDialog extends DialogBase {
   private readonly options: AuthDialogOptions;
@@ -44,7 +51,10 @@ export class AuthDialog extends DialogBase {
 
   /** Idempotent: already open → only the tab follows (Back/Forward between ?auth=login and ?auth=register) */
   open(mode: AuthMode = 'login'): void {
-    if (!this.isOpen) this.resetForms();
+    if (!this.isOpen) {
+      this.resetForms();
+      this.options.authProvider.preload();
+    }
     this.setMode(mode);
     if (!this.isOpen) this.show();
   }
@@ -76,11 +86,13 @@ export class AuthDialog extends DialogBase {
         config: LOGIN_FORM_CONFIG,
         onSwitch: () => this.switchMode('signup'),
         onSubmit: (values) => void this.authenticate('login', values),
+        onGoogle: () => void this.authenticateWithGoogle('login'),
       });
       const register = new AuthForm({
         config: REGISTER_FORM_CONFIG,
         onSwitch: () => this.switchMode('login'),
         onSubmit: (values) => void this.authenticate('signup', values),
+        onGoogle: () => void this.authenticateWithGoogle('signup'),
       });
       this.forms.set('login', this.mountChild(login, panels));
       this.forms.set('signup', this.mountChild(register, panels));
@@ -93,46 +105,70 @@ export class AuthDialog extends DialogBase {
     }
   }
 
-  /**
-   * Submit → Firebase → app session → close. Pending: nothing in the dialog can be pressed, and it cannot be
-   * dismissed. Failure: the dialog stays open with the values, controls unlocked, a Snackbar says why.
-   */
-  private async authenticate(mode: AuthMode, values: FormValues): Promise<void> {
-    if (this.isPending) return;
-    const { authProvider, onAuthenticated } = this.options;
+  /** Email/password: login or account creation, depending on the tab */
+  private authenticate(mode: AuthMode, values: FormValues): Promise<void> {
+    const { authProvider } = this.options;
     const email = values.email ?? '';
     const password = values.password ?? '';
 
-    this.setPending(mode, true);
-    let isFirebaseSignedIn = false;
-    try {
+    return this.run(mode, 'submit', async () => {
       if (mode === 'login') {
         const user = await authProvider.signInWithEmail(email, password);
-        isFirebaseSignedIn = true;
-        const session = onAuthenticated(user);
-        snackbar.success(MESSAGES.welcomeBack(session.displayName));
-      } else {
-        const result = await authProvider.signUpWithEmail(email, password, values.username ?? '');
-        isFirebaseSignedIn = true;
-        const session = onAuthenticated(result.user);
-        snackbar.success(MESSAGES.accountCreated(session.displayName));
-        if (!result.isDisplayNameSaved) snackbar.warning(MESSAGES.displayNameNotSaved);
+        return { user, announce: (session) => snackbar.success(MESSAGES.welcomeBack(session.displayName)) };
       }
 
-      this.setPending(mode, false);
+      const result = await authProvider.signUpWithEmail(email, password, values.username ?? '');
+      return {
+        user: result.user,
+        announce: (session) => {
+          snackbar.success(MESSAGES.accountCreated(session.displayName));
+          if (!result.isDisplayNameSaved) snackbar.warning(MESSAGES.displayNameNotSaved);
+        },
+      };
+    });
+  }
+
+  /** The same Google flow on both tabs: Firebase creates the account on the first sign-in */
+  private authenticateWithGoogle(mode: AuthMode): Promise<void> {
+    return this.run(mode, 'google', async () => {
+      const user = await this.options.authProvider.signInWithGoogle();
+      return { user, announce: (session) => snackbar.success(MESSAGES.welcome(session.displayName)) };
+    });
+  }
+
+  /**
+   * One flow for every provider: lock → Firebase → app session → greet → close.
+   * Pending: nothing in the dialog can be pressed, and it cannot be dismissed.
+   * Failure: the dialog stays open, controls unlocked, a Snackbar says why
+   * (a closed Google window is the user's choice — info, not an error).
+   */
+  private async run(mode: AuthMode, trigger: AuthTrigger, signIn: () => Promise<SignInOutcome>): Promise<void> {
+    if (this.isPending) return;
+
+    this.setPending(mode, trigger, true);
+    let isFirebaseSignedIn = false;
+    try {
+      const { user, announce } = await signIn();
+      isFirebaseSignedIn = true;
+      announce(this.options.onAuthenticated(user));
+
+      this.setPending(mode, trigger, false);
       this.close();
     } catch (error) {
       // Firebase said yes, but the app could not create its session: do not leave Firebase signed in
-      if (isFirebaseSignedIn) authProvider.signOut().catch(() => {});
-      this.setPending(mode, false);
-      snackbar.error(toAuthError(error).message);
+      if (isFirebaseSignedIn) this.options.authProvider.signOut().catch(() => {});
+      this.setPending(mode, trigger, false);
+
+      const authError = toAuthError(error);
+      if (authError.isCancellation) snackbar.info(authError.message);
+      else snackbar.error(authError.message);
     }
   }
 
-  private setPending(mode: AuthMode, isPending: boolean): void {
+  private setPending(mode: AuthMode, trigger: AuthTrigger, isPending: boolean): void {
     this.isPending = isPending;
     this.setDismissible(!isPending);
-    this.forms.get(mode)?.setPending(isPending);
+    this.forms.get(mode)?.setPending(isPending, trigger);
 
     for (const tab of this.dialog?.querySelectorAll<HTMLButtonElement>('.auth-dialog__tab') ?? []) {
       tab.disabled = isPending;

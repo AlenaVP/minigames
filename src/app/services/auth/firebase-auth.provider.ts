@@ -35,6 +35,10 @@ export class FirebaseAuthProvider implements AuthProvider {
     this.config = config;
   }
 
+  preload(): void {
+    this.getSession().catch(() => {});
+  }
+
   async signInWithEmail(email: string, password: string): Promise<AuthUser> {
     return this.run(async ({ auth, sdk }) => {
       const { user } = await sdk.signInWithEmailAndPassword(auth, email, password);

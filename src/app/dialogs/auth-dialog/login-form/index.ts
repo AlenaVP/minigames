@@ -33,6 +33,7 @@ export const LOGIN_FORM_CONFIG: AuthFormConfig = {
   submitLabel: 'Login',
   pendingLabel: 'Logging in…',
   googleLabel: 'Continue with Google',
+  googlePendingLabel: 'Waiting for Google…',
   footerText: "Don't have an account?",
   switchLabel: 'Register',
 };
