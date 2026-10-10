@@ -33,7 +33,7 @@
     gap: $size-3;
 
     @include desktop {
-      max-width: 400px;
+      max-width: $size-p400;
     }
   }
 
@@ -55,7 +55,7 @@
     color: $color-white;
 
     @include desktop {
-      letter-spacing: 12%;
+      letter-spacing: 0.12em;
     }
   }
 
@@ -63,7 +63,7 @@
     margin: 0;
     font-family: $font-family-primary;
     font-size: $font-size-body-small;
-    line-height: 1.5;
+    line-height: $line-height-relaxed;
     color: $color-on-bg-footer;
   }
 
@@ -79,7 +79,7 @@
     }
 
     @include desktop {
-      gap: 80px;
+      gap: $size-10;
     }
   }
 
@@ -108,7 +108,7 @@
   &__col-list {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: $size-p12;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -135,25 +135,25 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: $size-4;
+    height: $size-4;
     border-radius: $corner-full;
     background-color: $color-bg-footer-low;
     color: $color-white;
-    transition: background-color 0.2s ease;
+    transition: background-color $duration-normal $easing-standard;
 
     svg {
-      width: 16px;
-      height: 16px;
+      width: $size-2;
+      height: $size-2;
     }
 
     @include desktop {
-      width: 40px;
-      height: 40px;
+      width: $size-5;
+      height: $size-5;
 
       svg {
-        width: 20px;
-        height: 20px;
+        width: $size-p20;
+        height: $size-p20;
       }
     }
 
@@ -170,7 +170,7 @@
     gap: $size-2;
     margin-top: $size-4;
     padding-top: $size-2;
-    border-top: 1px solid $color-bg-footer-low;
+    border-top: $border-width-thin solid $color-bg-footer-low;
 
     @include tablet {
       align-items: center;
@@ -218,8 +218,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 24px;
-    height: 24px;
+    width: $size-3;
+    height: $size-3;
     border-radius: $corner-full;
   }
 
@@ -234,7 +234,7 @@
   }
 
   &__credit-icon {
-    width: 24px;
-    height: 24px;
+    width: $size-3;
+    height: $size-3;
   }
 }

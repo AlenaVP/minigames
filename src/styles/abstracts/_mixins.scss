@@ -2,7 +2,7 @@
 @use 'abstracts/breakpoints' as *;
 
 @mixin content-width {
-  max-width: 1920px;
+  max-width: $bp-max;
   margin-inline: auto;
 }
 
@@ -18,8 +18,6 @@
   }
 }
 
-// Hover only where a real pointer can hover: a tap on a touch screen
-// must not leave the element stuck in the hover state
 @mixin hover {
   @media (hover: hover) {
     &:hover {
@@ -28,8 +26,6 @@
   }
 }
 
-// Hidden visually, but still read by screen readers.
-// A mixin (not only the .visually-hidden class) so it can be switched on inside a media/container query
 @mixin visually-hidden {
   position: absolute;
   width: 1px;
@@ -42,19 +38,17 @@
   border: 0;
 }
 
-// Same ring as the other custom controls (tertiary = focus colour in the Guidebook)
 @mixin focus-ring {
   &:focus-visible {
-    outline: 2px solid $color-tertiary;
-    outline-offset: 2px;
+    outline: $focus-ring-width solid $color-tertiary;
+    outline-offset: $focus-ring-offset;
   }
 }
 
-// Placeholder block with a light sweeping highlight. Shapes (size, radius) stay in each section's skeleton.
 @mixin skeleton {
   background: linear-gradient(90deg, $color-skeleton 25%, $color-skeleton-shine 50%, $color-skeleton 75%) 0 0 / 300% 100%
     $color-skeleton;
-  animation: skeleton-shine 1.4s ease-in-out infinite;
+  animation: skeleton-shine $duration-shimmer $easing-in-out infinite;
 
   @media (prefers-reduced-motion: reduce) {
     animation: none;

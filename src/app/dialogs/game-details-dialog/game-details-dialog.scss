@@ -3,36 +3,33 @@
 @use 'abstracts/mixins' as *;
 @use 'abstracts/dialog' as *;
 
-$close-offset: 14px;
-$close-size-mobile: 32px;
-$close-size: 40px;
+$close-offset: $size-p14;
+$close-size-mobile: $size-4;
+$close-size: $size-5;
+$body-inset: $size-3 - $border-width-thick;
 
-// Figma: 600px on tablet and desktop, the full 375px on mobile.
-// Centering comes from showModal() (UA styles: position: fixed; inset: 0; margin: auto).
 .game-details {
-  width: 600px;
+  width: $size-p600;
   max-width: 100%;
   max-height: calc(100dvh - #{$size-4});
 
   @include dialog-shell;
 
-  // Sticky: exactly where Figma puts it at the top, and still reachable after scrolling down to the comments.
-  // Negative bottom margin = the button takes no room, so the hero starts at the very top under it.
   &__close {
     position: sticky;
     top: $close-offset;
-    z-index: 1;
+    z-index: $z-index-raised;
     display: grid;
     place-items: center;
     width: $close-size-mobile;
     height: $close-size-mobile;
     margin: $close-offset $close-offset (-$close-offset - $close-size-mobile) auto;
-    border: 2px solid $color-on-primary;
+    border: $border-width-thick solid $color-on-primary;
     border-radius: $corner-full;
     background-color: $color-white;
     box-shadow: $shadow-p2;
     color: $color-on-primary;
-    transition: background-color 0.2s ease;
+    transition: background-color $duration-normal $easing-standard;
 
     @include tablet {
       width: $close-size;
@@ -45,12 +42,11 @@ $close-size: 40px;
     }
 
     &:focus-visible {
-      outline: 2px solid $color-tertiary;
-      outline-offset: 2px;
+      outline: $focus-ring-width solid $color-tertiary;
+      outline-offset: $focus-ring-offset;
     }
   }
 
-  // Query container for the sections: they switch layout by the dialog's width, not the viewport's
   &__content {
     container: game-details / inline-size;
   }
@@ -58,15 +54,12 @@ $close-size: 40px;
   &__body {
     display: flex;
     flex-direction: column;
-    gap: $size-3; // 24px between the sections
-    // Figma: 24px from the dialog's OUTER edge; the 2px border already takes 2 of them
-    padding: $size-3 22px 22px;
+    gap: $size-3;
+    padding: $size-3 $body-inset $body-inset;
   }
 
-  // ---------- Story 3: loading / failure states of the details request ----------
-  // Error banner and Game Not Found get the body's padding, plus room under the sticky close button
   &__content > .async-content > :is(.error-banner, .empty-state) {
-    margin: ($close-offset * 2 + $close-size-mobile) 22px 22px;
+    margin: ($close-offset * 2 + $close-size-mobile) $body-inset $body-inset;
 
     @include tablet {
       margin-top: $close-offset * 2 + $close-size;

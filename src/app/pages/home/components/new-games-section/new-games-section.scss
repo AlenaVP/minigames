@@ -2,8 +2,8 @@
 @use 'abstracts/breakpoints' as *;
 @use 'abstracts/mixins' as *;
 
-$slide-duration: 0.5s;
-$slide-easing: ease-in-out;
+$slide-duration: $duration-slower;
+$slide-easing: $easing-in-out;
 
 .new-games {
   background-color: $color-bg;
@@ -11,14 +11,14 @@ $slide-easing: ease-in-out;
   &__inner {
     @include content-width;
     @include section-padding;
-    padding-block: $size-2; // 16px
+    padding-block: $size-2;
 
     @include tablet {
-      padding-block: $size-3; // 24px
+      padding-block: $size-3;
     }
 
     @include desktop-mid {
-      padding-block: $size-5; // 40px
+      padding-block: $size-5;
     }
   }
 
@@ -26,10 +26,10 @@ $slide-easing: ease-in-out;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: $size-2; // 16px
+    margin-bottom: $size-2;
 
     @include tablet {
-      margin-bottom: $size-3; // 24px
+      margin-bottom: $size-3;
     }
   }
 
@@ -41,13 +41,13 @@ $slide-easing: ease-in-out;
 
   &__accent {
     display: block;
-    width: 8px;
-    height: 24px;
+    width: $size-1;
+    height: $size-3;
     border-radius: $corner-full;
     background-color: $color-primary;
 
     @include desktop-mid {
-      height: 32px;
+      height: $size-4;
     }
   }
 
@@ -55,18 +55,18 @@ $slide-easing: ease-in-out;
     margin: 0;
     font-family: $font-family-primary;
     font-weight: $font-weight-extrabold;
-    font-size: $font-size-headline-medium; // 24px mobile/tablet
+    font-size: $font-size-headline-medium;
     color: $color-on-primary;
 
     @include desktop-mid {
-      font-size: $font-size-headline-large; // 32px
+      font-size: $font-size-headline-large;
     }
   }
 
   &__nav {
-    display: none; // mobile: swipe only (Figma has no arrows there)
+    display: none;
     align-items: center;
-    gap: $size-2; // 16px
+    gap: $size-2;
 
     @include tablet {
       display: flex;
@@ -77,28 +77,28 @@ $slide-easing: ease-in-out;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
+    width: $size-5;
+    height: $size-5;
     padding: 0;
-    border: 2px solid $color-on-primary;
+    border: $border-width-thick solid $color-on-primary;
     border-radius: $corner-full;
     background-color: $color-white;
     color: $color-on-primary;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: background-color $duration-normal $easing-standard;
 
     svg {
-      width: 20px;
-      height: 20px;
+      width: $size-p20;
+      height: $size-p20;
     }
 
     @include desktop-mid {
-      width: 48px;
-      height: 48px;
+      width: $size-6;
+      height: $size-6;
 
       svg {
-        width: 16px;
-        height: 16px;
+        width: $size-2;
+        height: $size-2;
       }
     }
 
@@ -109,11 +109,10 @@ $slide-easing: ease-in-out;
     }
 
     &:focus-visible {
-      outline: 2px solid $color-tertiary;
-      outline-offset: 2px;
+      outline: $focus-ring-width solid $color-tertiary;
+      outline-offset: $focus-ring-offset;
     }
 
-    // While the games load or after an error there is nothing to scroll
     &:disabled {
       border-color: $color-disabled-outline;
       color: $color-disabled-content;
@@ -122,50 +121,46 @@ $slide-easing: ease-in-out;
   }
 
   &__viewport {
-    overflow: hidden; // also clips the cards while they collapse at the edges
-    touch-action: pan-y; // vertical swipes scroll the page, horizontal ones are ours (swipe.ts)
-    user-select: none; // a mouse swipe must not select the card titles
-    margin-inline: -#{$size-1}; // -8px: room for the card shadows
-    padding: $size-1; // 8px
+    overflow: hidden;
+    touch-action: pan-y;
+    user-select: none;
+    margin-inline: -#{$size-1};
+    padding: $size-1;
 
     @include desktop-mid {
-      margin-inline: -#{$size-2}; // -16px
-      padding: $size-2; // 16px
+      margin-inline: -#{$size-2};
+      padding: $size-2;
     }
   }
 
-  // Sizes are PROPORTIONS from Figma (flex-grow), not pixels: the browser splits the track width
-  // between the visible cards. Before and after a step the sum of the proportions is the same,
-  // so while they animate the track stays exactly full — no gaps, no overflow.
   &__track {
     --slide-gap: 5.5px;
-    --size-center: 218; // mobile: 56 | 218 | 56
+    --size-center: 218;
     --size-near: 56;
     --size-far: 0;
 
     display: flex;
-    margin: 0 calc(var(--slide-gap) / -2); // the outer half-gaps of the edge cards
+    margin: 0 calc(var(--slide-gap) / -2);
     padding: 0;
 
     @include tablet {
       --slide-gap: 7.5px;
-      --size-center: 448; // 105 | 448 | 105
+      --size-center: 448;
       --size-near: 105;
     }
 
     @include desktop-mid {
-      --slide-gap: #{$size-1}; // 8px
-      --size-center: 816; // 120 | 288 | 816 | 288 | 120
+      --slide-gap: #{$size-1};
+      --size-center: 816;
       --size-near: 288;
       --size-far: 120;
     }
   }
 
   &__track > &__card {
-    flex: 0 1 0; // grow is set by the position below; basis 0 → width = pure proportion
+    flex: 0 1 0;
     min-width: 0;
-    height: 200px;
-    // margins, not `gap`: a flex gap would stay between collapsed (0px) cards
+    height: $size-p200;
     margin-inline: calc(var(--slide-gap) / 2);
     transition:
       flex-grow $slide-duration $slide-easing,
@@ -174,17 +169,15 @@ $slide-easing: ease-in-out;
       opacity $slide-duration $slide-easing;
 
     @include tablet {
-      height: 280px;
+      height: $size-p280;
     }
 
     @include desktop-mid {
-      height: 384px;
+      height: $size-p384;
     }
 
-    // Loading placeholder: a transparent border = the same 2px as .game-card, so the widths match exactly.
-    // Declared BEFORE the positions: their `border-inline-width: 0` for collapsed slots must win
     &.skeleton {
-      border: 2px solid transparent;
+      border: $border-width-thick solid transparent;
       border-radius: $corner-large;
     }
 
@@ -196,7 +189,6 @@ $slide-easing: ease-in-out;
       flex-grow: var(--size-near);
     }
 
-    // Collapsed: no width, no gap, no border (the 2+2px would still take room), invisible
     &[data-position='far'],
     &[data-position='hidden'] {
       flex-grow: 0;
@@ -205,12 +197,11 @@ $slide-easing: ease-in-out;
       opacity: 0;
     }
 
-    // From 1440px the ±2 cards are visible (5 cards)
     &[data-position='far'] {
       @include desktop-mid {
         flex-grow: var(--size-far);
         margin-inline: calc(var(--slide-gap) / 2);
-        border-inline-width: 2px;
+        border-inline-width: $border-width-thick;
         opacity: 1;
       }
     }

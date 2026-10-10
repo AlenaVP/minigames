@@ -15,6 +15,7 @@ export interface QueryAwarePage {
 
 export type PageFactory = (snapshot: RouteSnapshot) => ComponentBase;
 type RouteListener = (snapshot: RouteSnapshot) => void;
+type NavigationHook = () => void;
 
 export interface NavigateOptions {
   /** Corrections that are not user actions (canonical URL, invalid params, tab switch) */
@@ -46,8 +47,10 @@ export class Router {
   private readonly outlet: HTMLElement;
   private readonly pages: Partial<Record<RouteId, PageFactory>>;
   private readonly listeners = new Set<RouteListener>();
+  private readonly beforeHooks = new Set<NavigationHook>();
   private current: RouteSnapshot | null = null;
   private currentPage: ComponentBase | null = null;
+  private globalListeners: AbortController | null = null;
 
   constructor(outlet: HTMLElement, pages: Partial<Record<RouteId, PageFactory>>) {
     this.outlet = outlet;
@@ -65,11 +68,21 @@ export class Router {
   }
 
   start(): void {
-    // Scroll is handled per navigation below; the browser's own restoration fights async content
+    this.globalListeners = new AbortController();
+    const { signal } = this.globalListeners;
+
     history.scrollRestoration = 'manual';
-    document.addEventListener('click', this.handleDocumentClick);
-    globalThis.addEventListener('popstate', () => this.applyLocation());
+    document.addEventListener('click', this.handleDocumentClick, { signal });
+    globalThis.addEventListener('popstate', () => this.applyLocation(), { signal });
     this.applyLocation();
+  }
+
+  /** Detaches the router from document/window (the app never stops; tests create a router per case) */
+  stop(): void {
+    this.globalListeners?.abort();
+    this.globalListeners = null;
+    this.currentPage?.destroy();
+    this.currentPage = null;
   }
 
   /** To another page (or the same page with a fresh query) */
@@ -80,7 +93,6 @@ export class Router {
   /** Same page, some query keys changed: Library state, dialogs */
   updateQuery(patch: QueryPatch, options: NavigateOptions = {}): void {
     const route = this.current?.route;
-    // Query changes on the 404 view stay on its URL path: there is no page route to rebuild it from
     const pageRoute = route && isPageRouteId(route) ? route : null;
     const query = mergeQuery(this.current?.query ?? new URLSearchParams(), patch);
 
@@ -95,6 +107,15 @@ export class Router {
     history.back();
   }
 
+  /**
+   * Runs before any navigation is applied — link, updateQuery, Back/Forward, deep link — so the new page or dialog
+   * already sees the result (Angular: a NavigationStart listener). Used to drop an expired session before rendering.
+   */
+  beforeNavigate(hook: NavigationHook): () => void {
+    this.beforeHooks.add(hook);
+    return () => this.beforeHooks.delete(hook);
+  }
+
   /** Like a BehaviorSubject: a new subscriber immediately gets the current snapshot */
   onChange(listener: RouteListener): () => void {
     this.listeners.add(listener);
@@ -107,10 +128,8 @@ export class Router {
   }
 
   private commitUrl(url: string, { replace = false, dialog }: NavigateOptions): void {
-    // The same URL again (a click on the active link, an already-canonical state) → no new history entry
     if (url === `${location.pathname}${location.search}`) return;
 
-    // replace keeps the entry's dialog flag unless told otherwise (e.g. switching Login ↔ Register tabs)
     const state: HistoryState = { dialog: dialog ?? (replace ? this.isDialogEntry : false) };
 
     if (replace) history.replaceState(state, '', url);
@@ -120,9 +139,10 @@ export class Router {
   }
 
   private applyLocation(): void {
+    for (const hook of this.beforeHooks) hook();
+
     const parsed = parseLocation(location.pathname, location.search, BASE);
 
-    // An app without a 404 page: unknown paths fall back to Home
     if (parsed.route === 'not-found' && !this.pages['not-found']) {
       history.replaceState(history.state, '', buildUrl(DEFAULT_ROUTE, parsed.query, BASE));
       this.applyLocation();

@@ -9,8 +9,11 @@ import { NotFoundPage } from '@app/pages/not-found/not-found.page';
 import { toLibraryQuery } from '@app/pages/library/library-query';
 import type { AuthMode } from '@shared/types/auth';
 import { snackbar } from '@shared/ui/snackbar';
+import { sessionService } from '@app/services/session';
 import { Router, type RouteSnapshot } from './router';
 import { DIALOG_QUERY, parseAuthQueryValue, toAuthQueryValue } from './router/dialog-query';
+
+const SESSION_EXPIRED_MESSAGE = 'Your session has expired. Please log in again.';
 
 /**
  * The conductor: builds the layout, wires components to the router and keeps the dialogs in sync with the URL.
@@ -64,7 +67,6 @@ export function bootstrapApp(): void {
   gameDetailsDialog.mount(document.body);
   snackbar.mount(document.body);
 
-  // The callbacks above use `router` only when they run — after this line
   const router = new Router(pageOutlet, {
     home: () => new HomePage({ onGameDetails: openGameDetails }),
     library: ({ query }) =>
@@ -81,13 +83,11 @@ export function bootstrapApp(): void {
     const slug = query.get(DIALOG_QUERY.game);
     const auth = parseAuthQueryValue(query.get(DIALOG_QUERY.auth));
 
-    // Both in one URL (hand-edited) → one modal at a time: the game wins
     if (slug && auth) {
       router.updateQuery({ [DIALOG_QUERY.auth]: null }, { replace: true });
       return;
     }
 
-    // ?auth=whatever → the login tab, and the URL says so
     if (auth && !auth.isValid) {
       router.updateQuery({ [DIALOG_QUERY.auth]: toAuthQueryValue(auth.mode) }, { replace: true });
       return;
@@ -99,6 +99,13 @@ export function bootstrapApp(): void {
     if (auth) authDialog.open(auth.mode);
     else if (authDialog.isOpen) authDialog.close();
   };
+
+  // One toast per expiration event — whatever noticed it first (timer, tab return, navigation, protected action)
+  sessionService.onChange(({ reason }) => {
+    if (reason === 'expired') snackbar.warning(SESSION_EXPIRED_MESSAGE);
+  });
+  sessionService.start();
+  router.beforeNavigate(() => sessionService.ensureActive());
 
   router.onChange((snapshot) => {
     header.setActiveRoute(snapshot.route);

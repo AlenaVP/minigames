@@ -52,7 +52,6 @@ export class GameDetailsContent extends ComponentBase {
         request: (signal) => gamesApi.getGame(slug, signal),
         renderSkeleton: renderGameDetailsSkeleton,
         renderContent: (game) => new GameDetailsView({ game }),
-        // 404 is an answer: a dedicated state without Retry (repeating would give the same 404)
         renderError: (error) =>
           error.kind === 'not-found'
             ? new EmptyState({

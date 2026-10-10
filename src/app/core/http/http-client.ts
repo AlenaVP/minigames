@@ -38,7 +38,6 @@ export class HttpClient {
         headers: { Accept: 'application/json' },
         signal: combinedSignal,
       });
-      // Reading the body can be interrupted by the same signal — so it stays inside this try
       body = await readJson(response);
     } catch (error) {
       throw toTransportError(error);
@@ -56,7 +55,6 @@ export class HttpClient {
   }
 
   private buildUrl(path: string, query: QueryParameters = {}): URL {
-    // Concatenation, not new URL(path, base): a leading "/" in path would drop the "/api" part of the base
     const url = new URL(`${this.config.baseUrl}${path}`);
 
     for (const [key, value] of Object.entries(query)) {

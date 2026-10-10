@@ -34,7 +34,6 @@ export class GameInfo extends ComponentBase {
   protected render(): HTMLElement {
     const { game, titleId } = this.options;
     const price = game.specs.price;
-    // Figma: "Play Now" for free games, "Buy Now: $3.99" for paid ones
     const primaryLabel = price === FREE_PRICE ? 'Play Now' : `Buy Now: ${escapeHtml(price)}`;
 
     const info = document.createElement('div');
@@ -70,7 +69,6 @@ export class GameInfo extends ComponentBase {
       <dl class="game-info__specs">${specs}</dl>
 
       <div class="game-info__actions">
-        <!-- No action on purpose: playing and buying are outside the task -->
         <button type="button" class="game-info__action game-info__action--play">${primaryLabel}</button>
         <button type="button" class="game-info__action game-info__action--favorite">
           ${heartOutlineIcon()}
@@ -83,7 +81,6 @@ export class GameInfo extends ComponentBase {
 
     if (favoriteButton) {
       this.syncFavorite(favoriteButton, game.isLikedByCurrentUser);
-      // Guest-safe: the favorites toggle is a Story 4 mutation (POST /games/{slug}/favorite)
       favoriteButton.addEventListener('click', () => snackbar.info('Sign in to add games to your favorites.'));
     }
 

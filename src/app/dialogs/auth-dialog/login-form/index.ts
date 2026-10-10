@@ -1,6 +1,7 @@
 import type { AuthFormConfig } from '@dialogs/auth-dialog/auth-form';
 import mailIconUrl from '@assets/icons/mail.svg';
 import lockIconUrl from '@assets/icons/lock.svg';
+import { emailValidators, loginPasswordValidators, trimValue } from '@dialogs/auth-dialog/auth-validators';
 
 export const LOGIN_FORM_CONFIG: AuthFormConfig = {
   mode: 'login',
@@ -14,6 +15,8 @@ export const LOGIN_FORM_CONFIG: AuthFormConfig = {
       autocomplete: 'email',
       placeholder: 'e.g. alex@minigames.com',
       iconUrl: mailIconUrl,
+      validators: emailValidators,
+      normalize: trimValue,
     },
     {
       name: 'password',
@@ -23,6 +26,7 @@ export const LOGIN_FORM_CONFIG: AuthFormConfig = {
       placeholder: '••••••••',
       iconUrl: lockIconUrl,
       withVisibilityToggle: true,
+      validators: loginPasswordValidators,
     },
   ],
   withForgotPassword: true,

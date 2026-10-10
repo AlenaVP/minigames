@@ -3,7 +3,7 @@
 @use 'abstracts/dialog' as *;
 
 .auth-dialog {
-  width: 420px;
+  width: $size-p420;
   max-width: calc(100% - #{$size-4});
   max-height: calc(100dvh - #{$size-4});
 
@@ -22,7 +22,7 @@
 
   &__tabs {
     display: flex;
-    border: 2px solid $color-on-primary;
+    border: $border-width-thick solid $color-on-primary;
     border-radius: $corner-medium;
     background-color: $color-white;
     overflow: hidden;
@@ -30,15 +30,15 @@
 
   &__tab {
     flex: 1;
-    height: 44px;
+    height: $size-p44;
     border-radius: $corner-small;
     font-family: $font-family-primary;
     font-size: $font-size-body-medium;
     font-weight: $font-weight-bold;
     color: $color-on-bg;
     transition:
-      background-color 0.2s ease,
-      color 0.2s ease;
+      background-color $duration-normal $easing-standard,
+      color $duration-normal $easing-standard;
 
     &:hover {
       background-color: $color-surface-low;

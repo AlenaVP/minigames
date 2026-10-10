@@ -2,9 +2,9 @@
 @use 'abstracts/tokens' as *;
 @use 'abstracts/mixins' as *;
 
-// Index = getAvatarColorIndex(): first letter's code point % 6.
-// Order picked so that the mockup's users get the mockup's colors: F → blue, H → yellow, C → grey
-$avatar-palette: $color-primary, $color-avatar-1, $color-avatar-2, $color-avatar-4, $color-avatar-3, $color-avatar-5;
+$avatar-palette:
+  $color-primary, $color-avatar-random-1, $color-avatar-random-2, $color-avatar-random-4, $color-avatar-random-3,
+  $color-avatar-random-5;
 
 .comment {
   display: flex;
@@ -28,7 +28,7 @@ $avatar-palette: $color-primary, $color-avatar-1, $color-avatar-2, $color-avatar
     place-items: center;
     width: $size-p28;
     height: $size-p28;
-    border: 1px solid $color-on-primary;
+    border: $border-width-thin solid $color-on-primary;
     border-radius: $corner-full;
     font-size: $font-size-label-medium;
     font-weight: $font-weight-bold;
@@ -63,12 +63,10 @@ $avatar-palette: $color-primary, $color-avatar-1, $color-avatar-2, $color-avatar
   &__text {
     margin-top: $size-05;
     font-size: $font-size-body-small;
-    line-height: 20px;
+    line-height: $line-height-p20;
     overflow-wrap: anywhere;
   }
 
-  // Style guide "Comment Like Button": default / hover / liked / liked hover.
-  // The negative margins keep the icon aligned with the text while the hover pill gets some room
   &__like {
     display: inline-flex;
     align-items: center;
@@ -79,11 +77,11 @@ $avatar-palette: $color-primary, $color-avatar-1, $color-avatar-2, $color-avatar
     border-radius: $corner-full;
     font-size: $font-size-label-medium;
     font-weight: $font-weight-bold;
-    line-height: 16px;
+    line-height: $line-height-p16;
     color: $color-on-primary;
     transition:
-      background-color 0.2s ease,
-      color 0.2s ease;
+      background-color $duration-normal $easing-standard,
+      color $duration-normal $easing-standard;
 
     @include hover {
       background-color: $color-surface;
@@ -94,8 +92,8 @@ $avatar-palette: $color-primary, $color-avatar-1, $color-avatar-2, $color-avatar
     }
 
     &:focus-visible {
-      outline: 2px solid $color-tertiary;
-      outline-offset: 2px;
+      outline: $focus-ring-width solid $color-tertiary;
+      outline-offset: $focus-ring-offset;
     }
   }
 }

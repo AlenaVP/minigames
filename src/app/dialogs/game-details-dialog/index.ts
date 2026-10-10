@@ -17,8 +17,6 @@ export class GameDetailsDialog extends DialogBase {
     super({
       className: 'game-details',
       ariaLabelledBy: GAME_DETAILS_TITLE_ID,
-      // While loading / in the error states there is no title yet: an aria-labelledby pointing to
-      // a missing id is ignored, and the dialog falls back to this name
       ariaLabel: 'Game details',
       onClose,
     });
@@ -42,7 +40,6 @@ export class GameDetailsDialog extends DialogBase {
 
   /** Nothing to show until open(slug) */
   protected renderContent(dialog: HTMLDialogElement): void {
-    // Closed → cancel what is still loading and free the content, but only after the closing animation
     dialog.addEventListener('close', () => {
       void Promise.allSettled(dialog.getAnimations().map((animation) => animation.finished)).then(() => {
         if (!dialog.open) this.clearContent();
