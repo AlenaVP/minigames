@@ -56,6 +56,7 @@ export const REGISTER_FORM_CONFIG: AuthFormConfig = {
   submitLabel: 'Create Account',
   pendingLabel: 'Creating account…',
   googleLabel: 'Sign up with Google',
+  googlePendingLabel: 'Waiting for Google…',
   footerText: 'Already have an account?',
   switchLabel: 'Login',
 };
