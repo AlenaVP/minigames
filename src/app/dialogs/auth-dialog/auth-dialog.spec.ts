@@ -1,6 +1,10 @@
 // @vitest-environment happy-dom
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { AuthMode } from '@shared/types/auth';
+import type { AuthMode, AuthUser } from '@shared/types/auth';
+import type { AppSession } from '@shared/types/session';
+import { snackbar } from '@shared/ui/snackbar';
+import { AuthError } from '@app/services/auth';
+import { createFakeAuthProvider, makeAuthUser } from '@testing/auth';
 import { AuthDialog } from '.';
 
 function query<T extends Element>(selector: string): T {
@@ -21,10 +25,18 @@ const visibleErrors = (): number => document.querySelectorAll('.auth-field__erro
 describe('AuthDialog', () => {
   let dialog: AuthDialog;
   let onModeChange: ReturnType<typeof vi.fn<(mode: AuthMode) => void>>;
+  let authProvider: ReturnType<typeof createFakeAuthProvider>;
+  let onAuthenticated: ReturnType<typeof vi.fn<(user: AuthUser) => AppSession>>;
 
   beforeEach(() => {
     onModeChange = vi.fn<(mode: AuthMode) => void>();
-    dialog = new AuthDialog({ onModeChange });
+    authProvider = createFakeAuthProvider();
+    onAuthenticated = vi.fn((user: AuthUser) => ({
+      displayName: user.displayName ?? 'Player',
+      email: user.email ?? '',
+      authenticatedAt: 0,
+    }));
+    dialog = new AuthDialog({ authProvider, onAuthenticated, onModeChange });
     dialog.mount(document.body);
   });
 
@@ -97,5 +109,194 @@ describe('AuthDialog', () => {
 
     expect(query<HTMLInputElement>('#login-email').value).toBe('');
     expect(query<HTMLButtonElement>('#auth-panel-login .auth-form__submit').disabled).toBe(true);
+  });
+});
+
+/** A Firebase call the test finishes by hand — to look at the dialog WHILE it is pending */
+function deferred<T>(): { promise: Promise<T>; resolve: (value: T) => void; reject: (error: unknown) => void } {
+  let resolve!: (value: T) => void;
+  let reject!: (error: unknown) => void;
+  const promise = new Promise<T>((resolvePromise, rejectPromise) => {
+    resolve = resolvePromise;
+    reject = rejectPromise;
+  });
+  return { promise, resolve, reject };
+}
+
+const flush = (): Promise<void> => new Promise((resolve) => setTimeout(resolve));
+
+function submit(mode: 'login' | 'signup'): void {
+  query<HTMLFormElement>(`#auth-panel-${mode} form`).requestSubmit();
+}
+
+const loginSubmit = (): HTMLButtonElement => query<HTMLButtonElement>('#auth-panel-login .auth-form__submit');
+
+describe('AuthDialog — email/password authentication', () => {
+  let dialog: AuthDialog;
+  let authProvider: ReturnType<typeof createFakeAuthProvider>;
+  let onAuthenticated: ReturnType<typeof vi.fn<(user: AuthUser) => AppSession>>;
+  let onClose: ReturnType<typeof vi.fn<() => void>>;
+
+  beforeEach(() => {
+    authProvider = createFakeAuthProvider();
+    onAuthenticated = vi.fn((user: AuthUser) => ({
+      displayName: user.displayName ?? 'Player',
+      email: user.email ?? '',
+      authenticatedAt: 0,
+    }));
+    onClose = vi.fn<() => void>();
+    dialog = new AuthDialog({ authProvider, onAuthenticated, onClose });
+    dialog.mount(document.body);
+    vi.spyOn(snackbar, 'success');
+    vi.spyOn(snackbar, 'error');
+    vi.spyOn(snackbar, 'warning');
+  });
+
+  afterEach(() => {
+    dialog.destroy();
+  });
+
+  function fillLogin(email = 'alex@minigames.com', password = 'Secret1!'): void {
+    dialog.open('login');
+    type('#login-email', email);
+    type('#login-password', password);
+  }
+
+  it('a valid login calls Firebase with the trimmed email and the password', async () => {
+    fillLogin('  alex@minigames.com ', 'Secret1!');
+
+    submit('login');
+    await flush();
+
+    expect(authProvider.signInWithEmail).toHaveBeenCalledWith('alex@minigames.com', 'Secret1!');
+  });
+
+  it('while pending: every control is disabled, the button shows progress, the dialog cannot be dismissed', async () => {
+    const request = deferred<AuthUser>();
+    authProvider.signInWithEmail.mockReturnValue(request.promise);
+    fillLogin();
+
+    submit('login');
+
+    const panel = query('#auth-panel-login');
+    const controls = [...panel.querySelectorAll<HTMLInputElement | HTMLButtonElement>('input, button')];
+    expect(controls.every((control) => control.disabled)).toBe(true);
+    expect([...document.querySelectorAll<HTMLButtonElement>('.auth-dialog__tab')].every((tab) => tab.disabled)).toBe(true);
+    expect(loginSubmit().textContent?.trim()).toBe('Logging in…');
+    expect(panel.querySelector('form')?.getAttribute('aria-busy')).toBe('true');
+
+    const dialogElement = query<HTMLDialogElement>('dialog.auth-dialog');
+    const escape = new KeyboardEvent('keydown', { key: 'Escape', cancelable: true });
+    const cancel = new Event('cancel', { cancelable: true });
+    dialogElement.dispatchEvent(escape);
+    dialogElement.dispatchEvent(cancel);
+    expect(escape.defaultPrevented).toBe(true);
+    expect(cancel.defaultPrevented).toBe(true);
+    expect(dialogElement.getAttribute('closedby')).toBe('none');
+
+    // a second submit (Enter again) does not send a second request
+    submit('login');
+    expect(authProvider.signInWithEmail).toHaveBeenCalledTimes(1);
+
+    request.resolve(makeAuthUser());
+    await flush();
+    expect(dialogElement.hasAttribute('closedby')).toBe(false);
+  });
+
+  it('success: creates the app session, greets the user and closes the dialog', async () => {
+    fillLogin();
+
+    submit('login');
+    await flush();
+
+    expect(onAuthenticated).toHaveBeenCalledWith(makeAuthUser());
+    expect(snackbar.success).toHaveBeenCalledWith('Welcome back, Alex Pro!');
+    expect(dialog.isOpen).toBe(false);
+    expect(onClose).toHaveBeenCalled();
+  });
+
+  it('failure: keeps the dialog open with the values, unlocks the form and explains why', async () => {
+    authProvider.signInWithEmail.mockRejectedValue(new AuthError('invalid-credential'));
+    fillLogin();
+
+    submit('login');
+    await flush();
+
+    expect(dialog.isOpen).toBe(true);
+    expect(onAuthenticated).not.toHaveBeenCalled();
+    expect(snackbar.error).toHaveBeenCalledWith('Incorrect email or password.');
+    expect(query<HTMLInputElement>('#login-email').disabled).toBe(false);
+    expect(query<HTMLInputElement>('#login-email').value).toBe('alex@minigames.com');
+    expect(loginSubmit().disabled).toBe(false);
+    expect(loginSubmit().textContent?.trim()).toBe('Login');
+
+    // the user can retry right away
+    authProvider.signInWithEmail.mockResolvedValue(makeAuthUser());
+    submit('login');
+    await flush();
+    expect(dialog.isOpen).toBe(false);
+  });
+
+  it('registration saves the username as displayName and greets with it', async () => {
+    authProvider.signUpWithEmail.mockResolvedValue({
+      user: makeAuthUser({ displayName: 'CozyGamer99', email: 'cozy@minigames.com' }),
+      isDisplayNameSaved: true,
+    });
+    dialog.open('signup');
+    type('#signup-username', 'CozyGamer99');
+    type('#signup-email', 'cozy@minigames.com');
+    type('#signup-password', 'Abc12!');
+    type('#signup-confirmPassword', 'Abc12!');
+
+    submit('signup');
+    await flush();
+
+    expect(authProvider.signUpWithEmail).toHaveBeenCalledWith('cozy@minigames.com', 'Abc12!', 'CozyGamer99');
+    expect(snackbar.success).toHaveBeenCalledWith('Account created. Welcome, CozyGamer99!');
+    expect(snackbar.warning).not.toHaveBeenCalled();
+    expect(dialog.isOpen).toBe(false);
+  });
+
+  it('warns when the account was created but the username could not be saved', async () => {
+    authProvider.signUpWithEmail.mockResolvedValue({ user: makeAuthUser(), isDisplayNameSaved: false });
+    dialog.open('signup');
+    type('#signup-username', 'CozyGamer99');
+    type('#signup-email', 'cozy@minigames.com');
+    type('#signup-password', 'Abc12!');
+    type('#signup-confirmPassword', 'Abc12!');
+
+    submit('signup');
+    await flush();
+
+    expect(snackbar.warning).toHaveBeenCalledTimes(1);
+    expect(dialog.isOpen).toBe(false);
+  });
+
+  it('signs Firebase out again when the app cannot create its session', async () => {
+    onAuthenticated.mockImplementation(() => {
+      throw new Error('no email');
+    });
+    fillLogin();
+
+    submit('login');
+    await flush();
+
+    expect(authProvider.signOut).toHaveBeenCalledTimes(1);
+    expect(dialog.isOpen).toBe(true);
+    expect(snackbar.error).toHaveBeenCalled();
+  });
+
+  it('a tab change requested by the URL while pending is applied after the request', async () => {
+    const request = deferred<AuthUser>();
+    authProvider.signInWithEmail.mockReturnValue(request.promise);
+    fillLogin();
+    submit('login');
+
+    dialog.open('signup');
+    expect(visiblePanelId()).toBe('auth-panel-login');
+
+    request.reject(new AuthError('network'));
+    await flush();
+    expect(visiblePanelId()).toBe('auth-panel-signup');
   });
 });

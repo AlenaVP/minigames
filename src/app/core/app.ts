@@ -10,6 +10,7 @@ import { toLibraryQuery } from '@app/pages/library/library-query';
 import type { AuthMode } from '@shared/types/auth';
 import { snackbar } from '@shared/ui/snackbar';
 import { sessionService } from '@app/services/session';
+import { authProvider } from '@app/services/auth';
 import { Router, type RouteSnapshot } from './router';
 import { DIALOG_QUERY, parseAuthQueryValue, toAuthQueryValue } from './router/dialog-query';
 
@@ -44,6 +45,8 @@ export function bootstrapApp(): void {
   };
 
   const authDialog = new AuthDialog({
+    authProvider,
+    onAuthenticated: (user) => sessionService.signIn(user),
     onClose: () => handleDialogClosed(DIALOG_QUERY.auth),
     onModeChange: (mode) => router.updateQuery({ [DIALOG_QUERY.auth]: toAuthQueryValue(mode) }, { replace: true }),
   });
