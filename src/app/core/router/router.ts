@@ -15,6 +15,7 @@ export interface QueryAwarePage {
 
 export type PageFactory = (snapshot: RouteSnapshot) => ComponentBase;
 type RouteListener = (snapshot: RouteSnapshot) => void;
+type NavigationHook = () => void;
 
 export interface NavigateOptions {
   /** Corrections that are not user actions (canonical URL, invalid params, tab switch) */
@@ -46,8 +47,10 @@ export class Router {
   private readonly outlet: HTMLElement;
   private readonly pages: Partial<Record<RouteId, PageFactory>>;
   private readonly listeners = new Set<RouteListener>();
+  private readonly beforeHooks = new Set<NavigationHook>();
   private current: RouteSnapshot | null = null;
   private currentPage: ComponentBase | null = null;
+  private globalListeners: AbortController | null = null;
 
   constructor(outlet: HTMLElement, pages: Partial<Record<RouteId, PageFactory>>) {
     this.outlet = outlet;
@@ -65,10 +68,21 @@ export class Router {
   }
 
   start(): void {
+    this.globalListeners = new AbortController();
+    const { signal } = this.globalListeners;
+
     history.scrollRestoration = 'manual';
-    document.addEventListener('click', this.handleDocumentClick);
-    globalThis.addEventListener('popstate', () => this.applyLocation());
+    document.addEventListener('click', this.handleDocumentClick, { signal });
+    globalThis.addEventListener('popstate', () => this.applyLocation(), { signal });
     this.applyLocation();
+  }
+
+  /** Detaches the router from document/window (the app never stops; tests create a router per case) */
+  stop(): void {
+    this.globalListeners?.abort();
+    this.globalListeners = null;
+    this.currentPage?.destroy();
+    this.currentPage = null;
   }
 
   /** To another page (or the same page with a fresh query) */
@@ -91,6 +105,15 @@ export class Router {
 
   back(): void {
     history.back();
+  }
+
+  /**
+   * Runs before any navigation is applied — link, updateQuery, Back/Forward, deep link — so the new page or dialog
+   * already sees the result (Angular: a NavigationStart listener). Used to drop an expired session before rendering.
+   */
+  beforeNavigate(hook: NavigationHook): () => void {
+    this.beforeHooks.add(hook);
+    return () => this.beforeHooks.delete(hook);
   }
 
   /** Like a BehaviorSubject: a new subscriber immediately gets the current snapshot */
@@ -116,6 +139,8 @@ export class Router {
   }
 
   private applyLocation(): void {
+    for (const hook of this.beforeHooks) hook();
+
     const parsed = parseLocation(location.pathname, location.search, BASE);
 
     if (parsed.route === 'not-found' && !this.pages['not-found']) {
