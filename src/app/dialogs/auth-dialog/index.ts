@@ -18,6 +18,8 @@ interface AuthDialogOptions {
 
 export class AuthDialog extends DialogBase {
   private readonly onModeChange?: (mode: AuthMode) => void;
+  private readonly forms: AuthForm[] = [];
+  private mode: AuthMode | null = null;
 
   constructor({ onClose, onModeChange }: AuthDialogOptions = {}) {
     super({ className: 'auth-dialog', ariaLabel: 'Sign in or create an account', onClose });
@@ -26,6 +28,7 @@ export class AuthDialog extends DialogBase {
 
   /** Idempotent: already open → only the tab follows (Back/Forward between ?auth=login and ?auth=register) */
   open(mode: AuthMode = 'login'): void {
+    if (!this.isOpen) this.resetForms();
     this.setMode(mode);
     if (!this.isOpen) this.show();
   }
@@ -53,8 +56,10 @@ export class AuthDialog extends DialogBase {
     const panels = dialog.querySelector<HTMLElement>('.auth-dialog__panels');
 
     if (panels) {
-      this.mountChild(new AuthForm({ config: LOGIN_FORM_CONFIG, onSwitch: () => this.switchMode('signup') }), panels);
-      this.mountChild(new AuthForm({ config: REGISTER_FORM_CONFIG, onSwitch: () => this.switchMode('login') }), panels);
+      this.forms.push(
+        this.mountChild(new AuthForm({ config: LOGIN_FORM_CONFIG, onSwitch: () => this.switchMode('signup') }), panels),
+        this.mountChild(new AuthForm({ config: REGISTER_FORM_CONFIG, onSwitch: () => this.switchMode('login') }), panels),
+      );
     }
 
     for (const tab of dialog.querySelectorAll<HTMLButtonElement>('.auth-dialog__tab')) {
@@ -62,6 +67,10 @@ export class AuthDialog extends DialogBase {
         this.switchMode(tab.dataset.mode === 'signup' ? 'signup' : 'login');
       });
     }
+  }
+
+  private resetForms(): void {
+    for (const form of this.forms) form.reset();
   }
 
   /** A user action: shown at once, and reported so the URL can follow */
@@ -72,6 +81,10 @@ export class AuthDialog extends DialogBase {
 
   private setMode(mode: AuthMode): void {
     if (!this.dialog) return;
+
+    // 4-1-1: switching Login ↔ Register (tab, link or Back/Forward) starts both forms from scratch
+    if (this.mode !== null && this.mode !== mode) this.resetForms();
+    this.mode = mode;
 
     for (const tab of this.dialog.querySelectorAll<HTMLButtonElement>('.auth-dialog__tab')) {
       const isActive = tab.dataset.mode === mode;

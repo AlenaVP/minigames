@@ -93,6 +93,16 @@
       box-shadow: none;
       transform: translate($shadow-offset-1, $shadow-offset-1);
     }
+
+    // Declared after :hover/:active (same specificity) so a disabled button never reacts
+    &:disabled {
+      border-color: $color-disabled-content;
+      background-color: $color-disabled-outline;
+      box-shadow: none;
+      color: $color-disabled-content;
+      transform: none;
+      cursor: not-allowed;
+    }
   }
 
   &__divider {
@@ -174,10 +184,22 @@
       outline: $focus-ring-width solid $color-tertiary;
       outline-offset: $focus-ring-offset;
     }
+
+    &:has([aria-invalid='true']) {
+      border-color: $color-error;
+
+      .auth-field__icon {
+        background-color: $color-error;
+      }
+    }
   }
 
   &__icon {
     flex-shrink: 0;
+    width: $size-p20;
+    height: $size-p20;
+    background-color: $color-on-bg;
+    mask: var(--icon) center / contain no-repeat;
   }
 
   &__input {
@@ -198,6 +220,13 @@
   &__toggle {
     display: flex;
     flex-shrink: 0;
+  }
+
+  &__error {
+    font-family: $font-family-primary;
+    font-size: $font-size-label-medium;
+    line-height: $line-height-p16;
+    color: $color-error;
   }
 }
 
