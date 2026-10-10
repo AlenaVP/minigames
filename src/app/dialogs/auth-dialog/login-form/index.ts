@@ -31,6 +31,7 @@ export const LOGIN_FORM_CONFIG: AuthFormConfig = {
   ],
   withForgotPassword: true,
   submitLabel: 'Login',
+  pendingLabel: 'Logging in…',
   googleLabel: 'Continue with Google',
   footerText: "Don't have an account?",
   switchLabel: 'Register',

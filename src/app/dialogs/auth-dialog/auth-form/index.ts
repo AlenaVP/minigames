@@ -1,6 +1,6 @@
 import { ComponentBase } from '@app/core/component.base';
 import { FormModel } from '@shared/forms/form-model';
-import type { Validator } from '@shared/forms/validators';
+import type { FormValues, Validator } from '@shared/forms/validators';
 import type { AuthMode } from '@shared/types/auth';
 import googleIconUrl from '@assets/icons/google.svg';
 import visibilityIconUrl from '@assets/icons/visibility.svg';
@@ -26,6 +26,8 @@ export interface AuthFormConfig {
   fields: AuthFieldConfig[];
   withForgotPassword?: boolean;
   submitLabel: string;
+  /** Shown on the submit button while the request is pending */
+  pendingLabel: string;
   googleLabel: string;
   footerText: string;
   switchLabel: string;
@@ -34,6 +36,8 @@ export interface AuthFormConfig {
 interface AuthFormOptions {
   config: AuthFormConfig;
   onSwitch: () => void;
+  /** A valid form was submitted: normalized values (trimmed email) */
+  onSubmit?: (values: FormValues) => void;
 }
 
 const TOGGLE_LABEL = { show: 'Show password', hide: 'Hide password' } as const;
@@ -44,6 +48,8 @@ export class AuthForm extends ComponentBase {
   private form: HTMLFormElement | null = null;
   private isPointerDown = false;
   private hasDeferredRender = false;
+  private isPending = false;
+  private focusBeforePending: HTMLElement | null = null;
 
   constructor(options: AuthFormOptions) {
     super();
@@ -55,6 +61,44 @@ export class AuthForm extends ComponentBase {
 
   get isValid(): boolean {
     return this.model.isValid;
+  }
+
+  /**
+   * While Firebase works: every input and button of the form (incl. Google, eye, Forgot password) and the
+   * Login ↔ Register link are disabled, the submit button shows a spinner. Afterwards focus goes back
+   * where it was, so a keyboard user can simply press Enter again after a failure.
+   */
+  setPending(isPending: boolean): void {
+    const form = this.form;
+    if (!form || this.isPending === isPending) return;
+
+    if (isPending) {
+      const active = document.activeElement;
+      this.focusBeforePending = active instanceof HTMLElement && form.contains(active) ? active : null;
+    }
+
+    this.isPending = isPending;
+    form.setAttribute('aria-busy', String(isPending));
+
+    for (const control of form.elements) {
+      if (control instanceof HTMLInputElement || control instanceof HTMLButtonElement) control.disabled = isPending;
+    }
+    const switchButton = form.parentElement?.querySelector<HTMLButtonElement>('.auth-form__switch');
+    if (switchButton) switchButton.disabled = isPending;
+
+    const submit = form.querySelector<HTMLButtonElement>('.auth-form__submit');
+    if (submit) {
+      submit.classList.toggle('auth-form__submit--pending', isPending);
+      const label = submit.querySelector('.auth-form__submit-label');
+      if (label) label.textContent = isPending ? this.options.config.pendingLabel : this.options.config.submitLabel;
+    }
+
+    this.renderValidation();
+
+    if (!isPending) {
+      this.focusBeforePending?.focus();
+      this.focusBeforePending = null;
+    }
   }
 
   /** Empty fields, no errors, password hidden — on every Login ↔ Register switch and every new opening */
@@ -88,7 +132,9 @@ export class AuthForm extends ComponentBase {
         </div>
 
         <div class="auth-form__actions">
-          <button type="submit" class="auth-form__submit" disabled>${config.submitLabel}</button>
+          <button type="submit" class="auth-form__submit" disabled>
+            <span class="auth-form__submit-label">${config.submitLabel}</span>
+          </button>
           <p class="auth-form__divider">or</p>
           <button type="button" class="auth-form__google">
             <img src="${googleIconUrl}" alt="" width="24" height="24" />
@@ -192,7 +238,12 @@ export class AuthForm extends ComponentBase {
 
     form.addEventListener('submit', (event) => {
       event.preventDefault();
-      if (this.model.isValid) return;
+      if (this.isPending) return;
+
+      if (this.model.isValid) {
+        this.options.onSubmit?.(this.model.values());
+        return;
+      }
 
       // Submit is disabled while invalid; this only runs if something bypassed it (e.g. DevTools)
       this.model.markAllTouched();
@@ -248,7 +299,7 @@ export class AuthForm extends ComponentBase {
     }
 
     const submit = form.querySelector<HTMLButtonElement>('.auth-form__submit');
-    if (submit) submit.disabled = !this.model.isValid;
+    if (submit) submit.disabled = this.isPending || !this.model.isValid;
   }
 
   private togglePasswordVisibility(): void {
