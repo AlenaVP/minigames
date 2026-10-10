@@ -54,6 +54,11 @@
     &:hover {
       color: $color-tertiary;
     }
+
+    &:disabled {
+      color: $color-disabled-content;
+      cursor: not-allowed;
+    }
   }
 
   &__forgot {
@@ -95,13 +100,34 @@
     }
 
     // Declared after :hover/:active (same specificity) so a disabled button never reacts
-    &:disabled {
+    &:disabled:not(&--pending) {
       border-color: $color-disabled-content;
       background-color: $color-disabled-outline;
       box-shadow: none;
       color: $color-disabled-content;
       transform: none;
       cursor: not-allowed;
+    }
+
+    // Pending = working, not "invalid": keeps the primary look, shows a spinner and the progress cursor
+    &--pending {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: $size-1;
+      box-shadow: none;
+      transform: translate($shadow-offset-1, $shadow-offset-1);
+      cursor: progress;
+
+      &::before {
+        content: '';
+        width: $size-p18;
+        height: $size-p18;
+        border: $border-width-thick solid currentColor;
+        border-right-color: transparent;
+        border-radius: 50%;
+        animation: auth-spin $duration-spin $easing-linear infinite;
+      }
     }
   }
 
@@ -143,6 +169,17 @@
     &:hover {
       background-color: $color-surface;
     }
+
+    &:disabled {
+      border-color: $color-disabled-content;
+      background-color: $color-white;
+      color: $color-disabled-content;
+      cursor: not-allowed;
+
+      img {
+        opacity: $opacity-overlay;
+      }
+    }
   }
 
   &__footer {
@@ -183,6 +220,17 @@
     &:has(:focus-visible) {
       outline: $focus-ring-width solid $color-tertiary;
       outline-offset: $focus-ring-offset;
+    }
+
+    // Locked while a request is pending
+    &:has(:disabled) {
+      border-color: $color-disabled-content;
+      color: $color-on-bg;
+      cursor: progress;
+
+      input {
+        cursor: progress;
+      }
     }
 
     &:has([aria-invalid='true']) {
@@ -234,5 +282,11 @@
   from {
     opacity: 0;
     transform: translateX($size-2);
+  }
+}
+
+@keyframes auth-spin {
+  to {
+    rotate: 1turn;
   }
 }
