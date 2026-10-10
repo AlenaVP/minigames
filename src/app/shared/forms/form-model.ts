@@ -19,7 +19,7 @@ interface FieldState {
 /**
  * Form state without DOM — a tiny version of Angular's FormGroup:
  *
- *   setValue('email', 'a')  → dirty, error "Enter a valid email…" is visible at once
+ *   setValue('email', 'a')  → dirty, error "Please enter a valid email…" is visible at once
  *   markTouched('email')    → leaving an empty field shows "Enter your email address"
  *   isValid                 → every field of the form passes its validators (drives the submit button)
  *

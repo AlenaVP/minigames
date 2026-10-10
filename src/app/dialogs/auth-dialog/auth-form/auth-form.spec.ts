@@ -53,6 +53,15 @@ describe('AuthForm — login', () => {
     form.destroy();
   });
 
+  it('gives every field its icon as a CSS mask (so the error state can recolor it)', () => {
+    const icons = [...panel.querySelectorAll<HTMLElement>('.auth-field__icon')];
+
+    expect(icons).toHaveLength(LOGIN_FORM_CONFIG.fields.length);
+    for (const [index, icon] of icons.entries()) {
+      expect(icon.style.getPropertyValue('--icon')).toBe(`url(${JSON.stringify(LOGIN_FORM_CONFIG.fields[index]?.iconUrl)})`);
+    }
+  });
+
   it('starts with the submit button disabled and no visible errors', () => {
     expect(submitButton(panel).disabled).toBe(true);
     expect(panel.querySelectorAll('.auth-field__error:not([hidden])')).toHaveLength(0);

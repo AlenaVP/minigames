@@ -20,7 +20,7 @@ const PASSWORD_ALLOWED = /^[A-Za-z\d!-/:-@[-`{-~]+$/;
 
 export const MESSAGES = {
   emailRequired: 'Enter your email address',
-  emailInvalid: 'Enter a valid email address, e.g. alex@minigames.com',
+  emailInvalid: 'Please enter a valid email address',
   usernameRequired: 'Enter a username',
   usernameCharacters: 'Use English letters and digits only',
   usernameFirstLetter: 'Username must start with an uppercase English letter',

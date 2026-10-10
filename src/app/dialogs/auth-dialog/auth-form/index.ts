@@ -104,8 +104,22 @@ export class AuthForm extends ComponentBase {
     `;
 
     this.form = panel.querySelector('form');
+    this.setFieldIcons();
     this.bindEvents(panel);
     return panel;
+  }
+
+  /**
+   * Set through the DOM, not in the HTML string: Vite inlines small SVGs as data URIs full of quotes,
+   * which would break a quoted style="…" attribute.
+   */
+  private setFieldIcons(): void {
+    for (const { name, iconUrl } of this.options.config.fields) {
+      const icon = this.form
+        ?.querySelector<HTMLElement>(`#${this.fieldId(name)}`)
+        ?.parentElement?.querySelector<HTMLElement>('.auth-field__icon');
+      icon?.style.setProperty('--icon', `url(${JSON.stringify(iconUrl)})`);
+    }
   }
 
   private fieldId(name: string): string {
@@ -120,12 +134,13 @@ export class AuthForm extends ComponentBase {
          </button>`
       : '';
 
+    // The icon is a CSS mask (not an <img>), so its color follows the field state: red in the error state (Guidebook).
     // The error <p> is always in the DOM (hidden while empty): aria-describedby never points to a missing id
     return `
       <div class="auth-field">
         <label for="${id}" class="auth-field__label">${field.label}</label>
         <div class="auth-field__control">
-          <img src="${field.iconUrl}" alt="" width="20" height="20" class="auth-field__icon" />
+          <span class="auth-field__icon" aria-hidden="true"></span>
           <input
             id="${id}"
             name="${field.name}"
