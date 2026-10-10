@@ -9,8 +9,11 @@ import { NotFoundPage } from '@app/pages/not-found/not-found.page';
 import { toLibraryQuery } from '@app/pages/library/library-query';
 import type { AuthMode } from '@shared/types/auth';
 import { snackbar } from '@shared/ui/snackbar';
+import { sessionService } from '@app/services/session';
 import { Router, type RouteSnapshot } from './router';
 import { DIALOG_QUERY, parseAuthQueryValue, toAuthQueryValue } from './router/dialog-query';
+
+const SESSION_EXPIRED_MESSAGE = 'Your session has expired. Please log in again.';
 
 /**
  * The conductor: builds the layout, wires components to the router and keeps the dialogs in sync with the URL.
@@ -96,6 +99,13 @@ export function bootstrapApp(): void {
     if (auth) authDialog.open(auth.mode);
     else if (authDialog.isOpen) authDialog.close();
   };
+
+  // One toast per expiration event — whatever noticed it first (timer, tab return, navigation, protected action)
+  sessionService.onChange(({ reason }) => {
+    if (reason === 'expired') snackbar.warning(SESSION_EXPIRED_MESSAGE);
+  });
+  sessionService.start();
+  router.beforeNavigate(() => sessionService.ensureActive());
 
   router.onChange((snapshot) => {
     header.setActiveRoute(snapshot.route);
