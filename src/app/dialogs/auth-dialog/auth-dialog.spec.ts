@@ -150,6 +150,7 @@ describe('AuthDialog — email/password authentication', () => {
     vi.spyOn(snackbar, 'success');
     vi.spyOn(snackbar, 'error');
     vi.spyOn(snackbar, 'warning');
+    vi.spyOn(snackbar, 'info');
   });
 
   afterEach(() => {
@@ -298,5 +299,13 @@ describe('AuthDialog — email/password authentication', () => {
     request.reject(new AuthError('network'));
     await flush();
     expect(visiblePanelId()).toBe('auth-panel-signup');
+  });
+
+  it('"Forgot Password?" says that recovery is not available yet', () => {
+    dialog.open('login');
+
+    query<HTMLButtonElement>('.auth-form__forgot').click();
+
+    expect(snackbar.info).toHaveBeenCalledWith('Password recovery is not available yet.');
   });
 });

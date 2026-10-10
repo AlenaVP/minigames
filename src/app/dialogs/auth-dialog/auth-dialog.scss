@@ -50,5 +50,11 @@
       color: $color-white;
       cursor: default;
     }
+
+    &:disabled:not([aria-selected='true']) {
+      background-color: transparent;
+      color: $color-disabled-content;
+      cursor: not-allowed;
+    }
   }
 }

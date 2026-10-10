@@ -2,6 +2,7 @@ import { ComponentBase } from '@app/core/component.base';
 import { FormModel } from '@shared/forms/form-model';
 import type { FormValues, Validator } from '@shared/forms/validators';
 import type { AuthMode } from '@shared/types/auth';
+import { snackbar } from '@shared/ui/snackbar';
 import googleIconUrl from '@assets/icons/google.svg';
 import visibilityIconUrl from '@assets/icons/visibility.svg';
 import visibilityOffIconUrl from '@assets/icons/visibility-off.svg';
@@ -41,6 +42,7 @@ interface AuthFormOptions {
 }
 
 const TOGGLE_LABEL = { show: 'Show password', hide: 'Hide password' } as const;
+const FORGOT_PASSWORD_MESSAGE = 'Password recovery is not available yet.';
 
 export class AuthForm extends ComponentBase {
   private readonly options: AuthFormOptions;
@@ -128,7 +130,7 @@ export class AuthForm extends ComponentBase {
       <form class="auth-form__form" novalidate>
         <div class="auth-form__fields">
           ${config.fields.map((field) => this.renderField(field)).join('')}
-          ${config.withForgotPassword ? '<a href="/" class="auth-form__forgot">Forgot Password?</a>' : ''}
+          ${config.withForgotPassword ? '<button type="button" class="auth-form__forgot">Forgot Password?</button>' : ''}
         </div>
 
         <div class="auth-form__actions">
@@ -210,6 +212,7 @@ export class AuthForm extends ComponentBase {
 
     panel.querySelector('.auth-form__switch')?.addEventListener('click', () => this.options.onSwitch());
     panel.querySelector('.auth-field__toggle')?.addEventListener('click', () => this.togglePasswordVisibility());
+    panel.querySelector('.auth-form__forgot')?.addEventListener('click', () => snackbar.info(FORGOT_PASSWORD_MESSAGE));
 
     // input: every keystroke and paste; change: autofill in some browsers; focusout: the user left a field
     const onValueChange = (event: Event): void => {
