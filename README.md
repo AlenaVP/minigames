@@ -56,6 +56,26 @@ the URL restores the page, the Library controls and the dialogs (deep links, Bac
 Invalid parameters are corrected (with a warning) and the URL is replaced with its canonical form. On Netlify,
 `public/_redirects` serves the SPA for every path.
 
+## Authentication and App Session
+
+Firebase Authentication (Email/Password and Google) confirms the identity; the app session decides whether the UI
+treats the user as signed in. The session lasts **5 minutes from authentication** — reloads and activity do not extend
+it.
+
+| localStorage key                          | Value                                                        |
+| ----------------------------------------- | ------------------------------------------------------------ |
+| `minigames:alenavp-minigames:app-session` | `{ displayName, email, authenticatedAt, avatarUrl? }` (JSON) |
+
+`authenticatedAt` is `Date.now()` at sign-in; `avatarUrl` is stored only when the provider has a photo. No passwords
+or Firebase tokens are stored.
+
+The session is checked on startup, when the tab becomes active again, before every page or dialog navigation, before
+every protected action, and by a timer at the expiry moment. An expired or broken record removes only this key, calls
+Firebase `signOut` and switches the app to Guest Mode; an expiration shows one Snackbar.
+
+To check it: DevTools → Application → Local Storage → set `authenticatedAt` to a timestamp more than 5 minutes ago
+(e.g. `Date.now() - 6 * 60 * 1000` from the console) and reload the page.
+
 ## Scripts
 
 | Script                 | Description                               |
