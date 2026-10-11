@@ -2,9 +2,9 @@
 @use 'abstracts/tokens' as *;
 @use 'abstracts/mixins' as *;
 
+// RSS-QS-4-2-3: the avatar-random tokens only, in order: --1 … --5 (AvatarColorRegistry picks the number)
 $avatar-palette:
-  $color-primary, $color-avatar-random-1, $color-avatar-random-2, $color-avatar-random-4, $color-avatar-random-3,
-  $color-avatar-random-5;
+  $color-avatar-random-1, $color-avatar-random-2, $color-avatar-random-3, $color-avatar-random-4, $color-avatar-random-5;
 
 .comment {
   display: flex;
@@ -38,7 +38,7 @@ $avatar-palette:
     }
 
     @for $i from 1 through list.length($avatar-palette) {
-      &--#{$i - 1} {
+      &--#{$i} {
         background-color: list.nth($avatar-palette, $i);
       }
     }
@@ -89,6 +89,21 @@ $avatar-palette:
 
     &[aria-pressed='true'] {
       color: $color-like;
+    }
+
+    // A like request is out: the heart gives way to a small spinner, the count stays readable
+    &--pending:disabled {
+      cursor: progress;
+
+      svg {
+        display: none;
+      }
+
+      &::before {
+        @include spinner;
+        width: $size-2;
+        height: $size-2;
+      }
     }
 
     &:focus-visible {
