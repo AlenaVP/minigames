@@ -35,3 +35,13 @@ export interface SessionSource {
   /** Calls the listener at once with the current state, then on every change; unsubscribes when `signal` aborts */
   onChange(listener: SessionListener, signal?: AbortSignal): () => void;
 }
+
+/**
+ * What a protected action needs: who is signed in right now, and a fresh check just before acting
+ * (Game Details: favorites, comments, likes). SessionService implements it.
+ */
+export interface SessionAccess extends SessionSource {
+  readonly current: AppSession | null;
+  /** true = a valid app session; an expired one is ended right there, with its single toast */
+  ensureActive(): boolean;
+}

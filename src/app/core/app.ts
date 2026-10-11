@@ -34,7 +34,11 @@ export function bootstrapApp(): void {
     onClose: () => dialogs.handleDialogClosed(DIALOG_QUERY.auth),
     onModeChange: (mode) => dialogs.switchAuthMode(mode),
   });
-  const gameDetailsDialog = new GameDetailsDialog({ onClose: () => dialogs.handleDialogClosed(DIALOG_QUERY.game) });
+  const gameDetailsDialog = new GameDetailsDialog({
+    // A guest's ♥ (and later comments, likes): Auth over the game, the game waits underneath
+    access: { session: sessionService, requestAuth: () => dialogs.openAuth('login') },
+    onClose: () => dialogs.handleDialogClosed(DIALOG_QUERY.game),
+  });
 
   /**
    * Log Out in the header or the menu (RSS-QS-4-3-3). The UI is in Guest Mode the moment logout() returns;

@@ -9,11 +9,13 @@ import { GameInfo } from './game-info';
 import { TopRecords } from './top-records';
 import { CommentsSection } from './comments';
 import { renderGameDetailsSkeleton } from './game-details-skeleton';
+import type { GameDetailsAccess } from './game-details-access';
 
 export const GAME_DETAILS_TITLE_ID = 'game-details-title';
 
 interface GameDetailsContentOptions {
   slug: string;
+  access: GameDetailsAccess;
   /** "Close" in the Game Not Found state */
   onClose: () => void;
 }
@@ -35,7 +37,7 @@ export class GameDetailsContent extends ComponentBase {
   }
 
   protected render(): HTMLElement {
-    const { slug, onClose } = this.options;
+    const { slug, access, onClose } = this.options;
 
     const content = document.createElement('div');
     content.classList.add('game-details__content');
@@ -49,7 +51,8 @@ export class GameDetailsContent extends ComponentBase {
     this.mountChild(
       new AsyncContent<GameDetails>({
         label: 'game details',
-        request: (signal) => gamesApi.getGame(slug, {}, signal),
+        // Signed in: the answer is personal (isLikedByCurrentUser = in this user's favorites); a guest's has no email
+        request: (signal) => gamesApi.getGame(slug, { userEmail: access.session.current?.email }, signal),
         renderSkeleton: renderGameDetailsSkeleton,
         renderContent: (game) => new GameDetailsView({ game }),
         renderError: (error) =>
