@@ -181,6 +181,24 @@ $spec-shadow: $shadow-level-1;
     &--favorite-active svg {
       color: $color-like;
     }
+
+    // A toggle request is out: the heart gives way to a spinner, the button keeps its look (working, not disabled)
+    &--pending:disabled {
+      cursor: progress;
+
+      &:active {
+        translate: none;
+        box-shadow: $shadow-level-1;
+      }
+
+      svg {
+        display: none;
+      }
+
+      &::before {
+        @include spinner;
+      }
+    }
   }
 
   &__favorite-label {

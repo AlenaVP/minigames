@@ -30,6 +30,8 @@ interface GameDetailsContentOptions {
  */
 export class GameDetailsContent extends ComponentBase {
   private readonly options: GameDetailsContentOptions;
+  /** The email of the last game request (null = as a guest) */
+  private loadedFor: string | null = null;
 
   constructor(options: GameDetailsContentOptions) {
     super();
@@ -52,9 +54,12 @@ export class GameDetailsContent extends ComponentBase {
       new AsyncContent<GameDetails>({
         label: 'game details',
         // Signed in: the answer is personal (isLikedByCurrentUser = in this user's favorites); a guest's has no email
-        request: (signal) => gamesApi.getGame(slug, { userEmail: access.session.current?.email }, signal),
+        request: (signal) => {
+          this.loadedFor = access.session.current?.email ?? null;
+          return gamesApi.getGame(slug, { userEmail: this.loadedFor ?? undefined }, signal);
+        },
         renderSkeleton: renderGameDetailsSkeleton,
-        renderContent: (game) => new GameDetailsView({ game }),
+        renderContent: (game) => new GameDetailsView({ game, access, loadedFor: this.loadedFor }),
         renderError: (error) =>
           error.kind === 'not-found'
             ? new EmptyState({
@@ -72,16 +77,22 @@ export class GameDetailsContent extends ComponentBase {
 }
 
 /** The loaded game: the comments area lives inside it, so it starts only once the game exists */
-class GameDetailsView extends ComponentBase {
-  private readonly game: GameDetails;
+interface GameDetailsViewOptions {
+  game: GameDetails;
+  access: GameDetailsAccess;
+  loadedFor: string | null;
+}
 
-  constructor({ game }: { game: GameDetails }) {
+class GameDetailsView extends ComponentBase {
+  private readonly options: GameDetailsViewOptions;
+
+  constructor(options: GameDetailsViewOptions) {
     super();
-    this.game = game;
+    this.options = options;
   }
 
   protected render(): HTMLElement {
-    const { game } = this;
+    const { game, access, loadedFor } = this.options;
 
     const view = document.createElement('div');
     view.classList.add('game-details__view');
@@ -92,7 +103,7 @@ class GameDetailsView extends ComponentBase {
     body.classList.add('game-details__body');
     view.append(body);
 
-    this.mountChild(new GameInfo({ game, titleId: GAME_DETAILS_TITLE_ID }), body);
+    this.mountChild(new GameInfo({ game, titleId: GAME_DETAILS_TITLE_ID, access, loadedFor }), body);
     this.mountChild(new TopRecords({ records: game.topRecords }), body);
     this.mountChild(new CommentsSection({ slug: game.slug }), body);
 

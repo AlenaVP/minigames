@@ -30,6 +30,8 @@ describe('GameDetailsDialog', () => {
     getGame = vi.spyOn(gamesApi, 'getGame').mockResolvedValue(makeGameDetails({ name: 'Tiny Glade' }));
     getComments = vi.spyOn(gamesApi, 'getComments').mockResolvedValue(makeCommentsPage());
     vi.spyOn(snackbar, 'info');
+    vi.spyOn(snackbar, 'warning');
+    vi.spyOn(snackbar, 'success');
     vi.spyOn(snackbar, 'error');
     session = createFakeSessionSource();
     requestAuth = vi.fn<() => void>();
@@ -100,7 +102,7 @@ describe('GameDetailsDialog', () => {
     expect(textOf(query('.top-records__player'))).toContain('CozyGamer');
   });
 
-  it('asks a guest to sign in for favorites, likes and comments', async () => {
+  it('opens Auth over the game for a guest favorite, and still only explains likes and comments', async () => {
     dialog.open('tiny-glade');
     await loaded();
 
@@ -108,11 +110,26 @@ describe('GameDetailsDialog', () => {
     query('.comment__like').click();
     query<HTMLFormElement>('.comment-form').dispatchEvent(new Event('submit', { cancelable: true }));
 
+    expect(requestAuth).toHaveBeenCalledOnce();
     expect(vi.mocked(snackbar.info).mock.calls.map(([text]) => text)).toEqual([
-      'Sign in to add games to your favorites.',
       'Sign in to like comments.',
       'Sign in to leave a comment.',
     ]);
+  });
+
+  it('updates the favorites count next to the rating from the toggle answer', async () => {
+    session.emit(makeAppSession(), 'signed-in');
+    vi.spyOn(gamesApi, 'toggleFavorite').mockResolvedValue({
+      gameSlug: 'tiny-glade',
+      isFavorited: true,
+      likesCount: 31_201,
+    });
+    dialog.open('tiny-glade');
+    await loaded();
+
+    query('.game-info__action--favorite').click();
+
+    await vi.waitFor(() => expect(textOf(query('.game-info__likes-count'))).toBe('31.2K'));
   });
 
   it('enables Send only when the comment has non-blank text', async () => {
