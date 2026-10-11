@@ -85,4 +85,92 @@ describe('GamesApi', () => {
     stubFetch(jsonResponse({ error: 'Rate limit exceeded' }, 429));
     await expect(createApi().getFeatured()).rejects.toBeInstanceOf(HttpError);
   });
+
+  describe('personal reads (signed-in user)', () => {
+    it('getGame sends the email URL-encoded — a "+" would otherwise arrive as a space', async () => {
+      const fetchMock = stubFetch(jsonResponse({ data: makeGameDetails({ isLikedByCurrentUser: true }) }));
+
+      const game = await createApi().getGame('palia', { userEmail: 'alex+test@rs.school' });
+
+      expect(requestedUrl(fetchMock).search).toBe('?userEmail=alex%2Btest%40rs.school');
+      expect(game.isLikedByCurrentUser).toBe(true);
+    });
+
+    it('getGame for a guest sends no userEmail at all', async () => {
+      const fetchMock = stubFetch(jsonResponse({ data: makeGameDetails() }));
+
+      await createApi().getGame('palia');
+
+      expect(requestedUrl(fetchMock).search).toBe('');
+    });
+
+    it('getComments adds the email to limit and sort', async () => {
+      const fetchMock = stubFetch(jsonResponse({ data: [], meta: { totalComments: 0, returnedCount: 0 } }));
+
+      await createApi().getComments('palia', { limit: 3, sort: 'newest', userEmail: 'student@rs.school' });
+
+      expect(Object.fromEntries(requestedUrl(fetchMock).searchParams)).toEqual({
+        limit: '3',
+        sort: 'newest',
+        userEmail: 'student@rs.school',
+      });
+    });
+  });
+
+  describe('mutations', () => {
+    const EMAIL = 'student@rs.school';
+
+    it('toggleFavorite posts the email to the game and returns the server state', async () => {
+      const state = { gameSlug: 'tukoni-forest-keepers', isFavorited: true, likesCount: 31_201 };
+      const fetchMock = stubFetch(jsonResponse({ data: state }));
+
+      await expect(createApi().toggleFavorite('tukoni-forest-keepers', EMAIL)).resolves.toEqual(state);
+
+      expect(requestedUrl(fetchMock).pathname).toBe('/api/games/tukoni-forest-keepers/favorite');
+      expect(requestInit(fetchMock).method).toBe('POST');
+      expect(JSON.parse(String(requestInit(fetchMock).body))).toEqual({ userEmail: EMAIL });
+    });
+
+    it('postComment sends email, author and text and returns the created comment (201)', async () => {
+      const created = makeComment({ commentId: '617cfa0e', authorName: 'ForestDweller', text: 'Calming!' });
+      const fetchMock = stubFetch(jsonResponse({ data: created }, 201));
+
+      await expect(
+        createApi().postComment('tukoni-forest-keepers', EMAIL, { authorName: 'ForestDweller', text: 'Calming!' }),
+      ).resolves.toEqual(created);
+
+      expect(requestedUrl(fetchMock).pathname).toBe('/api/games/tukoni-forest-keepers/comments');
+      expect(JSON.parse(String(requestInit(fetchMock).body))).toEqual({
+        userEmail: EMAIL,
+        authorName: 'ForestDweller',
+        text: 'Calming!',
+      });
+    });
+
+    it('toggleCommentLike posts to the comment (id encoded) and returns its new state', async () => {
+      const fetchMock = stubFetch(jsonResponse({ data: { isLikedByCurrentUser: false, likesCount: 13 } }));
+
+      await expect(createApi().toggleCommentLike('c5d9/f2a1', EMAIL)).resolves.toEqual({
+        isLikedByCurrentUser: false,
+        likesCount: 13,
+      });
+
+      expect(requestedUrl(fetchMock).pathname).toBe('/api/comments/c5d9%2Ff2a1/like');
+    });
+
+    it('passes the server refusal on as an HttpError (a rejected mutation)', async () => {
+      stubFetch(jsonResponse({ error: 'Rate limit exceeded. Try again in 42 seconds' }, 429));
+
+      await expect(createApi().toggleFavorite('palia', EMAIL)).rejects.toMatchObject({
+        kind: 'rate-limit',
+        message: 'Rate limit exceeded. Try again in 42 seconds',
+      });
+    });
+
+    it('rejects an answer of the wrong shape instead of trusting it', async () => {
+      stubFetch(jsonResponse({ data: { isFavorited: 'yes' } }));
+
+      await expect(createApi().toggleFavorite('palia', EMAIL)).rejects.toMatchObject({ kind: 'invalid-response' });
+    });
+  });
 });

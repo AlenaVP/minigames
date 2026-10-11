@@ -98,3 +98,52 @@ describe('HttpClient.get', () => {
     await expect(createClient(5).get('/answer', { guard: isAnswer })).rejects.toMatchObject({ kind: 'timeout' });
   });
 });
+
+describe('HttpClient.post', () => {
+  it('sends the body as JSON with its content type and returns the checked answer', async () => {
+    const fetchMock = stubFetch(jsonResponse({ answer: 7 }));
+
+    await expect(createClient().post('/games/palia/favorite', { userEmail: 'a@b.c' }, { guard: isAnswer })).resolves.toEqual(
+      {
+        answer: 7,
+      },
+    );
+
+    expect(requestedUrl(fetchMock).href).toBe(`${BASE_URL}/games/palia/favorite`);
+    const init = requestInit(fetchMock);
+    expect(init.method).toBe('POST');
+    expect(init.headers).toEqual({ Accept: 'application/json', 'Content-Type': 'application/json' });
+    expect(JSON.parse(String(init.body))).toEqual({ userEmail: 'a@b.c' });
+  });
+
+  it('keeps GET free of a body and of the JSON content type (no CORS preflight for reads)', async () => {
+    const fetchMock = stubFetch(jsonResponse({ answer: 1 }));
+
+    await createClient().get('/x', { guard: isAnswer });
+
+    expect(requestInit(fetchMock).method).toBe('GET');
+    expect(requestInit(fetchMock).body).toBeUndefined();
+  });
+
+  it('maps 401 to unauthorized with the server message', async () => {
+    stubFetch(jsonResponse({ error: 'Authentication required: userEmail is missing' }, 401));
+
+    await expect(createClient().post('/x', {}, { guard: isAnswer })).rejects.toMatchObject({
+      kind: 'unauthorized',
+      status: 401,
+      message: 'Authentication required: userEmail is missing',
+    });
+  });
+
+  it('reports a 2xx answer it cannot read as invalid-response (the change may still have happened)', async () => {
+    stubFetch(textResponse('<html>', 201));
+
+    await expect(createClient().post('/x', {}, { guard: isAnswer })).rejects.toMatchObject({ kind: 'invalid-response' });
+  });
+
+  it('gives up after timeoutMs like GET', async () => {
+    stubHangingFetch();
+
+    await expect(createClient(5).post('/x', {}, { guard: isAnswer })).rejects.toMatchObject({ kind: 'timeout' });
+  });
+});

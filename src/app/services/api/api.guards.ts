@@ -1,6 +1,13 @@
 import type { ApiListResponse, ApiResponse, CommentsMeta, PaginationMeta } from '@shared/types/api';
 import type { Category, GameSummary } from '@shared/types/game';
-import type { GameComment, GameDetails, GameSpecs, TopRecord } from '@shared/types/game-details';
+import type {
+  CommentLikeState,
+  FavoriteState,
+  GameComment,
+  GameDetails,
+  GameSpecs,
+  TopRecord,
+} from '@shared/types/game-details';
 import type { LeaderboardEntry } from '@shared/types/leaderboard';
 import { type Guard, hasShape, isArrayOf, isBoolean, isNumber, isRecord, isString } from '@shared/utils/type-guards';
 
@@ -85,3 +92,13 @@ export const isFeaturedGamesResponse = isApiListResponse(isGameSummary, isRecord
 export const isGamesPageResponse = isApiListResponse(isGameSummary, isPaginationMeta);
 export const isGameDetailsResponse = isApiResponse(isGameDetails);
 export const isCommentsResponse = isApiListResponse(isGameComment, isCommentsMeta);
+
+// ---- mutations (POST) ----
+
+const isFavoriteState = hasShape<FavoriteState>({ gameSlug: isString, isFavorited: isBoolean, likesCount: isNumber });
+const isCommentLikeState = hasShape<CommentLikeState>({ isLikedByCurrentUser: isBoolean, likesCount: isNumber });
+
+export const isFavoriteResponse = isApiResponse(isFavoriteState);
+/** 201: the created comment, the same shape as in the comments list */
+export const isPostedCommentResponse = isApiResponse(isGameComment);
+export const isCommentLikeResponse = isApiResponse(isCommentLikeState);

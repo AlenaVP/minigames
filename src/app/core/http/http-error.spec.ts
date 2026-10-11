@@ -4,6 +4,7 @@ import { HttpError, getHttpErrorKind, isAbortedRequest, toTransportError } from 
 describe('getHttpErrorKind', () => {
   it.each([
     [400, 'bad-request'],
+    [401, 'unauthorized'],
     [404, 'not-found'],
     [422, 'bad-request'],
     [429, 'rate-limit'],

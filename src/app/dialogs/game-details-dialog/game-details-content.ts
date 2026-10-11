@@ -49,7 +49,7 @@ export class GameDetailsContent extends ComponentBase {
     this.mountChild(
       new AsyncContent<GameDetails>({
         label: 'game details',
-        request: (signal) => gamesApi.getGame(slug, signal),
+        request: (signal) => gamesApi.getGame(slug, {}, signal),
         renderSkeleton: renderGameDetailsSkeleton,
         renderContent: (game) => new GameDetailsView({ game }),
         renderError: (error) =>
