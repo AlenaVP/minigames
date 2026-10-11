@@ -11,6 +11,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: $size-2;
     height: $size-8;
     padding-inline: $size-2;
 
@@ -29,6 +30,7 @@
     display: flex;
     align-items: center;
     gap: $size-2;
+    min-width: 0;
 
     @include desktop {
       gap: $size-4;
@@ -37,6 +39,7 @@
 
   &__logo {
     display: flex;
+    flex-shrink: 0;
     align-items: center;
     gap: $size-1;
     text-decoration: none;
@@ -61,6 +64,7 @@
 
   &__nav {
     display: none;
+    flex-shrink: 0;
 
     @include desktop {
       display: block;
@@ -98,6 +102,43 @@
     display: flex;
     align-items: center;
     gap: $size-2;
+
+    // The author's display: flex beats the browser's [hidden] rule
+    &[hidden] {
+      display: none;
+    }
+
+    // Guidebook: links —32— name + avatar —32— Log Out. min-width: 0 lets a long name shrink instead of overflowing
+    &--user {
+      min-width: 0;
+
+      @include desktop {
+        gap: $size-4;
+      }
+    }
+  }
+
+  &__profile {
+    display: none;
+    min-width: 0;
+    margin: 0;
+
+    @include desktop {
+      display: flex;
+      align-items: center;
+      gap: $size-1;
+    }
+  }
+
+  &__user-name {
+    max-width: $size-p200;
+    overflow: hidden;
+    font-family: $font-family-primary;
+    font-size: $font-size-body-medium;
+    font-weight: $font-weight-bold;
+    color: $color-on-primary;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   &__auth-btn {
@@ -142,6 +183,17 @@
 
       &:hover {
         background-color: $color-surface;
+      }
+    }
+
+    // Guidebook: Log Out takes the place of Sign Up on tablets and stays on desktop
+    &--logout {
+      flex-shrink: 0;
+
+      @include tablet {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
       }
     }
   }

@@ -1,6 +1,6 @@
 import type { AuthProvider } from '@app/services/auth';
 import type { AuthUser } from '@shared/types/auth';
-import type { AppSession, SessionChange, SessionChangeReason } from '@shared/types/session';
+import type { AppSession, SessionChange, SessionChangeReason, SessionListener, SessionSource } from '@shared/types/session';
 import {
   createAppSession,
   getSessionExpiry,
@@ -9,8 +9,6 @@ import {
   parseStoredSession,
   serializeSession,
 } from './app-session';
-
-type SessionListener = (change: SessionChange) => void;
 
 export interface SessionServiceOptions {
   storage: Storage;
@@ -33,7 +31,7 @@ export interface SessionServiceOptions {
  * Every end of a session removes ONLY our key and calls Firebase signOut,
  * so Firebase's own persistence can never bring the user back.
  */
-export class SessionService {
+export class SessionService implements SessionSource {
   private readonly options: Required<SessionServiceOptions>;
   private readonly listeners = new Set<SessionListener>();
   private session: AppSession | null = null;

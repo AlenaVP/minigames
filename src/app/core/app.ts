@@ -15,6 +15,9 @@ import { Router, type RouteSnapshot } from './router';
 import { DIALOG_QUERY, parseAuthQueryValue, toAuthQueryValue } from './router/dialog-query';
 
 const SESSION_EXPIRED_MESSAGE = 'Your session has expired. Please log in again.';
+const LOGGED_OUT_MESSAGE = "You've logged out.";
+const SIGN_OUT_FAILED_MESSAGE =
+  "You're logged out, but signing out of your account didn't finish. Please check your connection.";
 
 /**
  * The conductor: builds the layout, wires components to the router and keeps the dialogs in sync with the URL.
@@ -52,11 +55,27 @@ export function bootstrapApp(): void {
   });
   const gameDetailsDialog = new GameDetailsDialog({ onClose: () => handleDialogClosed(DIALOG_QUERY.game) });
 
+  /**
+   * Log Out in the header or the menu (RSS-QS-4-3-3). The UI is in Guest Mode the moment logout() returns;
+   * Firebase signOut finishes after that, and its failure is reported but never restores the user.
+   */
+  const logOut = (): void => {
+    // The session ran out a moment ago and the timer has not fired yet: that is the event, with its own single toast
+    if (!sessionService.ensureActive()) return;
+
+    sessionService.logout().then(
+      () => snackbar.success(LOGGED_OUT_MESSAGE),
+      () => snackbar.error(SIGN_OUT_FAILED_MESSAGE),
+    );
+  };
+
   const burgerMenu = new BurgerMenu({ onAuthClick: openAuth });
 
   const header = new Header({
+    session: sessionService,
     onBurgerClick: () => burgerMenu.open(),
     onAuthClick: openAuth,
+    onLogout: logOut,
   });
   header.mount(root);
 
