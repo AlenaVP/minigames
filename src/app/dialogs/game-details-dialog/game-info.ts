@@ -1,16 +1,19 @@
 import { ComponentBase } from '@app/core/component.base';
 import type { GameDetails, GameSpecs } from '@shared/types/game-details';
-import { heartOutlineIcon } from '@shared/ui/icons';
-import { snackbar } from '@shared/ui/snackbar';
 import { escapeHtml } from '@shared/utils/escape-html';
 import { formatCompactNumber, formatRating } from '@shared/utils/format';
 import starIconUrl from '@assets/icons/star.svg';
 import favoriteIconUrl from '@assets/icons/favorite.svg';
+import { FavoriteButton } from './favorite-button';
+import type { GameDetailsAccess } from './game-details-access';
 import './game-info.scss';
 
 interface GameInfoOptions {
   game: GameDetails;
   titleId: string;
+  access: GameDetailsAccess;
+  /** The email the game was requested with (null = as a guest) */
+  loadedFor: string | null;
 }
 
 const SPEC_LABELS: Record<keyof GameSpecs, string> = {
@@ -20,7 +23,6 @@ const SPEC_LABELS: Record<keyof GameSpecs, string> = {
   price: 'Price',
 };
 
-const FAVORITE_LABEL = { off: 'Add to Favorites', on: 'Remove from Favorites' } as const;
 const FREE_PRICE = 'Free';
 
 export class GameInfo extends ComponentBase {
@@ -34,7 +36,6 @@ export class GameInfo extends ComponentBase {
   protected render(): HTMLElement {
     const { game, titleId } = this.options;
     const price = game.specs.price;
-    // Figma: "Play Now" for free games, "Buy Now: $3.99" for paid ones
     const primaryLabel = price === FREE_PRICE ? 'Play Now' : `Buy Now: ${escapeHtml(price)}`;
 
     const info = document.createElement('div');
@@ -60,7 +61,7 @@ export class GameInfo extends ComponentBase {
           </span>
           <span class="game-info__stat">
             <img src="${favoriteIconUrl}" alt="Likes" width="24" height="24" class="game-info__icon" />
-            ${formatCompactNumber(game.likesCount)}
+            <span class="game-info__likes-count">${formatCompactNumber(game.likesCount)}</span>
           </span>
         </p>
       </div>
@@ -70,35 +71,29 @@ export class GameInfo extends ComponentBase {
       <dl class="game-info__specs">${specs}</dl>
 
       <div class="game-info__actions">
-        <!-- No action on purpose: playing and buying are outside the task -->
         <button type="button" class="game-info__action game-info__action--play">${primaryLabel}</button>
-        <button type="button" class="game-info__action game-info__action--favorite">
-          ${heartOutlineIcon()}
-          <span class="game-info__favorite-label"></span>
-        </button>
       </div>
     `;
 
-    const favoriteButton = info.querySelector<HTMLButtonElement>('.game-info__action--favorite');
-
-    if (favoriteButton) {
-      this.syncFavorite(favoriteButton, game.isLikedByCurrentUser);
-      // Guest-safe: the favorites toggle is a Story 4 mutation (POST /games/{slug}/favorite)
-      favoriteButton.addEventListener('click', () => snackbar.info('Sign in to add games to your favorites.'));
+    const actions = info.querySelector<HTMLElement>('.game-info__actions');
+    if (actions) {
+      this.mountChild(
+        new FavoriteButton({
+          slug: game.slug,
+          isFavorited: game.isLikedByCurrentUser,
+          loadedFor: this.options.loadedFor,
+          access: this.options.access,
+          onLikesCount: (count) => this.setLikesCount(count),
+        }),
+        actions,
+      );
     }
 
     return info;
   }
 
-  /**
-   * The visible text itself says what the button will do ("Add…" / "Remove…"),
-   * so no aria-pressed: a changing label + pressed state would be a double, contradicting signal.
-   * On mobile the text is only visually hidden → it is still the accessible name of the icon button.
-   */
-  private syncFavorite(button: HTMLButtonElement, isFavorite: boolean): void {
-    button.classList.toggle('game-info__action--favorite-active', isFavorite);
-
-    const label = button.querySelector('.game-info__favorite-label');
-    if (label) label.textContent = isFavorite ? FAVORITE_LABEL.on : FAVORITE_LABEL.off;
+  private setLikesCount(count: number): void {
+    const element = this.element?.querySelector('.game-info__likes-count');
+    if (element) element.textContent = formatCompactNumber(count);
   }
 }

@@ -18,6 +18,22 @@ export interface GetOptions<T> {
   signal?: AbortSignal;
 }
 
+export interface PostOptions<T> {
+  guard: Guard<T>;
+  /** Not for "undo": aborting a POST stops waiting for the answer, not the server — the outcome becomes unknown */
+  signal?: AbortSignal;
+}
+
+type JsonBody = Readonly<Record<string, unknown>>;
+
+interface RequestSpec<T> {
+  method: 'GET' | 'POST';
+  guard: Guard<T>;
+  query?: QueryParameters;
+  body?: JsonBody;
+  signal?: AbortSignal;
+}
+
 /** Thin fetch wrapper — the role Angular's HttpClient plays: one place for base URL, timeout and error mapping. */
 export class HttpClient {
   private readonly config: HttpClientConfig;
@@ -26,37 +42,49 @@ export class HttpClient {
     this.config = config;
   }
 
-  async get<T>(path: string, { guard, query, signal }: GetOptions<T>): Promise<T> {
+  get<T>(path: string, { guard, query, signal }: GetOptions<T>): Promise<T> {
+    return this.request(path, { method: 'GET', guard, query, signal });
+  }
+
+  /** JSON in, JSON out: POST /games/{slug}/favorite { userEmail } and the other mutations */
+  post<T>(path: string, body: JsonBody, { guard, signal }: PostOptions<T>): Promise<T> {
+    return this.request(path, { method: 'POST', guard, body, signal });
+  }
+
+  private async request<T>(path: string, { method, guard, query, body, signal }: RequestSpec<T>): Promise<T> {
     const timeout = AbortSignal.timeout(this.config.timeoutMs);
     const combinedSignal = signal ? AbortSignal.any([signal, timeout]) : timeout;
 
     let response: Response;
-    let body: unknown;
+    let responseBody: unknown;
 
     try {
       response = await fetch(this.buildUrl(path, query), {
-        headers: { Accept: 'application/json' },
+        method,
+        headers: body === undefined ? { Accept: 'application/json' } : JSON_HEADERS,
+        body: body === undefined ? undefined : JSON.stringify(body),
         signal: combinedSignal,
       });
-      // Reading the body can be interrupted by the same signal — so it stays inside this try
-      body = await readJson(response);
+      responseBody = await readJson(response);
     } catch (error) {
       throw toTransportError(error);
     }
 
     if (!response.ok) {
-      throw new HttpError(getHttpErrorKind(response.status), { status: response.status, message: readErrorMessage(body) });
+      throw new HttpError(getHttpErrorKind(response.status), {
+        status: response.status,
+        message: readErrorMessage(responseBody),
+      });
     }
 
-    if (!guard(body)) {
+    if (!guard(responseBody)) {
       throw new HttpError('invalid-response', { status: response.status });
     }
 
-    return body;
+    return responseBody;
   }
 
   private buildUrl(path: string, query: QueryParameters = {}): URL {
-    // Concatenation, not new URL(path, base): a leading "/" in path would drop the "/api" part of the base
     const url = new URL(`${this.config.baseUrl}${path}`);
 
     for (const [key, value] of Object.entries(query)) {
@@ -66,6 +94,9 @@ export class HttpClient {
     return url;
   }
 }
+
+/** The API's CORS allows exactly this header (access-control-allow-headers: Content-Type) */
+const JSON_HEADERS = { Accept: 'application/json', 'Content-Type': 'application/json' } as const;
 
 /** null instead of a throw for an empty or non-JSON body (e.g. an HTML error page from a proxy) */
 async function readJson(response: Response): Promise<unknown> {

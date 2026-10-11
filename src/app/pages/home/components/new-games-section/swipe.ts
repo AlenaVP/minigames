@@ -9,7 +9,6 @@ interface SwipeCallbacks {
 }
 
 const SWIPE_MIN_DISTANCE_PX = 40;
-// Held this long and released on the spot = "pause", not "open the card"
 const LONG_PRESS_MS = 500;
 
 /**
@@ -28,7 +27,7 @@ export function attachSwipe(area: HTMLElement, callbacks: SwipeCallbacks, signal
   area.addEventListener(
     'pointerdown',
     (event) => {
-      if (pointerId !== null) return; // a second finger
+      if (pointerId !== null) return;
       if (event.pointerType === 'mouse' && event.button !== 0) return;
 
       pointerId = event.pointerId;
@@ -51,8 +50,6 @@ export function attachSwipe(area: HTMLElement, callbacks: SwipeCallbacks, signal
     const isSwipe = !isCancelled && Math.abs(deltaX) >= SWIPE_MIN_DISTANCE_PX && Math.abs(deltaX) > Math.abs(deltaY);
     const isLongPress = performance.now() - startTime >= LONG_PRESS_MS;
 
-    // The browser still fires `click` after pointerup — it must not open the dialog after a swipe or a hold.
-    // Reset right after the click would have been dispatched, so a later keyboard "click" is not eaten.
     suppressClick = isSwipe || isLongPress;
     setTimeout(() => (suppressClick = false), 0);
 
@@ -63,7 +60,6 @@ export function attachSwipe(area: HTMLElement, callbacks: SwipeCallbacks, signal
     }
   };
 
-  // On the document, not on the area: the release must be seen even when it happens outside the slider
   document.addEventListener('pointerup', (event) => finish(event, false), { signal });
   document.addEventListener('pointercancel', (event) => finish(event, true), { signal });
 
@@ -72,15 +68,13 @@ export function attachSwipe(area: HTMLElement, callbacks: SwipeCallbacks, signal
     (event) => {
       if (!suppressClick) return;
       event.preventDefault();
-      event.stopPropagation(); // capture phase → the card's own handler never runs
+      event.stopPropagation();
     },
     { capture: true, signal },
   );
 
-  // Mouse: dragging an <img> would start the browser's native drag & drop instead of our swipe
   area.addEventListener('dragstart', (event) => event.preventDefault(), { signal });
 
-  // Touch: a long press would open the image context menu ("Save image…") on top of the slider
   area.addEventListener(
     'contextmenu',
     (event) => {

@@ -1,19 +1,23 @@
 import { ComponentBase } from '@app/core/component.base';
 import type { GameComment } from '@shared/types/game-details';
-import { heartOutlineIcon } from '@shared/ui/icons';
-import { snackbar } from '@shared/ui/snackbar';
 import { decodeHtmlEntities } from '@shared/utils/decode-html';
-import { getAvatarColorIndex, getInitial } from '@shared/utils/avatar';
+import { getUserInitial } from '@shared/utils/avatar';
 import { escapeHtml } from '@shared/utils/escape-html';
 import { formatRelativeTime } from '@shared/utils/format';
+import { CommentLikeButton } from './comment-like-button';
+import type { GameDetailsAccess } from './game-details-access';
 import './comment-item.scss';
 
 interface CommentItemOptions {
   comment: GameComment;
+  /** 1…5, from the section's AvatarColorRegistry: stable per author while the comments view lives */
+  avatarColor: number;
+  access: GameDetailsAccess;
+  onListOutdated: () => void;
   now?: Date;
 }
 
-/** One comment, read-only in Story 3: the like state comes from the API (false for a guest). */
+/** One comment; its like button is the only interactive part */
 export class CommentItem extends ComponentBase {
   private options: CommentItemOptions;
 
@@ -23,7 +27,7 @@ export class CommentItem extends ComponentBase {
   }
 
   protected render(): HTMLElement {
-    const { comment, now } = this.options;
+    const { comment, avatarColor, now } = this.options;
     const author = escapeHtml(comment.authorName);
 
     const item = document.createElement('li');
@@ -31,8 +35,8 @@ export class CommentItem extends ComponentBase {
     item.innerHTML = `
       <article class="comment" aria-label="Comment by ${author}">
         <header class="comment__header">
-          <span class="comment__avatar comment__avatar--${getAvatarColorIndex(comment.authorName)}" aria-hidden="true">
-            ${escapeHtml(getInitial(comment.authorName))}
+          <span class="comment__avatar comment__avatar--${avatarColor}" aria-hidden="true">
+            ${escapeHtml(getUserInitial(comment.authorName) || '?')}
           </span>
           <span class="comment__author">${author}</span>
           <time class="comment__date" datetime="${escapeHtml(comment.createdAt)}">
@@ -40,17 +44,14 @@ export class CommentItem extends ComponentBase {
           </time>
         </header>
         <p class="comment__text">${escapeHtml(decodeHtmlEntities(comment.text))}</p>
-        <button type="button" class="comment__like" aria-pressed="${comment.isLikedByCurrentUser}">
-          ${heartOutlineIcon(16)}
-          <span class="visually-hidden">Like comment by ${author},</span>
-          <span class="comment__like-count">${comment.likesCount}</span>
-          <span class="visually-hidden">likes</span>
-        </button>
       </article>
     `;
 
-    // Guest-safe (3-3-2): liking is a Story 4 mutation; for now explain instead of faking a like
-    item.querySelector('.comment__like')?.addEventListener('click', () => snackbar.info('Sign in to like comments.'));
+    const article = item.querySelector<HTMLElement>('.comment');
+    if (article) {
+      const { access, onListOutdated } = this.options;
+      this.mountChild(new CommentLikeButton({ comment, access, onListOutdated }), article);
+    }
 
     return item;
   }

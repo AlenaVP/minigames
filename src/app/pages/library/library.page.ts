@@ -66,7 +66,6 @@ export class LibraryPage extends ComponentBase implements QueryAwarePage {
     if (this.hasRequested && isSameLibraryState(next, this.state)) return;
 
     this.state = next;
-    // No category in the URL = the default one: known already if the categories are loaded
     const category =
       next.category ?? (this.categories.length > 0 ? resolveCategory(undefined, this.categories).slug : undefined);
     if (category !== undefined) this.filterBar?.sync(category, next.sort);
@@ -98,7 +97,6 @@ export class LibraryPage extends ComponentBase implements QueryAwarePage {
       onSortChange: (sort) => this.requestState({ sort }),
     });
     this.mountChild(this.filterBar, section);
-    // The bar must stand above the results — mountChild appends, so move the results after it
     section.append(this.results);
 
     this.gamesArea = this.mountChild(
@@ -116,7 +114,6 @@ export class LibraryPage extends ComponentBase implements QueryAwarePage {
             this.pagination?.setState({ currentPage, totalPages });
             this.pagination?.setVisible(true);
           }
-          // No metadata to build it from
           if (state.status === 'error') this.pagination?.setVisible(false);
         },
       }),

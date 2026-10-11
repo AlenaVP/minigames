@@ -20,7 +20,6 @@ $pagination-gap-desktop: $size-2;
     gap: $pagination-gap-desktop;
   }
 
-  // `display: flex` above would beat the browser's [hidden] rule
   &[hidden] {
     display: none;
   }
@@ -34,9 +33,9 @@ $pagination-gap-desktop: $size-2;
   &__arrow {
     display: grid;
     place-items: center;
-    width: 40px;
-    height: 40px;
-    border: 2px solid $color-on-primary;
+    width: $size-5;
+    height: $size-5;
+    border: $border-width-thick solid $color-on-primary;
     border-radius: $corner-full;
     background-color: transparent;
     font-family: $font-family-primary;
@@ -45,9 +44,9 @@ $pagination-gap-desktop: $size-2;
     line-height: 1;
     color: $color-on-primary;
     transition:
-      background-color 0.2s ease,
-      color 0.2s ease,
-      border-color 0.2s ease;
+      background-color $duration-normal $easing-standard,
+      color $duration-normal $easing-standard,
+      border-color $duration-normal $easing-standard;
 
     &:not(:disabled, [aria-current='page']) {
       @include hover {
@@ -56,8 +55,8 @@ $pagination-gap-desktop: $size-2;
     }
 
     &:focus-visible {
-      outline: 2px solid $color-tertiary;
-      outline-offset: 2px;
+      outline: $focus-ring-width solid $color-tertiary;
+      outline-offset: $focus-ring-offset;
     }
   }
 

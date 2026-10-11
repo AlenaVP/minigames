@@ -22,7 +22,6 @@ export class Carousel {
     this.offsets = getSlotOffsets(this.total);
     this.currentIndex = startIndex;
 
-    // "far" cards (±2) are visible only from 1440px: 5 cards there, 3 below
     this.desktopMidQuery = globalThis.matchMedia(MEDIA_QUERIES.desktopMid);
     this.desktopMidQuery.addEventListener('change', () => this.updatePositions(), { signal });
 
@@ -37,7 +36,7 @@ export class Carousel {
   /** Cards move right → left: the right neighbour comes to the center */
   next(): void {
     const leftmost = this.track.firstElementChild;
-    if (leftmost) this.track.append(leftmost); // hidden at −4 → wraps to +4
+    if (leftmost) this.track.append(leftmost);
 
     this.currentIndex = wrapIndex(this.currentIndex + 1, this.total);
     this.updatePositions();
@@ -46,7 +45,7 @@ export class Carousel {
   /** Cards move left → right: the left neighbour comes to the center */
   prev(): void {
     const rightmost = this.track.lastElementChild;
-    if (rightmost) this.track.prepend(rightmost); // hidden at +4 → wraps to −4
+    if (rightmost) this.track.prepend(rightmost);
 
     this.currentIndex = wrapIndex(this.currentIndex - 1, this.total);
     this.updatePositions();
@@ -60,7 +59,6 @@ export class Carousel {
 
       const offset = this.offsets[index];
       card.dataset.position = getSlotPosition(offset);
-      // A collapsed card must not be reachable by Tab or read by a screen reader
       card.inert = Math.abs(offset) > visibleDistance;
     }
   }

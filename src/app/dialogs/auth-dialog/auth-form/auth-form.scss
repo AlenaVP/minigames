@@ -1,10 +1,11 @@
 @use 'abstracts/tokens' as *;
+@use 'abstracts/mixins' as *;
 
 .auth-form {
   display: flex;
   flex-direction: column;
   gap: $size-3;
-  animation: auth-form-in 0.25s ease;
+  animation: auth-form-in $duration-moderate $easing-standard;
 
   &[hidden] {
     display: none;
@@ -49,10 +50,15 @@
     font-weight: $font-weight-bold;
     color: $color-on-primary;
     text-decoration: underline;
-    text-underline-offset: 3px;
+    text-underline-offset: $underline-offset;
 
     &:hover {
       color: $color-tertiary;
+    }
+
+    &:disabled {
+      color: $color-disabled-content;
+      cursor: not-allowed;
     }
   }
 
@@ -71,8 +77,8 @@
   }
 
   &__submit {
-    height: 52px;
-    border: 2px solid $color-on-primary;
+    height: $size-p52;
+    border: $border-width-thick solid $color-on-primary;
     border-radius: $corner-small;
     background-color: $color-primary;
     box-shadow: $shadow-level-1;
@@ -81,9 +87,9 @@
     font-weight: $font-weight-bold;
     color: $color-on-primary;
     transition:
-      background-color 0.2s ease,
-      box-shadow 0.1s ease,
-      transform 0.1s ease;
+      background-color $duration-normal $easing-standard,
+      box-shadow $duration-faster $easing-standard,
+      transform $duration-faster $easing-standard;
 
     &:hover {
       background-color: $color-primary-high;
@@ -91,7 +97,32 @@
 
     &:active {
       box-shadow: none;
-      transform: translate(4px, 4px);
+      transform: translate($shadow-offset-1, $shadow-offset-1);
+    }
+
+    // Declared after :hover/:active (same specificity) so a disabled button never reacts
+    &:disabled:not(&--pending) {
+      border-color: $color-disabled-content;
+      background-color: $color-disabled-outline;
+      box-shadow: none;
+      color: $color-disabled-content;
+      transform: none;
+      cursor: not-allowed;
+    }
+
+    // Pending = working, not "invalid": keeps the primary look, shows a spinner and the progress cursor
+    &--pending {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: $size-1;
+      box-shadow: none;
+      transform: translate($shadow-offset-1, $shadow-offset-1);
+      cursor: progress;
+
+      &::before {
+        @include spinner;
+      }
     }
   }
 
@@ -110,7 +141,7 @@
     &::after {
       content: '';
       flex: 1;
-      height: 1px;
+      height: $border-width-thin;
       background-color: $color-outline;
     }
   }
@@ -120,18 +151,44 @@
     align-items: center;
     justify-content: center;
     gap: $size-2;
-    height: 50px;
-    border: 2px solid $color-on-primary;
+    height: $size-p50;
+    border: $border-width-thick solid $color-on-primary;
     border-radius: $corner-small;
     background-color: $color-white;
     font-family: $font-family-primary;
     font-size: $font-size-body-medium;
     font-weight: $font-weight-bold;
     color: $color-on-primary;
-    transition: background-color 0.2s ease;
+    transition: background-color $duration-normal $easing-standard;
 
     &:hover {
       background-color: $color-surface;
+    }
+
+    &:disabled {
+      border-color: $color-disabled-content;
+      background-color: $color-white;
+      color: $color-disabled-content;
+      cursor: not-allowed;
+
+      img {
+        opacity: $opacity-overlay;
+      }
+    }
+
+    // The Google window is open: the button keeps its normal look and shows the spinner instead of the logo
+    &--pending:disabled {
+      border-color: $color-on-primary;
+      color: $color-on-primary;
+      cursor: progress;
+
+      img {
+        display: none;
+      }
+
+      &::before {
+        @include spinner;
+      }
     }
   }
 
@@ -159,25 +216,48 @@
     display: flex;
     align-items: center;
     gap: $size-2;
-    height: 48px;
+    height: $size-6;
     padding-inline: $size-2;
-    border: 2px solid $color-on-primary;
+    border: $border-width-thick solid $color-on-primary;
     border-radius: $corner-small;
     background-color: $color-white;
-    transition: background-color 0.2s ease;
+    transition: background-color $duration-normal $easing-standard;
 
     &:focus-within {
       background-color: $color-surface-low;
     }
 
     &:has(:focus-visible) {
-      outline: 2px solid $color-tertiary;
-      outline-offset: 2px;
+      outline: $focus-ring-width solid $color-tertiary;
+      outline-offset: $focus-ring-offset;
+    }
+
+    // Locked while a request is pending
+    &:has(:disabled) {
+      border-color: $color-disabled-content;
+      color: $color-on-bg;
+      cursor: progress;
+
+      input {
+        cursor: progress;
+      }
+    }
+
+    &:has([aria-invalid='true']) {
+      border-color: $color-error;
+
+      .auth-field__icon {
+        background-color: $color-error;
+      }
     }
   }
 
   &__icon {
     flex-shrink: 0;
+    width: $size-p20;
+    height: $size-p20;
+    background-color: $color-on-bg;
+    mask: var(--icon) center / contain no-repeat;
   }
 
   &__input {
@@ -198,6 +278,13 @@
   &__toggle {
     display: flex;
     flex-shrink: 0;
+  }
+
+  &__error {
+    font-family: $font-family-primary;
+    font-size: $font-size-label-medium;
+    line-height: $line-height-p16;
+    color: $color-error;
   }
 }
 

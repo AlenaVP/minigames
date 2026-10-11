@@ -1,10 +1,18 @@
 /**
  * - aborted: we cancelled the request ourselves (newer request won, component destroyed) — not shown to the user
  * - timeout / network / server / rate-limit / invalid-response: transient — worth a Retry
- * - not-found / bad-request: retrying the same request gives the same answer
+ * - not-found / bad-request / unauthorized: retrying the same request gives the same answer
  */
 export type HttpErrorKind =
-  'aborted' | 'timeout' | 'network' | 'server' | 'rate-limit' | 'invalid-response' | 'not-found' | 'bad-request';
+  | 'aborted'
+  | 'timeout'
+  | 'network'
+  | 'server'
+  | 'rate-limit'
+  | 'invalid-response'
+  | 'not-found'
+  | 'bad-request'
+  | 'unauthorized';
 
 const DEFAULT_MESSAGES: Record<HttpErrorKind, string> = {
   aborted: 'The request was cancelled.',
@@ -15,6 +23,7 @@ const DEFAULT_MESSAGES: Record<HttpErrorKind, string> = {
   'invalid-response': 'The server sent an unexpected response.',
   'not-found': 'The requested data was not found.',
   'bad-request': 'The request was rejected by the server.',
+  unauthorized: 'Please sign in to continue.',
 };
 
 const RETRYABLE_KINDS: ReadonlySet<HttpErrorKind> = new Set([
@@ -37,12 +46,17 @@ export class HttpError extends Error {
     this.status = options.status ?? null;
   }
 
+  /**
+   * For GET (safe, idempotent) requests only: repeating one can never change data.
+   * A failed POST is judged by getMutationOutcome() instead — a repeated toggle would undo itself.
+   */
   get isRetryable(): boolean {
     return RETRYABLE_KINDS.has(this.kind);
   }
 }
 
 export function getHttpErrorKind(status: number): HttpErrorKind {
+  if (status === 401) return 'unauthorized';
   if (status === 404) return 'not-found';
   if (status === 429) return 'rate-limit';
   if (status >= 500) return 'server';

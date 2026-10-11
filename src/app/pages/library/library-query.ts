@@ -35,7 +35,6 @@ export function parseLibraryQuery(query: URLSearchParams): ParsedLibraryQuery {
 
   const page = query.get(LIBRARY_QUERY.page);
   if (page !== null) {
-    // Only whole positive numbers: "2" yes; "0", "-1", "1.5", "abc", "" no (the API rejects page < 1)
     if (/^\d+$/.test(page) && Number(page) >= 1) state.page = Number(page);
     else issues.push(`Invalid page "${page}" — showing page 1.`);
   }

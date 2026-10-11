@@ -6,7 +6,7 @@
   position: relative;
   display: flex;
   align-items: center;
-  height: 331px;
+  height: $size-p331;
   padding-inline: $size-2;
   overflow: hidden;
 
@@ -16,13 +16,13 @@
   background-repeat: no-repeat;
 
   @include tablet {
-    height: 383px;
+    height: $size-p383;
     padding-inline: $size-5;
   }
 
   @include desktop {
     @include content-width;
-    height: 627px;
+    height: $size-p627;
     padding-inline: $size-15;
     background-size: 120%;
     background-position: center 75%;
@@ -33,29 +33,29 @@
     position: absolute;
     inset: 0;
     background-color: $color-bg-footer;
-    opacity: 0.55;
+    opacity: $opacity-overlay;
   }
 
   &__card {
     position: relative;
-    z-index: 1;
-    width: 343px;
+    z-index: $z-index-raised;
+    width: $size-p343;
     max-width: 100%;
     padding: $size-3;
     background-color: $color-surface-low;
-    border: 2px solid $color-on-primary;
+    border: $border-width-thick solid $color-on-primary;
     border-radius: $corner-extra-large;
     box-shadow: $shadow-level-1;
     color: $color-on-primary;
 
     @include tablet {
-      width: 480px;
+      width: $size-p480;
       box-shadow: $shadow-level-2;
     }
 
     @include desktop {
-      width: 640px;
-      min-height: 403px;
+      width: $size-p640;
+      min-height: $size-p403;
       padding: $size-6;
       box-shadow: $shadow-level-3;
     }
@@ -88,13 +88,13 @@
     @include desktop {
       margin: $size-3 0;
       font-size: $font-size-body-large;
-      line-height: 1.5;
+      line-height: $line-height-relaxed;
     }
   }
 
   &__button {
     padding: $size-1 $size-2;
-    border: 2px solid $color-on-primary;
+    border: $border-width-thick solid $color-on-primary;
     border-radius: $corner-small;
     background-color: $color-primary;
     color: $color-on-primary;
@@ -102,7 +102,7 @@
     font-weight: $font-weight-bold;
     font-size: $font-size-label-medium;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: background-color $duration-normal $easing-standard;
 
     @include tablet {
       padding: $btn-medium-y $btn-medium-x;

@@ -11,7 +11,6 @@ interface FeaturedCarouselOptions {
   onGameDetails: (slug: string) => void;
 }
 
-// The first featured game (the API sorts them by rating) starts in the center; its neighbours wrap around
 const START_INDEX = 0;
 const AUTOPLAY_INTERVAL_MS = 4000;
 /** With fewer cards there is nothing to scroll through */
@@ -36,7 +35,6 @@ export class FeaturedCarousel extends ComponentBase {
   constructor(options: FeaturedCarouselOptions) {
     super();
     this.options = options;
-    // 2-3-1: one step right → left every 4 s
     this.autoplay = new PausableTimer(() => this.autoplayStep(), AUTOPLAY_INTERVAL_MS);
   }
 
@@ -65,7 +63,6 @@ export class FeaturedCarousel extends ComponentBase {
     const track = viewport.querySelector<HTMLUListElement>('.new-games__track');
     if (!track) return viewport;
 
-    // All cards, already in the visual order: offsets −4 … +4 around START_INDEX
     for (const offset of getSlotOffsets(games.length)) {
       const gameIndex = wrapIndex(START_INDEX + offset, games.length);
 
@@ -92,10 +89,8 @@ export class FeaturedCarousel extends ComponentBase {
     attachSwipe(
       viewport,
       {
-        // press and hold → paused; released on the spot → the REMAINING time runs out
         onPress: () => this.pause('press'),
         onRelease: () => this.resume('press'),
-        // a real swipe → a step and a NEW 4 s countdown
         onSwipe: (direction) => {
           if (direction === 'left') this.next();
           else this.prev();
@@ -105,16 +100,12 @@ export class FeaturedCarousel extends ComponentBase {
       signal,
     );
 
-    // No steps "in the background" while the tab is hidden
     document.addEventListener(
       'visibilitychange',
       () => (document.hidden ? this.pause('hidden-tab') : this.resume('hidden-tab')),
       { signal },
     );
 
-    // Any open dialog (Game Details, Auth) freezes the slider behind it: when it closes,
-    // focus returns to the card that opened it — that card must still be where it was.
-    // `toggle` does not bubble, so it is caught in the capture phase on the document
     document.addEventListener(
       'toggle',
       (event) => {
@@ -128,18 +119,16 @@ export class FeaturedCarousel extends ComponentBase {
 
   private autoplayStep(): void {
     this.carousel?.next();
-    this.autoplay.start(); // one-shot timer → start the next countdown
+    this.autoplay.start();
   }
 
   private startAutoplay(): void {
     if (document.hidden) this.pauseReasons.add('hidden-tab');
-    // Data may arrive while a dialog is already open (e.g. a slow network)
     if (document.querySelector('dialog:modal')) this.pauseReasons.add('dialog');
 
     this.autoplay.start();
     if (this.pauseReasons.size > 0) this.autoplay.pause();
 
-    // Destroyed (new state of the area, or the router left the page) → the timer must not step a detached track
     this.destroySignal.addEventListener('abort', () => this.autoplay.stop());
   }
 

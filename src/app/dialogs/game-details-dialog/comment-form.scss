@@ -1,9 +1,9 @@
 @use 'abstracts/tokens' as *;
 @use 'abstracts/mixins' as *;
 
-$control-size: 40px;
-$input-min-height: 48px;
-$input-max-height: 88px;
+$control-size: $size-5;
+$input-min-height: $size-6;
+$input-max-height: $size-11;
 
 .comment-form {
   display: grid;
@@ -21,13 +21,22 @@ $input-max-height: 88px;
     place-items: center;
     width: $control-size;
     height: $control-size;
-    border: 1px solid $color-on-primary;
+    border: $border-width-thin solid $color-on-primary;
     border-radius: $corner-full;
     background-color: $color-primary;
     font-family: $font-family-primary;
     font-size: $font-size-label-large;
     font-weight: $font-weight-bold;
     color: $color-on-primary;
+
+    // A guest has no name to take a letter from: the generic person icon
+    &--guest::before {
+      content: '';
+      width: $size-2;
+      height: $size-2;
+      background-color: currentColor;
+      mask: url('@assets/icons/person.svg') center / contain no-repeat;
+    }
   }
 
   &__input {
@@ -38,16 +47,16 @@ $input-max-height: 88px;
     padding: $size-1 $size-2;
     overflow-y: auto;
     resize: none;
-    border: 1px solid $color-on-primary;
+    border: $border-width-thin solid $color-on-primary;
     border-radius: $corner-small;
     background-color: $color-white;
     font-family: $font-family-primary;
     font-size: $font-size-body-small;
-    line-height: 20px;
+    line-height: $line-height-p20;
     color: $color-on-primary;
     transition:
-      background-color 0.2s ease,
-      box-shadow 0.2s ease;
+      background-color $duration-normal $easing-standard,
+      box-shadow $duration-normal $easing-standard;
 
     &::placeholder {
       color: $color-on-bg-low;
@@ -58,6 +67,20 @@ $input-max-height: 88px;
       background-color: $color-surface-low;
       box-shadow: $shadow-inset-p1;
     }
+
+    // Guest: locked (RSS-QS-4-2-2 access control)
+    &:disabled {
+      border-color: $color-disabled-content;
+      background-color: $color-disabled-outline;
+      cursor: not-allowed;
+    }
+  }
+
+  // Sending: the text stays readable as it was typed, the form shows it is busy
+  &--pending &__input:disabled {
+    border-color: $color-on-primary;
+    background-color: $color-white;
+    cursor: progress;
   }
 
   &__submit {
@@ -68,7 +91,7 @@ $input-max-height: 88px;
     border-radius: $corner-small;
     background-color: $color-on-primary;
     color: $color-white;
-    transition: background-color 0.2s ease;
+    transition: background-color $duration-normal $easing-standard;
 
     &:not(:disabled) {
       @include hover {
@@ -83,8 +106,23 @@ $input-max-height: 88px;
     }
 
     &:focus-visible {
-      outline: 2px solid $color-tertiary;
-      outline-offset: 2px;
+      outline: $focus-ring-width solid $color-tertiary;
+      outline-offset: $focus-ring-offset;
+    }
+
+    // Sending: the arrow gives way to a spinner; the button keeps its dark look (working, not unavailable)
+    .comment-form--pending &:disabled {
+      background-color: $color-on-primary;
+      color: $color-white;
+      cursor: progress;
+
+      svg {
+        display: none;
+      }
+
+      &::before {
+        @include spinner;
+      }
     }
   }
 }

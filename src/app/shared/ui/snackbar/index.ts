@@ -73,7 +73,6 @@ export class Snackbar extends ComponentBase {
     if (!this.element) return NOOP_HANDLE;
     this.relocate();
 
-    // The same message again (e.g. several requests failed offline) → one item, its timer restarts
     const key = `${variant}:${text}`;
     const existing = this.items.find((item) => item.key === key);
     if (existing) {
@@ -84,7 +83,6 @@ export class Snackbar extends ComponentBase {
     const element = this.createItem(variant, text);
     const item: ActiveItem = { key, element, timer: new PausableTimer(() => this.dismiss(item), duration) };
 
-    // Hover / keyboard focus pauses the countdown, so the text can be read or the close button reached
     element.addEventListener('pointerenter', () => item.timer.pause());
     element.addEventListener('pointerleave', () => item.timer.resume());
     element.addEventListener('focusin', () => item.timer.pause());
@@ -112,10 +110,8 @@ export class Snackbar extends ComponentBase {
     container.popover = 'manual';
     container.setAttribute('role', 'region');
     container.setAttribute('aria-label', 'Notifications');
-    // One persistent live region: every appended message is announced without stealing focus
     container.setAttribute('aria-live', 'polite');
 
-    // A dialog opened or closed → follow it (see the class comment)
     document.addEventListener(
       'toggle',
       (event) => {
@@ -138,7 +134,6 @@ export class Snackbar extends ComponentBase {
     const host = document.querySelector('dialog:modal') ?? document.body;
     if (this.element.parentElement === host && this.element.matches(':popover-open')) return;
 
-    // Moving an element out of the document closes its popover — open it again in the new place
     host.append(this.element);
     this.element.showPopover();
   }
@@ -165,7 +160,6 @@ export class Snackbar extends ComponentBase {
     this.items = this.items.filter((active) => active !== item);
     item.element.classList.add('snackbar__item--leaving');
 
-    // getAnimations() also covers transitions; with prefers-reduced-motion there are none → removed at once
     void Promise.allSettled(item.element.getAnimations().map((animation) => animation.finished)).then(() =>
       item.element.remove(),
     );

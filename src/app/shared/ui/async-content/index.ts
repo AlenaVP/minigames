@@ -43,7 +43,6 @@ export class AsyncContent<T> extends ComponentBase {
 
   mount(parent: HTMLElement): void {
     super.mount(parent);
-    // Only now the area is in the DOM, so the skeleton has a place to go
     const { request } = this.options;
     if (request) void this.load(request);
   }
@@ -61,14 +60,12 @@ export class AsyncContent<T> extends ComponentBase {
 
     const area = document.createElement('div');
     area.classList.add('async-content');
-    // Focus target when the focused element (e.g. Retry) disappears with the old state
     area.tabIndex = -1;
 
     this.loader = new ResourceLoader<T>({
       destroySignal: this.destroySignal,
       isEmpty: this.options.isEmpty,
       onState: (state) => this.applyState(state),
-      // "Not found" is an answer, not a failure: the area itself explains it, no toast
       onError: (error) => {
         if (error.kind !== 'not-found') this.errorToast = snackbar.error(`Couldn't load ${label}. ${error.message}`);
       },
@@ -117,7 +114,6 @@ export class AsyncContent<T> extends ComponentBase {
 
   private createSkeleton(): HTMLElement {
     const skeleton = this.options.renderSkeleton();
-    // inert, not only aria-hidden: a placeholder may reuse real markup with buttons, which must not get focus
     skeleton.inert = true;
 
     const wrapper = document.createElement('div');

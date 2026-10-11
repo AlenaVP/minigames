@@ -20,6 +20,9 @@ export abstract class DialogBase extends ComponentBase {
   protected dialog: HTMLDialogElement | null = null;
   private readonly config: DialogConfig;
   private isPointerDownOnBackdrop = false;
+  private isDismissible = true;
+  /** The next `close` event comes from hide(): not a user's close, so onClose is not called */
+  private isHiding = false;
 
   constructor(config: DialogConfig) {
     super();
@@ -34,6 +37,29 @@ export abstract class DialogBase extends ComponentBase {
 
   close(): void {
     this.dialog?.close();
+  }
+
+  /**
+   * false = the user cannot close the dialog (✕, backdrop, Esc) — e.g. while a request is pending.
+   * close() from code still works (the URL can always close a dialog).
+   *
+   * Esc is blocked twice: closedby="none" (Chrome 134+: no close request at all) and preventDefault on
+   * keydown/cancel — Chrome lets a page cancel the "cancel" event only once without a new user activation.
+   */
+  protected setDismissible(isDismissible: boolean): void {
+    this.isDismissible = isDismissible;
+    if (isDismissible) this.dialog?.removeAttribute('closedby');
+    else this.dialog?.setAttribute('closedby', 'none');
+  }
+
+  /**
+   * Closes without reporting it to config.onClose: the dialog only steps aside for another one
+   * (Game Details under Auth) and the URL must stay as it is.
+   */
+  protected hide(): void {
+    if (!this.dialog?.open) return;
+    this.isHiding = true;
+    this.dialog.close();
   }
 
   protected show(): void {
@@ -52,7 +78,13 @@ export abstract class DialogBase extends ComponentBase {
     this.dialog = dialog;
     this.renderContent(dialog);
     this.bindCloseTriggers(dialog);
-    dialog.addEventListener('close', () => this.config.onClose?.());
+    dialog.addEventListener('close', () => {
+      if (this.isHiding) {
+        this.isHiding = false;
+        return;
+      }
+      this.config.onClose?.();
+    });
 
     return dialog;
   }
@@ -62,7 +94,17 @@ export abstract class DialogBase extends ComponentBase {
       this.isPointerDownOnBackdrop = this.isBackdropEvent(event, dialog);
     });
 
+    dialog.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !this.isDismissible) event.preventDefault();
+    });
+
+    dialog.addEventListener('cancel', (event) => {
+      if (!this.isDismissible) event.preventDefault();
+    });
+
     dialog.addEventListener('click', (event) => {
+      if (!this.isDismissible) return;
+
       const isBackdropClick = this.isPointerDownOnBackdrop && this.isBackdropEvent(event, dialog);
       const isCloseButton = event.target instanceof Element && event.target.closest('[data-dialog-close]');
 

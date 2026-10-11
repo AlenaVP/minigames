@@ -12,7 +12,7 @@
     font-family: $font-family-primary;
     font-size: $font-size-body-medium;
     font-weight: $font-weight-bold;
-    line-height: 20px;
+    line-height: $line-height-p20;
     color: $color-on-primary;
   }
 
@@ -28,14 +28,14 @@
     grid-template-columns: auto minmax(0, 1fr) auto auto;
     align-items: center;
     column-gap: $size-1;
-    height: 48px;
+    height: $size-6;
     padding-inline: $size-2;
     border-radius: $corner-small;
     background-color: $color-white;
     font-family: $font-family-primary;
     color: $color-on-primary;
 
-    @container game-details (min-width: 560px) {
+    @container game-details (min-width: #{$size-p560}) {
       column-gap: $size-2;
     }
   }
@@ -73,7 +73,6 @@
     color: $color-on-bg;
   }
 
-  // `display: flex` above would beat the browser's [hidden] rule
   &__list[hidden] {
     display: none;
   }

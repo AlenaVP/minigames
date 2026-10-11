@@ -41,7 +41,6 @@ function queryKeyRank(key: string): number {
 }
 
 export function sortQuery(query: URLSearchParams): URLSearchParams {
-  // The sort is stable: unknown keys keep their own order at the end
   return new URLSearchParams([...query.entries()].toSorted(([a], [b]) => queryKeyRank(a) - queryKeyRank(b)));
 }
 

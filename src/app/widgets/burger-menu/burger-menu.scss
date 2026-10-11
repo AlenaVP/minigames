@@ -4,11 +4,11 @@
 .burger-menu {
   position: fixed;
   inset: 0;
-  z-index: 100;
+  z-index: $z-index-drawer;
   background-color: $color-bg-footer;
   overflow: hidden;
   transform: translateX(100%);
-  transition: transform 0.3s ease;
+  transition: transform $duration-slow $easing-standard;
 
   &--open {
     transform: translateX(0);
@@ -42,8 +42,8 @@
 
   &__logo-icon {
     display: block;
-    width: 32px;
-    height: 32px;
+    width: $size-4;
+    height: $size-4;
   }
 
   &__logo-text {
@@ -57,14 +57,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: $size-4;
+    height: $size-4;
     padding: 0;
     border: none;
     border-radius: $corner-small;
     background-color: $color-bg-footer-low;
     color: $color-white;
-    font-size: 20px;
+    font-size: $font-size-headline-small;
     line-height: 1;
     cursor: pointer;
   }
@@ -96,6 +96,32 @@
     flex-direction: column;
     gap: $size-2;
     margin-top: auto;
+
+    // The author's display: flex beats the browser's [hidden] rule
+    &[hidden] {
+      display: none;
+    }
+  }
+
+  // Not in the mockup (its signed-in menu has only Log Out): avatar + name, styled like the header's profile
+  &__profile {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    align-items: center;
+    gap: $size-1;
+    min-width: 0;
+    margin: 0;
+  }
+
+  &__user-name {
+    overflow: hidden;
+    font-family: $font-family-primary;
+    font-size: $font-size-body-medium;
+    font-weight: $font-weight-bold;
+    color: $color-white;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   &__auth-btn {
@@ -104,13 +130,18 @@
     font-weight: $font-weight-bold;
     padding: $btn-medium-y $btn-medium-x;
     border-radius: $corner-small;
-    border: 2px solid $color-white;
+    border: $border-width-thick solid $color-white;
     cursor: pointer;
 
     &--outlined {
       background-color: transparent;
       border-color: $color-primary;
       color: $color-white;
+    }
+
+    // Guidebook: the signed-in menu's Log Out has a white outline
+    &--logout {
+      border-color: $color-white;
     }
 
     &--filled {

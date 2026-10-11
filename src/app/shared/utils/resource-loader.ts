@@ -64,7 +64,6 @@ export class ResourceLoader<T> {
 
     try {
       const data = await request(controller.signal);
-      // A newer load() or abort() happened while we were waiting: this answer is stale
       if (controller !== this.controller) return;
 
       const isEmpty = this.options.isEmpty?.(data) ?? false;

@@ -3,20 +3,31 @@ import { PRIMARY_NAV_LINKS } from '@app/core/constants/nav-links';
 import type { RouteId } from '@app/core/constants/routes';
 import { markActiveNavLinks, navLinkAttributes, routeLinkAttributes } from '@app/core/router';
 import type { AuthMode } from '@app/shared/types/auth';
+import type { AppSession, SessionSource } from '@shared/types/session';
+import { UserAvatar } from '@shared/ui/user-avatar';
 import brandLogoUrl from '@assets/icons/brand-logo.svg';
 import './burger-menu.scss';
 
 interface BurgerMenuOptions {
+  /** Which controls to show at the bottom: guest (Log In / Sign Up) or the signed-in user (profile, Log Out) */
+  session: SessionSource;
   onAuthClick: (mode: AuthMode) => void;
+  onLogout: () => void;
 }
 
 export class BurgerMenu extends ComponentBase {
   private options: BurgerMenuOptions;
   private isOpen = false;
+  private readonly avatar = new UserAvatar({ variant: 'accent' });
 
   constructor(options: BurgerMenuOptions) {
     super();
     this.options = options;
+  }
+
+  mount(parent: HTMLElement): void {
+    super.mount(parent);
+    this.options.session.onChange(({ session }) => this.showSession(session), this.destroySignal);
   }
 
   setActiveRoute(route: RouteId): void {
@@ -54,12 +65,24 @@ export class BurgerMenu extends ComponentBase {
           </ul>
         </nav>
 
-        <div class="burger-menu__actions">
+        <div class="burger-menu__actions burger-menu__actions--guest">
           <button type="button" class="burger-menu__auth-btn burger-menu__auth-btn--outlined" data-auth="login">Log In</button>
           <button type="button" class="burger-menu__auth-btn burger-menu__auth-btn--filled" data-auth="signup">Sign Up</button>
         </div>
+
+        <!-- The mockup's signed-in menu has only Log Out; RSS-QS-4-3-1 asks for the profile here too -->
+        <div class="burger-menu__actions burger-menu__actions--user" hidden>
+          <p class="burger-menu__profile">
+            <span class="visually-hidden">Signed in as</span>
+            <span class="burger-menu__user-name"></span>
+          </p>
+          <button type="button" class="burger-menu__auth-btn burger-menu__auth-btn--outlined burger-menu__auth-btn--logout">Log Out</button>
+        </div>
       </div>
     `;
+
+    const profile = dialog.querySelector<HTMLElement>('.burger-menu__profile');
+    if (profile) this.mountChild(this.avatar, profile);
 
     this.bindEvents(dialog);
     return dialog;
@@ -93,10 +116,28 @@ export class BurgerMenu extends ComponentBase {
     document.body.style.overflow = 'hidden';
   }
 
+  private showSession(session: AppSession | null): void {
+    const menu = this.element;
+    if (!menu) return;
+
+    const guestActions = menu.querySelector<HTMLElement>('.burger-menu__actions--guest');
+    const userActions = menu.querySelector<HTMLElement>('.burger-menu__actions--user');
+    const nameLabel = menu.querySelector<HTMLElement>('.burger-menu__user-name');
+    if (!guestActions || !userActions || !nameLabel) return;
+
+    guestActions.hidden = session !== null;
+    userActions.hidden = session === null;
+
+    // textContent, never innerHTML: displayName comes from the identity provider and the editable localStorage record
+    nameLabel.textContent = session?.displayName ?? '';
+    nameLabel.title = session?.displayName ?? '';
+    this.avatar.setProfile(session ? { name: session.displayName, photoUrl: session.avatarUrl } : null);
+  }
+
   private bindEvents(dialog: HTMLElement): void {
     dialog.querySelector('.burger-menu__close')?.addEventListener('click', () => this.close());
 
-    const authButtons = dialog.querySelectorAll<HTMLButtonElement>('.burger-menu__auth-btn');
+    const authButtons = dialog.querySelectorAll<HTMLButtonElement>('.burger-menu__auth-btn[data-auth]');
 
     for (const button of authButtons) {
       button.addEventListener('click', () => {
@@ -105,6 +146,12 @@ export class BurgerMenu extends ComponentBase {
         this.options.onAuthClick(mode);
       });
     }
+
+    // Like every other action in the menu, Log Out closes it: the page underneath shows the guest header at once
+    dialog.querySelector('.burger-menu__auth-btn--logout')?.addEventListener('click', () => {
+      this.close();
+      this.options.onLogout();
+    });
 
     dialog.addEventListener('click', (event) => {
       if (event.target instanceof Element && event.target.closest('a')) this.close();

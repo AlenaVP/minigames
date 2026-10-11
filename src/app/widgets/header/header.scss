@@ -4,23 +4,24 @@
 
 .header {
   background-color: $color-bg;
-  border-bottom: 2px solid $color-on-primary;
+  border-bottom: $border-width-thick solid $color-on-primary;
 
   &__inner {
     @include content-width;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 64px;
+    gap: $size-2;
+    height: $size-8;
     padding-inline: $size-2;
 
     @include tablet {
-      height: 72px;
+      height: $size-9;
       padding-inline: $size-5;
     }
 
     @include desktop {
-      height: 85px;
+      height: $size-p85;
       padding-inline: $size-10;
     }
   }
@@ -29,6 +30,7 @@
     display: flex;
     align-items: center;
     gap: $size-2;
+    min-width: 0;
 
     @include desktop {
       gap: $size-4;
@@ -37,6 +39,7 @@
 
   &__logo {
     display: flex;
+    flex-shrink: 0;
     align-items: center;
     gap: $size-1;
     text-decoration: none;
@@ -44,8 +47,8 @@
 
   &__logo-icon {
     display: block;
-    width: 32px;
-    height: 32px;
+    width: $size-4;
+    height: $size-4;
   }
 
   &__logo-text {
@@ -59,9 +62,9 @@
     }
   }
 
-  // --- navigation ---
   &__nav {
     display: none;
+    flex-shrink: 0;
 
     @include desktop {
       display: block;
@@ -99,6 +102,43 @@
     display: flex;
     align-items: center;
     gap: $size-2;
+
+    // The author's display: flex beats the browser's [hidden] rule
+    &[hidden] {
+      display: none;
+    }
+
+    // Guidebook: links —32— name + avatar —32— Log Out. min-width: 0 lets a long name shrink instead of overflowing
+    &--user {
+      min-width: 0;
+
+      @include desktop {
+        gap: $size-4;
+      }
+    }
+  }
+
+  &__profile {
+    display: none;
+    min-width: 0;
+    margin: 0;
+
+    @include desktop {
+      display: flex;
+      align-items: center;
+      gap: $size-1;
+    }
+  }
+
+  &__user-name {
+    max-width: $size-p200;
+    overflow: hidden;
+    font-family: $font-family-primary;
+    font-size: $font-size-body-medium;
+    font-weight: $font-weight-bold;
+    color: $color-on-primary;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   &__auth-btn {
@@ -108,11 +148,10 @@
     font-weight: $font-weight-bold;
     padding: $btn-medium-y $btn-medium-x;
     border-radius: $corner-small;
-    border: 2px solid $color-on-primary;
+    border: $border-width-thick solid $color-on-primary;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: background-color $duration-normal $easing-standard;
 
-    // Sign Up appears on tablet (768px)
     &--filled {
       background-color: $color-primary;
       color: $color-on-primary;
@@ -132,7 +171,6 @@
       }
     }
 
-    // Log In appears on desktop
     &--outlined {
       background-color: transparent;
       color: $color-on-primary;
@@ -147,17 +185,27 @@
         background-color: $color-surface;
       }
     }
+
+    // Guidebook: Log Out takes the place of Sign Up on tablets and stays on desktop
+    &--logout {
+      flex-shrink: 0;
+
+      @include tablet {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
   }
 
-  // --- Burger is visible on mobile and tablet, but is hidden on desktop ---
   &__burger {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 4px;
-    width: 32px;
-    height: 32px;
+    gap: $size-05;
+    width: $size-4;
+    height: $size-4;
     padding: 0;
     border: none;
     background: none;
@@ -170,8 +218,8 @@
 
   &__burger-line {
     display: block;
-    width: 16px;
-    height: 2px;
+    width: $size-2;
+    height: $border-width-thick;
     background-color: $color-on-primary;
   }
 }
