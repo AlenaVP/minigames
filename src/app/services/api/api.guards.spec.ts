@@ -2,11 +2,14 @@ import { describe, expect, it } from 'vitest';
 import { makeCategory, makeComment, makeGameDetails, makeGameSummary, makeLeaderboardEntry } from '@testing/fixtures';
 import {
   isCategoriesResponse,
+  isCommentLikeResponse,
   isCommentsResponse,
+  isFavoriteResponse,
   isFeaturedGamesResponse,
   isGameDetailsResponse,
   isGamesPageResponse,
   isLeaderboardResponse,
+  isPostedCommentResponse,
 } from './api.guards';
 
 const pageMeta = { page: 1, limit: 6, totalItems: 1, totalPages: 1 };
@@ -41,5 +44,17 @@ describe('API response guards', () => {
 
   it('reject an error body that came with a 200 status', () => {
     expect(isCategoriesResponse({ error: 'Something went wrong' })).toBe(false);
+  });
+
+  it('accept the mutation answers from Swagger and reject a wrong field type', () => {
+    expect(isFavoriteResponse({ data: { gameSlug: 'tukoni-forest-keepers', isFavorited: true, likesCount: 31_201 } })).toBe(
+      true,
+    );
+    expect(isCommentLikeResponse({ data: { isLikedByCurrentUser: false, likesCount: 13 } })).toBe(true);
+    expect(isPostedCommentResponse({ data: makeComment() })).toBe(true);
+
+    expect(isFavoriteResponse({ data: { gameSlug: 'x', isFavorited: 'true', likesCount: 1 } })).toBe(false);
+    expect(isCommentLikeResponse({ data: { likesCount: 13 } })).toBe(false);
+    expect(isPostedCommentResponse({ error: 'Game not found: invalid-slug' })).toBe(false);
   });
 });
