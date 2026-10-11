@@ -32,6 +32,11 @@ export default mergeConfig(
           // Interfaces and type aliases only: erased at compile time, there is no runtime code to cover
           'src/app/shared/types/**',
         ],
+        // RSS-QS-4-4-4: `npm run test:coverage` fails (non-zero exit code) when the aggregate statement coverage
+        // of the included files drops below 80% — new code has to come with its tests
+        thresholds: {
+          statements: 80,
+        },
       },
     },
   }),
