@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { AVATAR_COLOR_COUNT, getAvatarColorIndex, getInitial, getPlayerInitials } from './avatar';
+import { AVATAR_COLOR_COUNT, getAvatarColorIndex, getInitial, getPlayerInitials, getProfileInitials } from './avatar';
 
 describe('getInitial', () => {
   it('takes the first character of the trimmed name in upper case', () => {
@@ -21,6 +21,40 @@ describe('getPlayerInitials', () => {
     ['42', '4'],
   ])('%s → %s', (name, expected) => {
     expect(getPlayerInitials(name)).toBe(expected);
+  });
+});
+
+describe('getProfileInitials', () => {
+  it.each([
+    ['John Doe', 'JD'],
+    ['  alena  ', 'A'],
+    ['Mary Ann Smith', 'MA'],
+    ['john\u00A0doe', 'JD'],
+    ['42 gamer', '4G'],
+    ['Żaneta Łoś', 'ŻŁ'],
+    ['Алёна Павлова', 'АП'],
+    ['山田 太郎', '山太'],
+    ['(Bob) Ray', 'BR'],
+    ['— John', 'J'],
+  ])('%s → %s', (name, expected) => {
+    expect(getProfileInitials(name)).toBe(expected);
+  });
+
+  it('splits on whitespace only — unlike nickname initials, camelCase and "_" stay one word', () => {
+    expect(getProfileInitials('MatchMaster')).toBe('M');
+    expect(getProfileInitials('alex_pro')).toBe('A');
+  });
+
+  it('returns one code point per word, even for astral letters and letters that uppercase to two', () => {
+    expect(getProfileInitials('𝒜da ßeta')).toBe('𝒜S');
+  });
+
+  it('composes a letter typed as base + combining accent before taking it', () => {
+    expect(getProfileInitials('e\u0301lise')).toBe('É');
+  });
+
+  it.each(['', ' '.repeat(3), '🙂', '!!! ???'])('gives "" when there is no letter or digit: %j', (name) => {
+    expect(getProfileInitials(name)).toBe('');
   });
 });
 

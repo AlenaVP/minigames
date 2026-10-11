@@ -96,6 +96,32 @@
     flex-direction: column;
     gap: $size-2;
     margin-top: auto;
+
+    // The author's display: flex beats the browser's [hidden] rule
+    &[hidden] {
+      display: none;
+    }
+  }
+
+  // Not in the mockup (its signed-in menu has only Log Out): avatar + name, styled like the header's profile
+  &__profile {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    align-items: center;
+    gap: $size-1;
+    min-width: 0;
+    margin: 0;
+  }
+
+  &__user-name {
+    overflow: hidden;
+    font-family: $font-family-primary;
+    font-size: $font-size-body-medium;
+    font-weight: $font-weight-bold;
+    color: $color-white;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   &__auth-btn {
@@ -111,6 +137,11 @@
       background-color: transparent;
       border-color: $color-primary;
       color: $color-white;
+    }
+
+    // Guidebook: the signed-in menu's Log Out has a white outline
+    &--logout {
+      border-color: $color-white;
     }
 
     &--filled {
