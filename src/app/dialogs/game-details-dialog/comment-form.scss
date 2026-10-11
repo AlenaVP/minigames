@@ -28,6 +28,15 @@ $input-max-height: $size-11;
     font-size: $font-size-label-large;
     font-weight: $font-weight-bold;
     color: $color-on-primary;
+
+    // A guest has no name to take a letter from: the generic person icon
+    &--guest::before {
+      content: '';
+      width: $size-2;
+      height: $size-2;
+      background-color: currentColor;
+      mask: url('@assets/icons/person.svg') center / contain no-repeat;
+    }
   }
 
   &__input {
@@ -58,6 +67,20 @@ $input-max-height: $size-11;
       background-color: $color-surface-low;
       box-shadow: $shadow-inset-p1;
     }
+
+    // Guest: locked (RSS-QS-4-2-2 access control)
+    &:disabled {
+      border-color: $color-disabled-content;
+      background-color: $color-disabled-outline;
+      cursor: not-allowed;
+    }
+  }
+
+  // Sending: the text stays readable as it was typed, the form shows it is busy
+  &--pending &__input:disabled {
+    border-color: $color-on-primary;
+    background-color: $color-white;
+    cursor: progress;
   }
 
   &__submit {
@@ -85,6 +108,21 @@ $input-max-height: $size-11;
     &:focus-visible {
       outline: $focus-ring-width solid $color-tertiary;
       outline-offset: $focus-ring-offset;
+    }
+
+    // Sending: the arrow gives way to a spinner; the button keeps its dark look (working, not unavailable)
+    .comment-form--pending &:disabled {
+      background-color: $color-on-primary;
+      color: $color-white;
+      cursor: progress;
+
+      svg {
+        display: none;
+      }
+
+      &::before {
+        @include spinner;
+      }
     }
   }
 }

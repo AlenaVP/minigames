@@ -5,10 +5,12 @@ import { EmptyState } from '@shared/ui/empty-state';
 import type { CommentsPage, GameComment } from '@shared/types/game-details';
 import { CommentForm } from './comment-form';
 import { CommentItem } from './comment-item';
+import type { GameDetailsAccess } from './game-details-access';
 import './comments.scss';
 
 interface CommentsSectionOptions {
   slug: string;
+  access: GameDetailsAccess;
   /** The moment "ago" is counted from; the real clock by default */
   now?: Date;
 }
@@ -16,18 +18,23 @@ interface CommentsSectionOptions {
 const TITLE_ID = 'game-comments-title';
 /** 3-3-2: the 3 latest comments; the heading still shows the TOTAL count */
 const COMMENTS_LIMIT = 3;
-const CURRENT_USER_INITIAL = 'U';
 
 export class CommentsSection extends ComponentBase {
   private readonly options: CommentsSectionOptions;
+  private area: AsyncContent<CommentsPage> | null = null;
 
   constructor(options: CommentsSectionOptions) {
     super();
     this.options = options;
   }
 
+  /** The latest comments again — after a comment was posted (or may have been) */
+  reload(): void {
+    void this.area?.load((signal) => this.requestComments(signal));
+  }
+
   protected render(): HTMLElement {
-    const { slug, now } = this.options;
+    const { slug, access, now } = this.options;
 
     const section = document.createElement('section');
     section.classList.add('comments');
@@ -36,12 +43,12 @@ export class CommentsSection extends ComponentBase {
 
     const title = section.querySelector('.comments__title');
 
-    this.mountChild(new CommentForm({ userInitial: CURRENT_USER_INITIAL }), section);
+    this.mountChild(new CommentForm({ slug, access, onListChanged: () => this.reload() }), section);
 
-    this.mountChild(
+    this.area = this.mountChild(
       new AsyncContent<CommentsPage>({
         label: 'comments',
-        request: (signal) => gamesApi.getComments(slug, { limit: COMMENTS_LIMIT, sort: 'newest' }, signal),
+        request: (signal) => this.requestComments(signal),
         isEmpty: ({ comments }) => comments.length === 0,
         renderSkeleton: () => renderCommentsSkeleton(COMMENTS_LIMIT),
         renderContent: ({ comments }) => new CommentList({ comments, now }),
@@ -55,6 +62,12 @@ export class CommentsSection extends ComponentBase {
     );
 
     return section;
+  }
+
+  /** Signed in: with the email, so each comment's isLikedByCurrentUser is about this user; a guest's has none */
+  private requestComments(signal: AbortSignal): Promise<CommentsPage> {
+    const userEmail = this.options.access.session.current?.email;
+    return gamesApi.getComments(this.options.slug, { limit: COMMENTS_LIMIT, sort: 'newest', userEmail }, signal);
   }
 }
 

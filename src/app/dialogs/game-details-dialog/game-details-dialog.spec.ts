@@ -65,7 +65,11 @@ describe('GameDetailsDialog', () => {
     dialog.open('tiny-glade');
     await loaded();
 
-    expect(getComments).toHaveBeenCalledWith('tiny-glade', { limit: 3, sort: 'newest' }, expect.any(AbortSignal));
+    expect(getComments).toHaveBeenCalledWith(
+      'tiny-glade',
+      { limit: 3, sort: 'newest', userEmail: undefined },
+      expect.any(AbortSignal),
+    );
     expect(textOf(query('.comments__title'))).toBe('Comments (12)');
     expect(queryAll('.comments__list .comment')).toHaveLength(1);
   });
@@ -102,19 +106,37 @@ describe('GameDetailsDialog', () => {
     expect(textOf(query('.top-records__player'))).toContain('CozyGamer');
   });
 
-  it('opens Auth over the game for a guest favorite, and still only explains likes and comments', async () => {
+  it('opens Auth over the game for a guest favorite, explains likes, and locks the comment form', async () => {
     dialog.open('tiny-glade');
     await loaded();
 
     query('.game-info__action--favorite').click();
     query('.comment__like').click();
-    query<HTMLFormElement>('.comment-form').dispatchEvent(new Event('submit', { cancelable: true }));
 
     expect(requestAuth).toHaveBeenCalledOnce();
-    expect(vi.mocked(snackbar.info).mock.calls.map(([text]) => text)).toEqual([
-      'Sign in to like comments.',
-      'Sign in to leave a comment.',
-    ]);
+    expect(vi.mocked(snackbar.info).mock.calls.map(([text]) => text)).toEqual(['Sign in to like comments.']);
+    expect(query<HTMLTextAreaElement>('.comment-form__input').disabled).toBe(true);
+  });
+
+  it('asks for the comments with the signed-in user email and reloads them after a comment is posted', async () => {
+    session.emit(makeAppSession({ email: 'mia@rs.school' }), 'signed-in');
+    vi.spyOn(gamesApi, 'postComment').mockResolvedValue(makeComment());
+    dialog.open('tiny-glade');
+    await loaded();
+    expect(getComments).toHaveBeenLastCalledWith(
+      'tiny-glade',
+      { limit: 3, sort: 'newest', userEmail: 'mia@rs.school' },
+      expect.any(AbortSignal),
+    );
+
+    getComments.mockResolvedValue(makeCommentsPage({ total: 13 }));
+    const input = query<HTMLTextAreaElement>('.comment-form__input');
+    input.value = 'Lovely';
+    input.dispatchEvent(new Event('input'));
+    query<HTMLFormElement>('.comment-form').dispatchEvent(new Event('submit', { cancelable: true }));
+
+    await vi.waitFor(() => expect(textOf(query('.comments__title'))).toBe('Comments (13)'));
+    expect(getComments).toHaveBeenCalledTimes(2);
   });
 
   it('updates the favorites count next to the rating from the toggle answer', async () => {
@@ -133,6 +155,7 @@ describe('GameDetailsDialog', () => {
   });
 
   it('enables Send only when the comment has non-blank text', async () => {
+    session.emit(makeAppSession(), 'signed-in');
     dialog.open('tiny-glade');
     await loaded();
     const input = query<HTMLTextAreaElement>('.comment-form__input');

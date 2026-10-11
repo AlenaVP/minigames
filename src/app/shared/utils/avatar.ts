@@ -47,3 +47,13 @@ export function getProfileInitials(name: string): string {
     })
     .join('');
 }
+
+/**
+ * One letter for a comment avatar (RSS-QS-4-2-2: the uppercase first letter of the username):
+ * the first non-whitespace character as a whole code point, so "😀Mia" gives "😀", not half of it.
+ * "" when the name is blank.
+ */
+export function getUserInitial(name: string): string {
+  const [first = ''] = name.trim();
+  return [...first.toUpperCase()][0] ?? '';
+}
