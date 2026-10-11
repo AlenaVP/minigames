@@ -25,15 +25,26 @@ export class CommentsSection extends ComponentBase {
   private area: AsyncContent<CommentsPage> | null = null;
   /** Outlives every reloaded list: the same commenter keeps the same color */
   private readonly avatarColors = new AvatarColorRegistry();
+  /** The email the shown list was requested with (null = as a guest; undefined = not requested yet) */
+  private loadedFor: string | null | undefined = undefined;
 
   constructor(options: CommentsSectionOptions) {
     super();
     this.options = options;
   }
 
-  /** The latest comments again — after a comment was posted (or may have been) */
+  /** The latest comments again — after a comment was posted (or may have been), or for another user */
   reload(): void {
     void this.area?.load((signal) => this.requestComments(signal));
+  }
+
+  mount(parent: HTMLElement): void {
+    super.mount(parent);
+    // Sign-in (e.g. through Auth over the game), logout, expiration: every like state belongs to the previous user
+    this.options.access.session.onChange(({ session }) => {
+      const email = session?.email ?? null;
+      if (this.loadedFor !== undefined && email !== this.loadedFor) this.reload();
+    }, this.destroySignal);
   }
 
   protected render(): HTMLElement {
@@ -54,7 +65,14 @@ export class CommentsSection extends ComponentBase {
         request: (signal) => this.requestComments(signal),
         isEmpty: ({ comments }) => comments.length === 0,
         renderSkeleton: () => renderCommentsSkeleton(COMMENTS_LIMIT),
-        renderContent: ({ comments }) => new CommentList({ comments, now, avatarColors: this.avatarColors }),
+        renderContent: ({ comments }) =>
+          new CommentList({
+            comments,
+            now,
+            avatarColors: this.avatarColors,
+            access,
+            onListOutdated: () => this.reload(),
+          }),
         renderEmpty: () => new EmptyState({ title: 'No comments yet', message: 'Be the first to share your thoughts.' }),
         onStateChange: (state) => {
           const hasTotal = state.status === 'success' || state.status === 'empty';
@@ -70,6 +88,7 @@ export class CommentsSection extends ComponentBase {
   /** Signed in: with the email, so each comment's isLikedByCurrentUser is about this user; a guest's has none */
   private requestComments(signal: AbortSignal): Promise<CommentsPage> {
     const userEmail = this.options.access.session.current?.email;
+    this.loadedFor = userEmail ?? null;
     return gamesApi.getComments(this.options.slug, { limit: COMMENTS_LIMIT, sort: 'newest', userEmail }, signal);
   }
 }
@@ -77,6 +96,8 @@ export class CommentsSection extends ComponentBase {
 interface CommentListOptions {
   comments: readonly GameComment[];
   avatarColors: AvatarColorRegistry;
+  access: GameDetailsAccess;
+  onListOutdated: () => void;
   now?: Date;
 }
 
@@ -90,11 +111,14 @@ class CommentList extends ComponentBase {
   }
 
   protected render(): HTMLElement {
-    const { comments, avatarColors, now } = this.options;
+    const { comments, avatarColors, access, onListOutdated, now } = this.options;
     const list = document.createElement('ul');
     list.classList.add('comments__list');
     for (const comment of comments) {
-      this.mountChild(new CommentItem({ comment, avatarColor: avatarColors.colorFor(comment.authorName), now }), list);
+      this.mountChild(
+        new CommentItem({ comment, avatarColor: avatarColors.colorFor(comment.authorName), access, onListOutdated, now }),
+        list,
+      );
     }
     return list;
   }

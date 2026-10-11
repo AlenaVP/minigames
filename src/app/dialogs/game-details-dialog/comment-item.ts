@@ -1,21 +1,23 @@
 import { ComponentBase } from '@app/core/component.base';
 import type { GameComment } from '@shared/types/game-details';
-import { heartOutlineIcon } from '@shared/ui/icons';
-import { snackbar } from '@shared/ui/snackbar';
 import { decodeHtmlEntities } from '@shared/utils/decode-html';
 import { getUserInitial } from '@shared/utils/avatar';
 import { escapeHtml } from '@shared/utils/escape-html';
 import { formatRelativeTime } from '@shared/utils/format';
+import { CommentLikeButton } from './comment-like-button';
+import type { GameDetailsAccess } from './game-details-access';
 import './comment-item.scss';
 
 interface CommentItemOptions {
   comment: GameComment;
   /** 1…5, from the section's AvatarColorRegistry: stable per author while the comments view lives */
   avatarColor: number;
+  access: GameDetailsAccess;
+  onListOutdated: () => void;
   now?: Date;
 }
 
-/** One comment, read-only in Story 3: the like state comes from the API (false for a guest). */
+/** One comment; its like button is the only interactive part */
 export class CommentItem extends ComponentBase {
   private options: CommentItemOptions;
 
@@ -42,16 +44,14 @@ export class CommentItem extends ComponentBase {
           </time>
         </header>
         <p class="comment__text">${escapeHtml(decodeHtmlEntities(comment.text))}</p>
-        <button type="button" class="comment__like" aria-pressed="${comment.isLikedByCurrentUser}">
-          ${heartOutlineIcon(16)}
-          <span class="visually-hidden">Like comment by ${author},</span>
-          <span class="comment__like-count">${comment.likesCount}</span>
-          <span class="visually-hidden">likes</span>
-        </button>
       </article>
     `;
 
-    item.querySelector('.comment__like')?.addEventListener('click', () => snackbar.info('Sign in to like comments.'));
+    const article = item.querySelector<HTMLElement>('.comment');
+    if (article) {
+      const { access, onListOutdated } = this.options;
+      this.mountChild(new CommentLikeButton({ comment, access, onListOutdated }), article);
+    }
 
     return item;
   }

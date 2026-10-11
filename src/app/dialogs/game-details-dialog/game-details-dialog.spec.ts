@@ -129,16 +129,48 @@ describe('GameDetailsDialog', () => {
     expect(textOf(query('.top-records__player'))).toContain('CozyGamer');
   });
 
-  it('opens Auth over the game for a guest favorite, explains likes, and locks the comment form', async () => {
+  it('a guest: favorite and like open Auth over the game with a warning each; the comment form is locked', async () => {
     dialog.open('tiny-glade');
     await loaded();
 
     query('.game-info__action--favorite').click();
     query('.comment__like').click();
 
-    expect(requestAuth).toHaveBeenCalledOnce();
-    expect(vi.mocked(snackbar.info).mock.calls.map(([text]) => text)).toEqual(['Sign in to like comments.']);
+    expect(requestAuth).toHaveBeenCalledTimes(2);
+    expect(vi.mocked(snackbar.warning).mock.calls.map(([text]) => text)).toEqual([
+      'Sign in to add games to your favorites.',
+      'Sign in to like comments.',
+    ]);
     expect(query<HTMLTextAreaElement>('.comment-form__input').disabled).toBe(true);
+  });
+
+  it('reloads the comments for the new user on sign-in and as a guest on logout (personal like state)', async () => {
+    dialog.open('tiny-glade');
+    await loaded();
+    expect(getComments).toHaveBeenCalledTimes(1);
+
+    getComments.mockResolvedValue(makeCommentsPage({ comments: [makeComment({ isLikedByCurrentUser: true })] }));
+    session.emit(makeAppSession({ email: 'mia@rs.school' }), 'signed-in');
+    await loaded();
+    expect(getComments).toHaveBeenLastCalledWith(
+      'tiny-glade',
+      expect.objectContaining({ userEmail: 'mia@rs.school' }),
+      expect.any(AbortSignal),
+    );
+    expect(query('.comment__like').getAttribute('aria-pressed')).toBe('true');
+
+    getComments.mockResolvedValue(makeCommentsPage());
+    session.emit(null, 'logged-out');
+    await loaded();
+    expect(getComments).toHaveBeenLastCalledWith(
+      'tiny-glade',
+      expect.objectContaining({ userEmail: undefined }),
+      expect.any(AbortSignal),
+    );
+    expect(query('.comment__like').getAttribute('aria-pressed')).toBe('false');
+
+    session.emit(null, 'synced');
+    expect(getComments).toHaveBeenCalledTimes(3);
   });
 
   it('asks for the comments with the signed-in user email and reloads them after a comment is posted', async () => {
