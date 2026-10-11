@@ -7,12 +7,12 @@ import { HomePage } from '@app/pages/home/home.page';
 import { LibraryPage } from '@app/pages/library/library.page';
 import { NotFoundPage } from '@app/pages/not-found/not-found.page';
 import { toLibraryQuery } from '@app/pages/library/library-query';
-import type { AuthMode } from '@shared/types/auth';
 import { snackbar } from '@shared/ui/snackbar';
 import { sessionService } from '@app/services/session';
 import { authProvider } from '@app/services/auth';
-import { Router, type RouteSnapshot } from './router';
-import { DIALOG_QUERY, parseAuthQueryValue, toAuthQueryValue } from './router/dialog-query';
+import { DialogCoordinator } from './dialog-coordinator';
+import { Router } from './router';
+import { DIALOG_QUERY } from './router/dialog-query';
 
 const SESSION_EXPIRED_MESSAGE = 'Your session has expired. Please log in again.';
 const LOGGED_OUT_MESSAGE = "You've logged out.";
@@ -28,32 +28,13 @@ export function bootstrapApp(): void {
   root.id = 'app';
   document.body.append(root);
 
-  /** Opening = a NEW history entry (Back closes the dialog); only one dialog at a time */
-  const openGameDetails = (slug: string): void =>
-    router.updateQuery({ [DIALOG_QUERY.game]: slug, [DIALOG_QUERY.auth]: null }, { dialog: true });
-
-  const openAuth = (mode: AuthMode): void =>
-    router.updateQuery({ [DIALOG_QUERY.auth]: toAuthQueryValue(mode), [DIALOG_QUERY.game]: null }, { dialog: true });
-
-  /**
-   * The dialog was closed by the user (✕, backdrop, Esc). If the URL still names it:
-   * - we pushed that entry ourselves → Back, so the history has no "dialog closed" step;
-   * - opened from a deep link (nothing of ours to go back to) → remove the key in place.
-   * When the URL itself closed the dialog (Back), the key is already gone and nothing happens.
-   */
-  const handleDialogClosed = (key: string): void => {
-    if (!router.snapshot?.query.has(key)) return;
-    if (router.isDialogEntry) router.back();
-    else router.updateQuery({ [key]: null }, { replace: true });
-  };
-
   const authDialog = new AuthDialog({
     authProvider,
     onAuthenticated: (user) => sessionService.signIn(user),
-    onClose: () => handleDialogClosed(DIALOG_QUERY.auth),
-    onModeChange: (mode) => router.updateQuery({ [DIALOG_QUERY.auth]: toAuthQueryValue(mode) }, { replace: true }),
+    onClose: () => dialogs.handleDialogClosed(DIALOG_QUERY.auth),
+    onModeChange: (mode) => dialogs.switchAuthMode(mode),
   });
-  const gameDetailsDialog = new GameDetailsDialog({ onClose: () => handleDialogClosed(DIALOG_QUERY.game) });
+  const gameDetailsDialog = new GameDetailsDialog({ onClose: () => dialogs.handleDialogClosed(DIALOG_QUERY.game) });
 
   /**
    * Log Out in the header or the menu (RSS-QS-4-3-3). The UI is in Guest Mode the moment logout() returns;
@@ -69,12 +50,16 @@ export function bootstrapApp(): void {
     );
   };
 
-  const burgerMenu = new BurgerMenu({ session: sessionService, onAuthClick: openAuth, onLogout: logOut });
+  const burgerMenu = new BurgerMenu({
+    session: sessionService,
+    onAuthClick: (mode) => dialogs.openAuth(mode),
+    onLogout: logOut,
+  });
 
   const header = new Header({
     session: sessionService,
     onBurgerClick: () => burgerMenu.open(),
-    onAuthClick: openAuth,
+    onAuthClick: (mode) => dialogs.openAuth(mode),
     onLogout: logOut,
   });
   header.mount(root);
@@ -90,41 +75,28 @@ export function bootstrapApp(): void {
   snackbar.mount(document.body);
 
   const router = new Router(pageOutlet, {
-    home: () => new HomePage({ onGameDetails: openGameDetails }),
+    home: () => new HomePage({ onGameDetails: (slug) => dialogs.openGameDetails(slug) }),
     library: ({ query }) =>
       new LibraryPage({
         initialQuery: query,
-        onGameDetails: openGameDetails,
+        onGameDetails: (slug) => dialogs.openGameDetails(slug),
         onNavigate: (state, { replace }) => router.updateQuery(toLibraryQuery(state), { replace }),
       }),
     'not-found': () => new NotFoundPage(),
   });
 
-  /** URL → dialogs. Idempotent: called on every navigation, opens/switches/closes only what differs */
-  const syncDialogs = ({ query }: RouteSnapshot): void => {
-    const slug = query.get(DIALOG_QUERY.game);
-    const auth = parseAuthQueryValue(query.get(DIALOG_QUERY.auth));
-
-    if (slug && auth) {
-      router.updateQuery({ [DIALOG_QUERY.auth]: null }, { replace: true });
-      return;
-    }
-
-    if (auth && !auth.isValid) {
-      router.updateQuery({ [DIALOG_QUERY.auth]: toAuthQueryValue(auth.mode) }, { replace: true });
-      return;
-    }
-
-    if (slug) gameDetailsDialog.open(slug);
-    else if (gameDetailsDialog.isOpen) gameDetailsDialog.close();
-
-    if (auth) authDialog.open(auth.mode);
-    else if (authDialog.isOpen) authDialog.close();
-  };
+  const dialogs = new DialogCoordinator({
+    router,
+    authDialog,
+    gameDetails: gameDetailsDialog,
+    session: sessionService,
+  });
 
   // One toast per expiration event — whatever noticed it first (timer, tab return, navigation, protected action)
   sessionService.onChange(({ reason }) => {
     if (reason === 'expired') snackbar.warning(SESSION_EXPIRED_MESSAGE);
+    // Another tab signed in while this one shows Auth: the guard applies here too
+    if (reason === 'synced' && router.snapshot) dialogs.sync(router.snapshot);
   });
   sessionService.start();
   router.beforeNavigate(() => sessionService.ensureActive());
@@ -132,7 +104,7 @@ export function bootstrapApp(): void {
   router.onChange((snapshot) => {
     header.setActiveRoute(snapshot.route);
     burgerMenu.setActiveRoute(snapshot.route);
-    syncDialogs(snapshot);
+    dialogs.sync(snapshot);
   });
 
   router.start();
