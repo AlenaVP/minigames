@@ -39,7 +39,7 @@ describe('GameDetailsDialog', () => {
   it('opens as a modal named by the game title once it has loaded', async () => {
     dialog.open('tiny-glade');
     expect(dialog.isOpen).toBe(true);
-    expect(getGame).toHaveBeenCalledWith('tiny-glade', expect.any(AbortSignal));
+    expect(getGame).toHaveBeenCalledWith('tiny-glade', {}, expect.any(AbortSignal));
 
     await loaded();
     const titleId = dialogElement().getAttribute('aria-labelledby') ?? '';
@@ -135,7 +135,7 @@ describe('GameDetailsDialog', () => {
     expect(getGame).toHaveBeenCalledOnce();
 
     dialog.open('heartopia');
-    expect(getGame).toHaveBeenLastCalledWith('heartopia', expect.any(AbortSignal));
+    expect(getGame).toHaveBeenLastCalledWith('heartopia', {}, expect.any(AbortSignal));
     expect(queryAll('.game-details__content')).toHaveLength(1);
   });
 
@@ -182,7 +182,7 @@ describe('GameDetailsDialog', () => {
       dialog.suspend('heartopia');
 
       expect(dialog.isOpen).toBe(false);
-      expect(getGame).toHaveBeenCalledWith('heartopia', expect.any(AbortSignal));
+      expect(getGame).toHaveBeenCalledWith('heartopia', {}, expect.any(AbortSignal));
       expect(document.querySelector('.game-details__content')).not.toBeNull();
     });
 
@@ -191,7 +191,7 @@ describe('GameDetailsDialog', () => {
 
       dialog.open('tiny-glade');
 
-      expect(getGame).toHaveBeenLastCalledWith('tiny-glade', expect.any(AbortSignal));
+      expect(getGame).toHaveBeenLastCalledWith('tiny-glade', {}, expect.any(AbortSignal));
       expect(getGame).toHaveBeenCalledTimes(2);
     });
 

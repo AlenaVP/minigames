@@ -86,6 +86,37 @@ describe('GamesApi', () => {
     await expect(createApi().getFeatured()).rejects.toBeInstanceOf(HttpError);
   });
 
+  describe('personal reads (signed-in user)', () => {
+    it('getGame sends the email URL-encoded — a "+" would otherwise arrive as a space', async () => {
+      const fetchMock = stubFetch(jsonResponse({ data: makeGameDetails({ isLikedByCurrentUser: true }) }));
+
+      const game = await createApi().getGame('palia', { userEmail: 'alex+test@rs.school' });
+
+      expect(requestedUrl(fetchMock).search).toBe('?userEmail=alex%2Btest%40rs.school');
+      expect(game.isLikedByCurrentUser).toBe(true);
+    });
+
+    it('getGame for a guest sends no userEmail at all', async () => {
+      const fetchMock = stubFetch(jsonResponse({ data: makeGameDetails() }));
+
+      await createApi().getGame('palia');
+
+      expect(requestedUrl(fetchMock).search).toBe('');
+    });
+
+    it('getComments adds the email to limit and sort', async () => {
+      const fetchMock = stubFetch(jsonResponse({ data: [], meta: { totalComments: 0, returnedCount: 0 } }));
+
+      await createApi().getComments('palia', { limit: 3, sort: 'newest', userEmail: 'student@rs.school' });
+
+      expect(Object.fromEntries(requestedUrl(fetchMock).searchParams)).toEqual({
+        limit: '3',
+        sort: 'newest',
+        userEmail: 'student@rs.school',
+      });
+    });
+  });
+
   describe('mutations', () => {
     const EMAIL = 'student@rs.school';
 

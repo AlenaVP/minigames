@@ -7,6 +7,7 @@ import type {
   FavoriteState,
   GameComment,
   GameDetails,
+  GameQuery,
   NewComment,
 } from '@shared/types/game-details';
 import {
@@ -49,15 +50,22 @@ export class GamesApi {
     return { games: data, page: meta.page, totalPages: meta.totalPages, totalItems: meta.totalItems };
   }
 
-  /** 404 → HttpError kind 'not-found' → "Game Not Found" state in the dialog */
-  async getGame(slug: string, signal?: AbortSignal): Promise<GameDetails> {
-    const response = await this.http.get(`/games/${encodeURIComponent(slug)}`, { guard: isGameDetailsResponse, signal });
+  /**
+   * 404 → HttpError kind 'not-found' → "Game Not Found" state in the dialog.
+   * With userEmail the answer is personal: isLikedByCurrentUser = this user has the game in favorites.
+   */
+  async getGame(slug: string, query: GameQuery = {}, signal?: AbortSignal): Promise<GameDetails> {
+    const response = await this.http.get(`/games/${encodeURIComponent(slug)}`, {
+      query: { userEmail: query.userEmail },
+      guard: isGameDetailsResponse,
+      signal,
+    });
     return response.data;
   }
 
   async getComments(slug: string, query: CommentsQuery = {}, signal?: AbortSignal): Promise<CommentsPage> {
     const { data, meta } = await this.http.get(`/games/${encodeURIComponent(slug)}/comments`, {
-      query: { limit: query.limit, sort: query.sort },
+      query: { limit: query.limit, sort: query.sort, userEmail: query.userEmail },
       guard: isCommentsResponse,
       signal,
     });
