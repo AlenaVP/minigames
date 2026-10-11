@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { AVATAR_COLOR_COUNT, getAvatarColorIndex, getInitial, getPlayerInitials, getProfileInitials } from './avatar';
+import {
+  AVATAR_COLOR_COUNT,
+  getAvatarColorIndex,
+  getInitial,
+  getPlayerInitials,
+  getProfileInitials,
+  getUserInitial,
+} from './avatar';
 
 describe('getInitial', () => {
   it('takes the first character of the trimmed name in upper case', () => {
@@ -69,5 +76,19 @@ describe('getAvatarColorIndex', () => {
       expect(index).toBeGreaterThanOrEqual(0);
       expect(index).toBeLessThan(AVATAR_COLOR_COUNT);
     }
+  });
+});
+
+describe('getUserInitial', () => {
+  it.each([
+    ['ForestDweller', 'F'],
+    ['  alena', 'A'],
+    ['żaneta', 'Ż'],
+    ['😀Mia', '😀'],
+    ['ßeta', 'S'],
+    ['', ''],
+    [' '.repeat(2), ''],
+  ])('%j → %j', (name, expected) => {
+    expect(getUserInitial(name)).toBe(expected);
   });
 });
