@@ -4,6 +4,7 @@ import { gamesApi } from '@app/services/api';
 import { heartOutlineIcon } from '@shared/ui/icons';
 import { snackbar } from '@shared/ui/snackbar';
 import type { AppSession } from '@shared/types/session';
+import { lockButton, unlockButton } from '@shared/utils/button-lock';
 import type { GameDetailsAccess } from './game-details-access';
 
 interface FavoriteButtonOptions {
@@ -18,6 +19,7 @@ interface FavoriteButtonOptions {
 }
 
 const LABEL = { off: 'Add to Favorites', on: 'Remove from Favorites' } as const;
+const PENDING_CLASS = 'game-info__action--pending';
 
 export const FAVORITE_MESSAGES = {
   signIn: 'Sign in to add games to your favorites.',
@@ -147,27 +149,13 @@ export class FavoriteButton extends ComponentBase {
 
   /** Locked while a request is out: no duplicate toggles. Returns whether the button had the focus */
   private lock(): boolean {
-    const button = this.element;
-    const hadFocus = button !== null && document.activeElement === button;
     this.isPending = true;
-    if (button instanceof HTMLButtonElement) {
-      button.disabled = true;
-      button.classList.add('game-info__action--pending');
-      button.setAttribute('aria-busy', 'true');
-    }
-    return hadFocus;
+    return this.element instanceof HTMLButtonElement ? lockButton(this.element, PENDING_CLASS) : false;
   }
 
-  /** A disabled button drops the focus to <body>: it goes back where the keyboard user left it */
   private unlock(restoreFocus: boolean): void {
-    const button = this.element;
     this.isPending = false;
-    if (!(button instanceof HTMLButtonElement)) return;
-
-    button.disabled = false;
-    button.classList.remove('game-info__action--pending');
-    button.removeAttribute('aria-busy');
-    if (restoreFocus && (document.activeElement === document.body || document.activeElement === null)) button.focus();
+    if (this.element instanceof HTMLButtonElement) unlockButton(this.element, PENDING_CLASS, restoreFocus);
   }
 
   private setFavorited(isFavorited: boolean): void {
