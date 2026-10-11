@@ -125,6 +125,15 @@ describe('Router', () => {
     expect(pages[0]?.queries).toEqual(['sort=name-asc&page=2']);
   });
 
+  it('updateQuery() keeps the path as written and the #hash — only the query changes', () => {
+    history.replaceState(null, '', `${BASE}home?category=puzzle&auth=login#top`);
+    router.start();
+
+    router.updateQuery({ auth: null }, { replace: true });
+
+    expect(`${url()}${location.hash}`).toBe(`${BASE}home?category=puzzle#top`);
+  });
+
   it('does not create a history entry for the URL that is already shown', () => {
     router.start();
     const lengthBefore = history.length;

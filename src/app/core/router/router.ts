@@ -90,17 +90,13 @@ export class Router {
     this.commit(route, mergeQuery(new URLSearchParams(), query), options);
   }
 
-  /** Same page, some query keys changed: Library state, dialogs */
+  /**
+   * Same page, some query keys changed: Library state, dialogs.
+   * The path and the #hash are kept exactly as they are (/home stays /home, #top stays): only the query changes.
+   */
   updateQuery(patch: QueryPatch, options: NavigateOptions = {}): void {
-    const route = this.current?.route;
-    const pageRoute = route && isPageRouteId(route) ? route : null;
     const query = mergeQuery(this.current?.query ?? new URLSearchParams(), patch);
-
-    if (pageRoute) {
-      this.commit(pageRoute, query, options);
-    } else {
-      this.commitUrl(`${location.pathname}${query.size > 0 ? `?${query}` : ''}`, options);
-    }
+    this.commitUrl(`${location.pathname}${query.size > 0 ? `?${query}` : ''}${location.hash}`, options);
   }
 
   back(): void {
@@ -128,7 +124,7 @@ export class Router {
   }
 
   private commitUrl(url: string, { replace = false, dialog }: NavigateOptions): void {
-    if (url === `${location.pathname}${location.search}`) return;
+    if (url === `${location.pathname}${location.search}${location.hash}`) return;
 
     const state: HistoryState = { dialog: dialog ?? (replace ? this.isDialogEntry : false) };
 
