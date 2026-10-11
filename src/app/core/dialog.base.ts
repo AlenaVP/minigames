@@ -21,6 +21,8 @@ export abstract class DialogBase extends ComponentBase {
   private readonly config: DialogConfig;
   private isPointerDownOnBackdrop = false;
   private isDismissible = true;
+  /** The next `close` event comes from hide(): not a user's close, so onClose is not called */
+  private isHiding = false;
 
   constructor(config: DialogConfig) {
     super();
@@ -50,6 +52,16 @@ export abstract class DialogBase extends ComponentBase {
     else this.dialog?.setAttribute('closedby', 'none');
   }
 
+  /**
+   * Closes without reporting it to config.onClose: the dialog only steps aside for another one
+   * (Game Details under Auth) and the URL must stay as it is.
+   */
+  protected hide(): void {
+    if (!this.dialog?.open) return;
+    this.isHiding = true;
+    this.dialog.close();
+  }
+
   protected show(): void {
     if (!this.dialog || this.dialog.open) return;
     this.dialog.showModal();
@@ -66,7 +78,13 @@ export abstract class DialogBase extends ComponentBase {
     this.dialog = dialog;
     this.renderContent(dialog);
     this.bindCloseTriggers(dialog);
-    dialog.addEventListener('close', () => this.config.onClose?.());
+    dialog.addEventListener('close', () => {
+      if (this.isHiding) {
+        this.isHiding = false;
+        return;
+      }
+      this.config.onClose?.();
+    });
 
     return dialog;
   }

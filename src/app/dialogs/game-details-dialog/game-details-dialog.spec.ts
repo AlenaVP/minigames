@@ -149,4 +149,70 @@ describe('GameDetailsDialog', () => {
     expect(onClose).toHaveBeenCalledOnce();
     await vi.waitFor(() => expect(document.querySelector('.game-details__content')).toBeNull());
   });
+
+  describe('suspended under Auth', () => {
+    it('steps aside without reporting a close, and comes back as it was — no new request, the draft kept', async () => {
+      dialog.open('tiny-glade');
+      await loaded();
+      const input = query<HTMLTextAreaElement>('.comment-form__input');
+      input.value = 'Half-written comment';
+
+      dialog.suspend('tiny-glade');
+      expect(dialog.isOpen).toBe(false);
+      await vi.waitFor(() => expect(onClose).not.toHaveBeenCalled());
+
+      dialog.open('tiny-glade');
+      expect(dialog.isOpen).toBe(true);
+      expect(getGame).toHaveBeenCalledOnce();
+      expect(query<HTMLTextAreaElement>('.comment-form__input')).toBe(input);
+      expect(input.value).toBe('Half-written comment');
+    });
+
+    it('keeps its content after the close animations while suspended', async () => {
+      dialog.open('tiny-glade');
+      await loaded();
+
+      dialog.suspend('tiny-glade');
+      await new Promise((resolve) => setTimeout(resolve, 0));
+
+      expect(document.querySelector('.game-details__content')).not.toBeNull();
+    });
+
+    it('starts loading a deep-linked game hidden, ready for when Auth closes', () => {
+      dialog.suspend('heartopia');
+
+      expect(dialog.isOpen).toBe(false);
+      expect(getGame).toHaveBeenCalledWith('heartopia', expect.any(AbortSignal));
+      expect(document.querySelector('.game-details__content')).not.toBeNull();
+    });
+
+    it('loads another game when the URL changed to it in the meantime', () => {
+      dialog.suspend('heartopia');
+
+      dialog.open('tiny-glade');
+
+      expect(getGame).toHaveBeenLastCalledWith('tiny-glade', expect.any(AbortSignal));
+      expect(getGame).toHaveBeenCalledTimes(2);
+    });
+
+    it('drops the suspended content when the URL no longer names the game', () => {
+      dialog.suspend('heartopia');
+
+      dialog.close();
+
+      expect(document.querySelector('.game-details__content')).toBeNull();
+      expect(onClose).not.toHaveBeenCalled();
+    });
+
+    it('a normal open after a full close starts from scratch (a new request)', async () => {
+      dialog.open('tiny-glade');
+      await loaded();
+      dialog.close();
+      await vi.waitFor(() => expect(document.querySelector('.game-details__content')).toBeNull());
+
+      dialog.open('tiny-glade');
+
+      expect(getGame).toHaveBeenCalledTimes(2);
+    });
+  });
 });
