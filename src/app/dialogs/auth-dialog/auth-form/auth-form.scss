@@ -1,15 +1,5 @@
 @use 'abstracts/tokens' as *;
-
-/** The pending indicator of a button: a ring with a gap, turning (keyframes auth-spin at the bottom) */
-@mixin spinner {
-  content: '';
-  width: $size-p18;
-  height: $size-p18;
-  border: $border-width-thick solid currentColor;
-  border-right-color: transparent;
-  border-radius: 50%;
-  animation: auth-spin $duration-spin $easing-linear infinite;
-}
+@use 'abstracts/mixins' as *;
 
 .auth-form {
   display: flex;
@@ -302,11 +292,5 @@
   from {
     opacity: 0;
     transform: translateX($size-2);
-  }
-}
-
-@keyframes auth-spin {
-  to {
-    rotate: 1turn;
   }
 }
