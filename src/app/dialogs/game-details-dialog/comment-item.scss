@@ -2,9 +2,9 @@
 @use 'abstracts/tokens' as *;
 @use 'abstracts/mixins' as *;
 
+// RSS-QS-4-2-3: the avatar-random tokens only, in order: --1 … --5 (AvatarColorRegistry picks the number)
 $avatar-palette:
-  $color-primary, $color-avatar-random-1, $color-avatar-random-2, $color-avatar-random-4, $color-avatar-random-3,
-  $color-avatar-random-5;
+  $color-avatar-random-1, $color-avatar-random-2, $color-avatar-random-3, $color-avatar-random-4, $color-avatar-random-5;
 
 .comment {
   display: flex;
@@ -38,7 +38,7 @@ $avatar-palette:
     }
 
     @for $i from 1 through list.length($avatar-palette) {
-      &--#{$i - 1} {
+      &--#{$i} {
         background-color: list.nth($avatar-palette, $i);
       }
     }

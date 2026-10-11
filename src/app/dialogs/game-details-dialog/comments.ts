@@ -3,6 +3,7 @@ import { gamesApi } from '@app/services/api';
 import { AsyncContent } from '@shared/ui/async-content';
 import { EmptyState } from '@shared/ui/empty-state';
 import type { CommentsPage, GameComment } from '@shared/types/game-details';
+import { AvatarColorRegistry } from '@shared/utils/avatar-colors';
 import { CommentForm } from './comment-form';
 import { CommentItem } from './comment-item';
 import type { GameDetailsAccess } from './game-details-access';
@@ -22,6 +23,8 @@ const COMMENTS_LIMIT = 3;
 export class CommentsSection extends ComponentBase {
   private readonly options: CommentsSectionOptions;
   private area: AsyncContent<CommentsPage> | null = null;
+  /** Outlives every reloaded list: the same commenter keeps the same color */
+  private readonly avatarColors = new AvatarColorRegistry();
 
   constructor(options: CommentsSectionOptions) {
     super();
@@ -51,7 +54,7 @@ export class CommentsSection extends ComponentBase {
         request: (signal) => this.requestComments(signal),
         isEmpty: ({ comments }) => comments.length === 0,
         renderSkeleton: () => renderCommentsSkeleton(COMMENTS_LIMIT),
-        renderContent: ({ comments }) => new CommentList({ comments, now }),
+        renderContent: ({ comments }) => new CommentList({ comments, now, avatarColors: this.avatarColors }),
         renderEmpty: () => new EmptyState({ title: 'No comments yet', message: 'Be the first to share your thoughts.' }),
         onStateChange: (state) => {
           const hasTotal = state.status === 'success' || state.status === 'empty';
@@ -71,19 +74,28 @@ export class CommentsSection extends ComponentBase {
   }
 }
 
+interface CommentListOptions {
+  comments: readonly GameComment[];
+  avatarColors: AvatarColorRegistry;
+  now?: Date;
+}
+
 /** A component (not a bare <ul>): its items are destroyed together with it when the area changes state */
 class CommentList extends ComponentBase {
-  private readonly options: { comments: readonly GameComment[]; now?: Date };
+  private readonly options: CommentListOptions;
 
-  constructor(options: { comments: readonly GameComment[]; now?: Date }) {
+  constructor(options: CommentListOptions) {
     super();
     this.options = options;
   }
 
   protected render(): HTMLElement {
+    const { comments, avatarColors, now } = this.options;
     const list = document.createElement('ul');
     list.classList.add('comments__list');
-    for (const comment of this.options.comments) this.mountChild(new CommentItem({ comment, now: this.options.now }), list);
+    for (const comment of comments) {
+      this.mountChild(new CommentItem({ comment, avatarColor: avatarColors.colorFor(comment.authorName), now }), list);
+    }
     return list;
   }
 }

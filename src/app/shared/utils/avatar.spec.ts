@@ -1,12 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-  AVATAR_COLOR_COUNT,
-  getAvatarColorIndex,
-  getInitial,
-  getPlayerInitials,
-  getProfileInitials,
-  getUserInitial,
-} from './avatar';
+import { getInitial, getPlayerInitials, getProfileInitials, getUserInitial } from './avatar';
 
 describe('getInitial', () => {
   it('takes the first character of the trimmed name in upper case', () => {
@@ -62,20 +55,6 @@ describe('getProfileInitials', () => {
 
   it.each(['', ' '.repeat(3), '🙂', '!!! ???'])('gives "" when there is no letter or digit: %j', (name) => {
     expect(getProfileInitials(name)).toBe('');
-  });
-});
-
-describe('getAvatarColorIndex', () => {
-  it('gives the same name the same color every time', () => {
-    expect(getAvatarColorIndex('Alena')).toBe(getAvatarColorIndex(' Alena '));
-  });
-
-  it('stays inside the palette', () => {
-    for (const name of ['A', 'z', 'Ж', '🙂', '']) {
-      const index = getAvatarColorIndex(name);
-      expect(index).toBeGreaterThanOrEqual(0);
-      expect(index).toBeLessThan(AVATAR_COLOR_COUNT);
-    }
   });
 });
 

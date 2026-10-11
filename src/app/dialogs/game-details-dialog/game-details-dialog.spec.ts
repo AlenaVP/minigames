@@ -88,6 +88,29 @@ describe('GameDetailsDialog', () => {
     expect(query('.comment__date').getAttribute('datetime')).toBe('2026-10-01T12:00:00.000Z');
   });
 
+  it('gives each commenter a random token color and the uppercase first letter, kept when the list reloads', async () => {
+    const random = vi.spyOn(Math, 'random').mockReturnValue(0.5);
+    session.emit(makeAppSession(), 'signed-in');
+    vi.spyOn(gamesApi, 'postComment').mockResolvedValue(makeComment());
+    getComments.mockResolvedValue(makeCommentsPage({ comments: [makeComment({ authorName: ' cozyGamer' })] }));
+    dialog.open('tiny-glade');
+    await loaded();
+
+    const avatar = (): HTMLElement => query('.comment__avatar');
+    expect(avatar().classList.contains('comment__avatar--3')).toBe(true);
+    expect(textOf(avatar())).toBe('C');
+
+    random.mockReturnValue(0);
+    const input = query<HTMLTextAreaElement>('.comment-form__input');
+    input.value = 'Hi';
+    input.dispatchEvent(new Event('input'));
+    query<HTMLFormElement>('.comment-form').dispatchEvent(new Event('submit', { cancelable: true }));
+    await vi.waitFor(() => expect(getComments).toHaveBeenCalledTimes(2));
+    await loaded();
+
+    expect(avatar().classList.contains('comment__avatar--3')).toBe(true);
+  });
+
   it('says there are no comments yet for an empty list', async () => {
     getComments.mockResolvedValue(makeCommentsPage({ comments: [], total: 0 }));
     dialog.open('tiny-glade');

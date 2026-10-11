@@ -3,13 +3,15 @@ import type { GameComment } from '@shared/types/game-details';
 import { heartOutlineIcon } from '@shared/ui/icons';
 import { snackbar } from '@shared/ui/snackbar';
 import { decodeHtmlEntities } from '@shared/utils/decode-html';
-import { getAvatarColorIndex, getInitial } from '@shared/utils/avatar';
+import { getUserInitial } from '@shared/utils/avatar';
 import { escapeHtml } from '@shared/utils/escape-html';
 import { formatRelativeTime } from '@shared/utils/format';
 import './comment-item.scss';
 
 interface CommentItemOptions {
   comment: GameComment;
+  /** 1…5, from the section's AvatarColorRegistry: stable per author while the comments view lives */
+  avatarColor: number;
   now?: Date;
 }
 
@@ -23,7 +25,7 @@ export class CommentItem extends ComponentBase {
   }
 
   protected render(): HTMLElement {
-    const { comment, now } = this.options;
+    const { comment, avatarColor, now } = this.options;
     const author = escapeHtml(comment.authorName);
 
     const item = document.createElement('li');
@@ -31,8 +33,8 @@ export class CommentItem extends ComponentBase {
     item.innerHTML = `
       <article class="comment" aria-label="Comment by ${author}">
         <header class="comment__header">
-          <span class="comment__avatar comment__avatar--${getAvatarColorIndex(comment.authorName)}" aria-hidden="true">
-            ${escapeHtml(getInitial(comment.authorName))}
+          <span class="comment__avatar comment__avatar--${avatarColor}" aria-hidden="true">
+            ${escapeHtml(getUserInitial(comment.authorName) || '?')}
           </span>
           <span class="comment__author">${author}</span>
           <time class="comment__date" datetime="${escapeHtml(comment.createdAt)}">
