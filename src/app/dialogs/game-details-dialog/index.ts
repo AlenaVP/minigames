@@ -1,8 +1,10 @@
 import { DialogBase } from '@app/core/dialog.base';
+import type { GameDetailsAccess } from './game-details-access';
 import { GAME_DETAILS_TITLE_ID, GameDetailsContent } from './game-details-content';
 import './game-details-dialog.scss';
 
 interface GameDetailsDialogOptions {
+  access: GameDetailsAccess;
   onClose?: () => void;
 }
 
@@ -14,14 +16,16 @@ export class GameDetailsDialog extends DialogBase {
   private slug: string | null = null;
   /** Hidden under Auth (?game=x&auth=…): the content (loaded data, comment draft, scroll) waits to be shown again */
   private isSuspended = false;
+  private readonly access: GameDetailsAccess;
 
-  constructor({ onClose }: GameDetailsDialogOptions = {}) {
+  constructor({ access, onClose }: GameDetailsDialogOptions) {
     super({
       className: 'game-details',
       ariaLabelledBy: GAME_DETAILS_TITLE_ID,
       ariaLabel: 'Game details',
       onClose,
     });
+    this.access = access;
   }
 
   /**
@@ -83,7 +87,7 @@ export class GameDetailsDialog extends DialogBase {
     if (!this.dialog) return;
 
     this.clearContent();
-    this.content = new GameDetailsContent({ slug, onClose: () => this.close() });
+    this.content = new GameDetailsContent({ slug, access: this.access, onClose: () => this.close() });
     this.content.mount(this.dialog);
   }
 

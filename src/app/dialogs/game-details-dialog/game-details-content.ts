@@ -9,11 +9,13 @@ import { GameInfo } from './game-info';
 import { TopRecords } from './top-records';
 import { CommentsSection } from './comments';
 import { renderGameDetailsSkeleton } from './game-details-skeleton';
+import type { GameDetailsAccess } from './game-details-access';
 
 export const GAME_DETAILS_TITLE_ID = 'game-details-title';
 
 interface GameDetailsContentOptions {
   slug: string;
+  access: GameDetailsAccess;
   /** "Close" in the Game Not Found state */
   onClose: () => void;
 }
@@ -28,6 +30,8 @@ interface GameDetailsContentOptions {
  */
 export class GameDetailsContent extends ComponentBase {
   private readonly options: GameDetailsContentOptions;
+  /** The email of the last game request (null = as a guest) */
+  private loadedFor: string | null = null;
 
   constructor(options: GameDetailsContentOptions) {
     super();
@@ -35,7 +39,7 @@ export class GameDetailsContent extends ComponentBase {
   }
 
   protected render(): HTMLElement {
-    const { slug, onClose } = this.options;
+    const { slug, access, onClose } = this.options;
 
     const content = document.createElement('div');
     content.classList.add('game-details__content');
@@ -49,9 +53,13 @@ export class GameDetailsContent extends ComponentBase {
     this.mountChild(
       new AsyncContent<GameDetails>({
         label: 'game details',
-        request: (signal) => gamesApi.getGame(slug, {}, signal),
+        // Signed in: the answer is personal (isLikedByCurrentUser = in this user's favorites); a guest's has no email
+        request: (signal) => {
+          this.loadedFor = access.session.current?.email ?? null;
+          return gamesApi.getGame(slug, { userEmail: this.loadedFor ?? undefined }, signal);
+        },
         renderSkeleton: renderGameDetailsSkeleton,
-        renderContent: (game) => new GameDetailsView({ game }),
+        renderContent: (game) => new GameDetailsView({ game, access, loadedFor: this.loadedFor }),
         renderError: (error) =>
           error.kind === 'not-found'
             ? new EmptyState({
@@ -69,16 +77,22 @@ export class GameDetailsContent extends ComponentBase {
 }
 
 /** The loaded game: the comments area lives inside it, so it starts only once the game exists */
-class GameDetailsView extends ComponentBase {
-  private readonly game: GameDetails;
+interface GameDetailsViewOptions {
+  game: GameDetails;
+  access: GameDetailsAccess;
+  loadedFor: string | null;
+}
 
-  constructor({ game }: { game: GameDetails }) {
+class GameDetailsView extends ComponentBase {
+  private readonly options: GameDetailsViewOptions;
+
+  constructor(options: GameDetailsViewOptions) {
     super();
-    this.game = game;
+    this.options = options;
   }
 
   protected render(): HTMLElement {
-    const { game } = this;
+    const { game, access, loadedFor } = this.options;
 
     const view = document.createElement('div');
     view.classList.add('game-details__view');
@@ -89,7 +103,7 @@ class GameDetailsView extends ComponentBase {
     body.classList.add('game-details__body');
     view.append(body);
 
-    this.mountChild(new GameInfo({ game, titleId: GAME_DETAILS_TITLE_ID }), body);
+    this.mountChild(new GameInfo({ game, titleId: GAME_DETAILS_TITLE_ID, access, loadedFor }), body);
     this.mountChild(new TopRecords({ records: game.topRecords }), body);
     this.mountChild(new CommentsSection({ slug: game.slug }), body);
 

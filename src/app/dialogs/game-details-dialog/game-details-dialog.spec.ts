@@ -6,6 +6,7 @@ import type { CommentsPage } from '@shared/types/game-details';
 import { snackbar } from '@shared/ui/snackbar';
 import { query, queryAll, textOf } from '@testing/dom';
 import { makeComment, makeGameDetails } from '@testing/fixtures';
+import { createFakeSessionSource, makeAppSession, type FakeSessionSource } from '@testing/session';
 import { GameDetailsDialog } from '.';
 
 function makeCommentsPage(overrides: Partial<CommentsPage> = {}): CommentsPage {
@@ -21,14 +22,20 @@ describe('GameDetailsDialog', () => {
   let onClose: ReturnType<typeof vi.fn<() => void>>;
   let getGame: MockInstance<typeof gamesApi.getGame>;
   let getComments: MockInstance<typeof gamesApi.getComments>;
+  let session: FakeSessionSource;
+  let requestAuth: ReturnType<typeof vi.fn<() => void>>;
 
   beforeEach(() => {
     onClose = vi.fn<() => void>();
     getGame = vi.spyOn(gamesApi, 'getGame').mockResolvedValue(makeGameDetails({ name: 'Tiny Glade' }));
     getComments = vi.spyOn(gamesApi, 'getComments').mockResolvedValue(makeCommentsPage());
     vi.spyOn(snackbar, 'info');
+    vi.spyOn(snackbar, 'warning');
+    vi.spyOn(snackbar, 'success');
     vi.spyOn(snackbar, 'error');
-    dialog = new GameDetailsDialog({ onClose });
+    session = createFakeSessionSource();
+    requestAuth = vi.fn<() => void>();
+    dialog = new GameDetailsDialog({ onClose, access: { session, requestAuth } });
     dialog.mount(document.body);
   });
 
@@ -39,11 +46,19 @@ describe('GameDetailsDialog', () => {
   it('opens as a modal named by the game title once it has loaded', async () => {
     dialog.open('tiny-glade');
     expect(dialog.isOpen).toBe(true);
-    expect(getGame).toHaveBeenCalledWith('tiny-glade', {}, expect.any(AbortSignal));
+    expect(getGame).toHaveBeenCalledWith('tiny-glade', { userEmail: undefined }, expect.any(AbortSignal));
 
     await loaded();
     const titleId = dialogElement().getAttribute('aria-labelledby') ?? '';
     expect(textOf(query(`#${titleId}`))).toBe('Tiny Glade');
+  });
+
+  it('asks for the game with the email of the signed-in user (personal favorite state)', () => {
+    session.emit(makeAppSession({ email: 'alex+test@rs.school' }), 'signed-in');
+
+    dialog.open('tiny-glade');
+
+    expect(getGame).toHaveBeenCalledWith('tiny-glade', { userEmail: 'alex+test@rs.school' }, expect.any(AbortSignal));
   });
 
   it('asks for the 3 newest comments only after the game exists, and shows the total in the heading', async () => {
@@ -87,7 +102,7 @@ describe('GameDetailsDialog', () => {
     expect(textOf(query('.top-records__player'))).toContain('CozyGamer');
   });
 
-  it('asks a guest to sign in for favorites, likes and comments', async () => {
+  it('opens Auth over the game for a guest favorite, and still only explains likes and comments', async () => {
     dialog.open('tiny-glade');
     await loaded();
 
@@ -95,11 +110,26 @@ describe('GameDetailsDialog', () => {
     query('.comment__like').click();
     query<HTMLFormElement>('.comment-form').dispatchEvent(new Event('submit', { cancelable: true }));
 
+    expect(requestAuth).toHaveBeenCalledOnce();
     expect(vi.mocked(snackbar.info).mock.calls.map(([text]) => text)).toEqual([
-      'Sign in to add games to your favorites.',
       'Sign in to like comments.',
       'Sign in to leave a comment.',
     ]);
+  });
+
+  it('updates the favorites count next to the rating from the toggle answer', async () => {
+    session.emit(makeAppSession(), 'signed-in');
+    vi.spyOn(gamesApi, 'toggleFavorite').mockResolvedValue({
+      gameSlug: 'tiny-glade',
+      isFavorited: true,
+      likesCount: 31_201,
+    });
+    dialog.open('tiny-glade');
+    await loaded();
+
+    query('.game-info__action--favorite').click();
+
+    await vi.waitFor(() => expect(textOf(query('.game-info__likes-count'))).toBe('31.2K'));
   });
 
   it('enables Send only when the comment has non-blank text', async () => {
@@ -135,7 +165,7 @@ describe('GameDetailsDialog', () => {
     expect(getGame).toHaveBeenCalledOnce();
 
     dialog.open('heartopia');
-    expect(getGame).toHaveBeenLastCalledWith('heartopia', {}, expect.any(AbortSignal));
+    expect(getGame).toHaveBeenLastCalledWith('heartopia', { userEmail: undefined }, expect.any(AbortSignal));
     expect(queryAll('.game-details__content')).toHaveLength(1);
   });
 
@@ -182,7 +212,7 @@ describe('GameDetailsDialog', () => {
       dialog.suspend('heartopia');
 
       expect(dialog.isOpen).toBe(false);
-      expect(getGame).toHaveBeenCalledWith('heartopia', {}, expect.any(AbortSignal));
+      expect(getGame).toHaveBeenCalledWith('heartopia', { userEmail: undefined }, expect.any(AbortSignal));
       expect(document.querySelector('.game-details__content')).not.toBeNull();
     });
 
@@ -191,7 +221,7 @@ describe('GameDetailsDialog', () => {
 
       dialog.open('tiny-glade');
 
-      expect(getGame).toHaveBeenLastCalledWith('tiny-glade', {}, expect.any(AbortSignal));
+      expect(getGame).toHaveBeenLastCalledWith('tiny-glade', { userEmail: undefined }, expect.any(AbortSignal));
       expect(getGame).toHaveBeenCalledTimes(2);
     });
 

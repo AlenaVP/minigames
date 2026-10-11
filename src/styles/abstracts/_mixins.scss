@@ -54,3 +54,14 @@
     animation: none;
   }
 }
+
+// The pending indicator of a button: a ring with a gap, turning (keyframes `spin` in base/_base.scss)
+@mixin spinner {
+  content: '';
+  width: $size-p18;
+  height: $size-p18;
+  border: $border-width-thick solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spin $duration-spin $easing-linear infinite;
+}
