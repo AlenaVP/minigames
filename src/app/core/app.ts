@@ -69,7 +69,7 @@ export function bootstrapApp(): void {
     );
   };
 
-  const burgerMenu = new BurgerMenu({ onAuthClick: openAuth });
+  const burgerMenu = new BurgerMenu({ session: sessionService, onAuthClick: openAuth, onLogout: logOut });
 
   const header = new Header({
     session: sessionService,
