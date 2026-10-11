@@ -105,7 +105,7 @@ class GameDetailsView extends ComponentBase {
 
     this.mountChild(new GameInfo({ game, titleId: GAME_DETAILS_TITLE_ID, access, loadedFor }), body);
     this.mountChild(new TopRecords({ records: game.topRecords }), body);
-    this.mountChild(new CommentsSection({ slug: game.slug }), body);
+    this.mountChild(new CommentsSection({ slug: game.slug, access }), body);
 
     return view;
   }
